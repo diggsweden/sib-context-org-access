@@ -4,11 +4,11 @@ This document contains a set of test cases that are applied to Intermediate Enti
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 This document holds the **BAS conformance tests**. The test cases in this document check the Intermediate against the requirements that BAS adds to the OIDF Sweden conformance tests. Within BAS, the Intermediate is a Federation Registration Entity provided by a Federation Registration Operator. It registers Entities after the checks of \[[SIB.Registration](#sib-registration)\], sets the verified per-Entity values in the Subordinate Statement, and states the checks performed in the `registration_policy` claim. Federation-wide rules are set by the Trust Anchor and are tested in [Testing of the BAS Trust Anchor](ta_overview.md).
 
-The BAS conformance tests build on the OIDF Sweden conformance tests, [fre_oidf_sweden_test.md](fre_oidf_sweden_test.md), which are carried out first.
+The BAS conformance tests complement the OIDF Sweden conformance tests, [fre_oidf_sweden_test.md](fre_oidf_sweden_test.md). Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md).
 
 The test cases are grouped by the test data they need:
 
@@ -49,20 +49,13 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [FRE-BAS-007](#fre-bas-007) Verifying the Resolved Metadata of registered Entities
 
-    3.3. [**Registration Checks**](#registration-checks)
+    3.3. [**New Entities**](#new-entities)
 
     [FRE-BAS-008](#fre-bas-008) Registering a new Entity in BAS
-
-    [FRE-BAS-009](#fre-bas-009) Registering an Entity with metadata that the BAS policy rejects
-
-    [FRE-BAS-010](#fre-bas-010) Registering an Entity with metadata that the policy cannot check
-
-    [FRE-BAS-011](#fre-bas-011) Registering an Entity with incorrect organization details
 
     3.4. [**Changes to Verified Values**](#changes-to-verified-values)
 
     [FRE-BAS-012](#fre-bas-012) Changing a verified value in the Entity Configuration
-
 
 <a name="references"></a>
 ## 1. References
@@ -107,6 +100,8 @@ This section contains the specifications that this document tests compliance aga
 <a name="test-setup"></a>
 ### 1.2. Test Setup
 
+Each test case obtains the data it verifies itself, using the common procedures in [procedures.md](procedures.md), such as fetching an Entity Configuration ([P-EC](procedures.md#p-ec)) or building a Trust Chain ([P-CHAIN](procedures.md#p-chain)). No test case depends on the outcome of another. If a procedure cannot be completed, the test case is reported as *Inconclusive*, with the reason.
+
 Before the tests are carried out, the tester collects the following information about the Intermediate (FRE) under test:
 
 | Item | Description |
@@ -115,7 +110,7 @@ Before the tests are carried out, the tester collects the following information 
 | **Trust Anchor** | The Entity Identifier and the out-of-band distributed keys of the Trust Anchor the FRE is registered under. |
 | **Registered Entities** | A list of the Entities the FRE is expected to have registered, and their Entity Types. |
 | **Test Entities** | At least one test Entity per Entity Type the FRE registers, which the tester controls and can have registered, changed and removed during the tests (see [Section 3](#tests-requiring-a-chain-of-test-data)). |
-| **Registration documentation** | The registration procedure and the checks the FRE performs, including the registration policy URIs, see \[[SIB.Registration](#sib-registration)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]. |
+| **Registration documentation** | The registration policy URIs the FRE uses, and the expected time from a change, such as a newly added Entity, until it is published. The registration procedure itself is not tested, see \[[SIB.Registration](#sib-registration)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]. |
 
 Test cases that only apply under a condition state this under "Applies to".
 
@@ -124,7 +119,7 @@ Note: The tool at https://jwt.io can be used to inspect Entity Statements. For t
 <a name="tests-without-external-test-data"></a>
 ## 2. Tests Without External Test Data
 
-The test cases in this section can be carried out against the FRE alone. They use what the FRE publishes itself, requests that the tester constructs, and, for document reviews, the federation's own documents.
+The test cases in this section can be carried out against the FRE alone. They use what the FRE publishes itself, and requests that the tester constructs.
 
 <a name="keys-and-transport"></a>
 ### 2.1. Keys and Transport
@@ -134,7 +129,7 @@ The test cases in this section can be carried out against the FRE alone. They us
 
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The key length requirements for Federation Entity Keys.
 - **Purpose**: Assert that the FRE's Federation Entity Keys have adequate lengths, although \[[BAS.Security](#bas-security)\] does not apply to Federation Entity Keys.
-- **Instructions**: Use the key types and lengths noted in [FRE-OS-006](fre_oidf_sweden_test.md#fre-os-006). Compare them with any key length requirement stated in \[[BAS.Rules](#bas-rules)\].
+- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note the type and length of each key in its `jwks` claim. Compare them with any key length requirement stated in \[[BAS.Rules](#bas-rules)\].
 - **Expected result**:
   - If \[[BAS.Rules](#bas-rules)\] states key length requirements for Federation Entity Keys, the keys MUST meet them.
   - Otherwise, the keys are compared with a baseline: RSA keys of at least 2048 bits, and EC keys on one of the curves P-256, P-384 or P-521. Any deviation should be noted in the report as an observation.
@@ -165,7 +160,7 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 
 - **Test data**: REG-C1, REG-AS1 and REG-PR1, and the registered legal name and organization number behind each.
 - **Purpose**: Assert that the FRE assigns the verified name and identifier of the organization that owns the Entity, so that peers can see which organization an Entity is registered for.
-- **Instructions**: Before the test, note the registered legal name and organization number of the organization behind each Entity. Inspect the `metadata` claim of the Subordinate Statements, under the Entity Type of each Entity.
+- **Instructions**: Before the test, note the registered legal name and organization number of the organization behind each Entity. For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `metadata` claim, under the Entity Type of the Entity.
 - **Expected result**:
   - `organization_name` MUST be set in the `metadata` claim. The value without a language tag MUST be the legal name of the organization. `#sv` and `#en` values are expected when the organization has supplied them.
   - `organization_identifier` MUST be set in the `metadata` claim and MUST have the format `urn:glue:iso6523:0007:<organization number>`, where the organization number is ten digits without a hyphen.
@@ -178,7 +173,7 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 
 - **Test data**: REG-C1 and REG-PR1, which declare human-readable parameters with language tags.
 - **Purpose**: Assert that the Federation Registration Entity assigns a value without a language tag, holding the Swedish value, for human-readable parameters, so that implementations without language tag support can use them.
-- **Instructions**: For each registered Entity, identify the human-readable parameters it declares with language tags (for example `client_name#sv`, `resource_name#sv`, `display_name#sv`). Inspect the `metadata` claim of the Subordinate Statement.
+- **Instructions**: For REG-C1 and REG-PR1, fetch the Entity Configuration ([P-EC](procedures.md#p-ec)) and the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)). Identify the human-readable parameters the Entity declares with language tags (for example `client_name#sv`, `resource_name#sv`, `display_name#sv`). Inspect the `metadata` claim of the Subordinate Statement.
 - **Expected result**:
   - For each such parameter, a corresponding parameter without a language tag, holding the Swedish value, MUST be assigned in the `metadata` claim.
   - If the display name has been verified and the Entity has not declared `display_name`, `display_name` MUST be assigned from `client_name` or `resource_name`.
@@ -190,7 +185,7 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 
 - **Test data**: Subordinate Statements about REG-C1, REG-AS1 and REG-PR1.
 - **Purpose**: Assert that the Federation Registration Entity only sets the values that \[[BAS.Metadata](#bas-metadata)\] assigns to it, since all other assigned or constrained values are controlled by the Federation Operator through the Trust Anchor.
-- **Instructions**: Inspect the `metadata` and `metadata_policy` claims of the Subordinate Statements from [FRE-OS-020](fre_oidf_sweden_test.md#fre-os-020).
+- **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `metadata` and `metadata_policy` claims.
 - **Expected result**:
   - The `metadata` claim is expected to hold only `organization_name` (with any `#sv` and `#en` values), `organization_identifier`, `display_name` where the display name has been verified, and values without a language tag for human-readable parameters.
   - The Subordinate Statements are not expected to contain a `metadata_policy` claim. If they do, every entry must be noted in the report.
@@ -200,14 +195,14 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 <a name="fre-bas-006"></a>
 #### FRE-BAS-006: Verifying the BAS registration policies
 
-- **Test data**: REG-C1, REG-AS1 and REG-PR1, and the registration checks performed for each.
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: Which registration checks are performed, and their registration policy URIs.
-- **Purpose**: Assert that the FRE states the registration checks of \[[SIB.Registration](#sib-registration)\] that it performed when it registered each Entity, so that peers and the Trust Anchor can rely on them. The generic form of the claim is tested in [FRE-OS-029](fre_oidf_sweden_test.md#fre-os-029).
-- **Instructions**: Before the test, note which registration checks were performed for each registered Entity. Inspect the `registration_policy` claim of the Subordinate Statements from [FRE-OS-020](fre_oidf_sweden_test.md#fre-os-020).
+- **Test data**: REG-C1, REG-AS1 and REG-PR1.
+- **Depends on** \[[BAS.Rules](#bas-rules)\]: Which registration checks are required, and their registration policy URIs.
+- **Purpose**: Assert that the FRE states, for each Entity it publishes, the registration checks of \[[SIB.Registration](#sib-registration)\] that apply to it, so that peers and the Trust Anchor can rely on them. The generic form of the claim is tested in [FRE-OS-029](fre_oidf_sweden_test.md#fre-os-029).
+- **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `registration_policy` claim.
 - **Expected result**:
   - `registration_policy` MUST be present and MUST be an array of URI strings.
-  - It MUST list the registration policy URI of every check performed for the Entity, including `https://id.ena-infrastructure.se/regpolicy/v1/orgconnection` for verification of organisational affiliation, which is always performed.
-  - It MUST NOT list a check that has not been performed. URIs that are not yet assigned in \[[SIB.Registration](#sib-registration)\] should be noted in the report.
+  - It MUST list the registration policy URI of every check that BAS requires for the Entity, including `https://id.ena-infrastructure.se/regpolicy/v1/orgconnection` for verification of organisational affiliation, which is always performed.
+  - Any URI that is not defined in \[[SIB.Registration](#sib-registration)\] must be noted in the report.
 - **References**: Section 2 of \[[OpenID.Federation.RegPolicy](#openid-federation-regpolicy)\], Section 3.2 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 1 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
 
 <a name="resolved-metadata"></a>
@@ -216,60 +211,33 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 <a name="fre-bas-007"></a>
 #### FRE-BAS-007: Verifying the Resolved Metadata of registered Entities
 
-- **Test data**: REG-C1, REG-AS1 and REG-PR1, and FED-TA with its metadata policy.
-- **Purpose**: Assert that the values set by the FRE, together with the Trust Anchor policy, give Resolved Metadata that meets the BAS requirements for the Entities the FRE has registered.
-- **Instructions**: Use the Resolved Metadata from [FRE-OS-028](fre_oidf_sweden_test.md#fre-os-028), with at least one Entity of each Entity Type the FRE registers. Compare it with the tables in Section 3 to 6 of \[[BAS.Metadata](#bas-metadata)\].
+- **Test data**: All Entities registered by the FRE, and FED-TA with its metadata policy.
+- **Purpose**: Assert that every Entity the FRE publishes meets the BAS requirements, so that the registration, seen as a black box, has admitted only Entities that meet them.
+- **Instructions**: List all Entities registered by the FRE ([P-LIST](procedures.md#p-list)). For each listed Entity, build the Trust Chain to FED-TA and resolve the metadata ([P-CHAIN](procedures.md#p-chain)). The check is expected to be carried out with a tool, since the number of Entities can be large. Compare the Resolved Metadata with the tables in Section 3 to 6 of \[[BAS.Metadata](#bas-metadata)\].
 - **Expected result**:
-  - `organization_name` and `organization_identifier` MUST hold the values set by the FRE, also when the Entity declares other values.
+  - Every listed Entity MUST resolve without errors.
+  - `organization_name` and `organization_identifier` MUST hold the values set by the FRE, also when the Entity declares other values. `organization_identifier` MUST have the format `urn:glue:iso6523:0007:<organization number>`, and is expected to match the organization in the national register of organizations.
   - `contacts` MUST be present and hold at least one email address.
   - Human-readable parameters MUST be present without a language tag, holding the Swedish value.
-  - The protocol parameters are expected to meet Section 4 to 6 of \[[BAS.Metadata](#bas-metadata)\]. Deviations must be noted in the report, together with whether they are caused by the Entity, the FRE or the Trust Anchor policy.
+  - The protocol parameters are expected to meet Section 4 to 6 of \[[BAS.Metadata](#bas-metadata)\]. Every Entity that deviates must be noted in the report, together with whether the deviation is caused by the Entity, the FRE or the Trust Anchor policy.
 - **References**: Section 2, 3, 4, 5, 6 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
 
-<a name="registration-checks"></a>
-### 3.3. Registration Checks
+<a name="new-entities"></a>
+### 3.3. New Entities
 
-The test cases in this section assert that the FRE performs the checks that BAS requires before it registers an Entity. They are carried out using the registration procedure of the FRE under test.
+The registration itself is treated as a black box: the change is made by the Federation Registration Operator according to its own routine, and is a precondition of the test case. That the FRE publishes only Entities that meet the BAS requirements is asserted on all registered Entities in [FRE-BAS-007](#fre-bas-007).
 
 <a name="fre-bas-008"></a>
 #### FRE-BAS-008: Registering a new Entity in BAS
 
-- **Test data**: TR1.
+- **Test data**: TR1, added by the Federation Registration Operator.
 - **Purpose**: Assert that a newly registered Entity gets a Subordinate Statement that meets the BAS requirements, in addition to the requirements tested in [FRE-OS-036](fre_oidf_sweden_test.md#fre-os-036).
-- **Instructions**: Use the test Entity registered in [FRE-OS-036](fre_oidf_sweden_test.md#fre-os-036). Before registration, note the organization the Entity is registered for.
+- **Precondition**: TR1 has been added for a known organization. The change is made by the Federation Registration Operator according to its own routine, which is not tested, and the operator states the time it was made.
+- **Instructions**: Fetch the Subordinate Statement about TR1 from the FRE ([P-FETCH](procedures.md#p-fetch)), and build the Trust Chain and resolve the metadata ([P-CHAIN](procedures.md#p-chain)).
 - **Expected result**:
-  - The Subordinate Statement MUST pass [FRE-BAS-003](#fre-bas-003), [FRE-BAS-004](#fre-bas-004), [FRE-BAS-005](#fre-bas-005) and [FRE-BAS-006](#fre-bas-006).
-  - The Entity MUST resolve according to [FRE-BAS-007](#fre-bas-007).
+  - The Subordinate Statement MUST meet the expected results of [FRE-BAS-003](#fre-bas-003), [FRE-BAS-004](#fre-bas-004), [FRE-BAS-005](#fre-bas-005) and [FRE-BAS-006](#fre-bas-006).
+  - The Resolved Metadata MUST meet the expected result of [FRE-BAS-007](#fre-bas-007).
 - **References**: Section 7.2 of \[[BAS.Metadata](#bas-metadata)\] and \[[SIB.Registration](#sib-registration)\]
-
-<a name="fre-bas-009"></a>
-#### FRE-BAS-009: Registering an Entity with metadata that the BAS policy rejects
-
-- **Test data**: TR5, submitted for registration.
-- **Purpose**: Find out whether the FRE detects, at registration, metadata that would make the Entity fail the Trust Anchor's metadata policy.
-- **Instructions**: Try to register a test Entity that lacks a parameter the Trust Anchor policy marks as `essential` (for example `contacts`), or that does not declare a value required by `superset_of` (for example a Client whose `grant_types` lacks `client_credentials`, or an Authorization Server whose `token_endpoint_auth_signing_alg_values_supported` lacks `ES256`), or that declares a value outside `one_of` (for example a Client with `token_endpoint_auth_method` set to `client_secret_basic`).
-- **Expected result**: The FRE is expected to reject the registration. If the FRE registers the Entity, the Entity's Trust Chain will be invalid. This must be noted in the report and discussed with the Federation Registration Operator.
-- **References**: Section 6.1.4 of \[[OpenID.Federation](#openid-federation)\] and Section 7.1 of \[[BAS.Metadata](#bas-metadata)\]
-
-<a name="fre-bas-010"></a>
-#### FRE-BAS-010: Registering an Entity with metadata that the policy cannot check
-
-- **Test data**: TR6, submitted for registration.
-- **Purpose**: Assert that the FRE checks the requirements that cannot be expressed as a metadata policy.
-- **Instructions**: Try to register test Entities that each break one of the following requirements:<br/>1. A Client that publishes both `jwks` and `jwks_uri`.<br/>2. An Authorization Server whose `issuer` differs from its Entity Identifier.<br/>3. A Protected Resource whose `resource` differs from its Entity Identifier, or contains a fragment component.<br/>4. A `jwks_uri` or `logo_uri` that does not use the `https` scheme.<br/>5. A Protected Resource whose `authorization_servers` does not contain any Authorization Server in BAS.<br/>6. Protocol keys that do not meet \[[BAS.Security](#bas-security)\], for example a JWK without `kid`.
-- **Expected result**:
-  - For cases 1 to 4, the FRE SHOULD reject the registration, since these requirements cannot be expressed in the Trust Anchor metadata policy. Any registration that is accepted must be noted in the report.
-  - For cases 5 and 6, the FRE is expected to reject the registration. An accepted registration must be noted in the report.
-- **References**: Section 4, 5, 6, 6.1 and 7.1 of \[[BAS.Metadata](#bas-metadata)\] and Section 4 of \[[BAS.Security](#bas-security)\]
-
-<a name="fre-bas-011"></a>
-#### FRE-BAS-011: Registering an Entity with incorrect organization details
-
-- **Test data**: TR7, submitted for registration.
-- **Purpose**: Assert that the FRE verifies organizational affiliation, and does not register an Entity with an organization name or number that does not belong to the applicant.
-- **Instructions**: Try to register a test Entity on behalf of an organization the registration submitter does not represent, or declare an `organization_name` or `organization_identifier` that does not match the organization.
-- **Expected result**: The FRE MUST NOT issue a Subordinate Statement with organization values that have not been verified. The outcome of the attempt must be noted in the report.
-- **References**: Section 3.2 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\], Section 1 and 7.2 of \[[BAS.Metadata](#bas-metadata)\] and \[[SIB.Registration](#sib-registration)\]
 
 <a name="changes-to-verified-values"></a>
 ### 3.4. Changes to Verified Values
@@ -279,6 +247,6 @@ The test cases in this section assert that the FRE performs the checks that BAS 
 
 - **Test data**: TR8, and FED-TA.
 - **Purpose**: Assert that an Entity cannot change a verified value by changing its own Entity Configuration.
-- **Instructions**: For a registered test Entity, change `organization_name` and `organization_identifier` in the Entity's own Entity Configuration, without a new registration. Resolve the Entity's metadata.
+- **Instructions**: For a registered test Entity, change `organization_name` and `organization_identifier` in the Entity's own Entity Configuration, without a new registration. Build the Trust Chain to FED-TA and resolve the metadata ([P-CHAIN](procedures.md#p-chain)).
 - **Expected result**: The Resolved Metadata MUST still hold the values assigned or pinned by the FRE.
 - **References**: Section 2 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]

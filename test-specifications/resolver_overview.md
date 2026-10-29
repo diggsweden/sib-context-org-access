@@ -1,10 +1,10 @@
 # Overview of Test Cases – Federation Resolver
 
-This page lists all test cases for the BAS Federation Resolver: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. The OIDF Sweden conformance tests are carried out first. Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Federation Resolver: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
@@ -31,7 +31,7 @@ Can be carried out against the resolver alone, as soon as it is deployed.
 
 ### 1.2. Tests requiring a chain of test data (35)
 
-Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE17. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
+Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE18. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
 
 | ID | Test case |
 | :--- | :--- |
@@ -86,7 +86,7 @@ Can be carried out against the resolver alone, as soon as it is deployed.
 
 ### 2.2. Tests requiring a chain of test data (7)
 
-Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE17. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
+Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE18. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
 
 | ID | Test case |
 | :--- | :--- |

@@ -4,11 +4,11 @@ This document contains a set of test cases that are applied to the Trust Anchor 
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 This document holds the **BAS conformance tests**. The test cases in this document check the Trust Anchor against the requirements that BAS adds to the OIDF Sweden conformance tests. Within BAS, the federation-wide rules are enforced through the metadata policy that the Trust Anchor carries in its Subordinate Statements, controlled by the Federation Operator. Per-Entity values are set by the Federation Registration Entities, and are tested in [Testing of BAS Federation Registration Entities](fre_overview.md).
 
-The BAS conformance tests build on the OIDF Sweden conformance tests, [ta_oidf_sweden_test.md](ta_oidf_sweden_test.md), which are carried out first.
+The BAS conformance tests complement the OIDF Sweden conformance tests, [ta_oidf_sweden_test.md](ta_oidf_sweden_test.md). Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md).
 
 The test cases are grouped by the test data they need:
 
@@ -33,12 +33,6 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [TA-BAS-002](#ta-bas-002) TLS configuration
 
-    2.2. [**Review of the BAS Documents**](#review-of-the-bas-documents)
-
-    [TA-BAS-003](#ta-bas-003) Reviewing how BAS handles algorithms and client authentication
-
-    [TA-BAS-004](#ta-bas-004) Reviewing what the BAS specifications defer to the federation rules
-
 3. [**Tests Requiring a Chain of Test Data**](#tests-requiring-a-chain-of-test-data)
 
     3.1. [**Trust Anchor Metadata Policy**](#trust-anchor-metadata-policy)
@@ -56,7 +50,6 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
     3.2. [**Resolved Metadata**](#resolved-metadata)
 
     [TA-BAS-010](#ta-bas-010) Verifying the Resolved Metadata of registered Entities
-
 
 <a name="references"></a>
 ## 1. References
@@ -101,6 +94,8 @@ This section contains the specifications that this document tests compliance aga
 <a name="test-setup"></a>
 ### 1.2. Test Setup
 
+Each test case obtains the data it verifies itself, using the common procedures in [procedures.md](procedures.md), such as fetching an Entity Configuration ([P-EC](procedures.md#p-ec)) or building a Trust Chain ([P-CHAIN](procedures.md#p-chain)). No test case depends on the outcome of another. If a procedure cannot be completed, the test case is reported as *Inconclusive*, with the reason.
+
 Before the tests are carried out, the tester collects the following information about the Trust Anchor (TA) under test:
 
 | Item | Description |
@@ -120,7 +115,7 @@ Note: The tool at https://jwt.io can be used to inspect Entity Statements and Tr
 <a name="tests-without-external-test-data"></a>
 ## 2. Tests Without External Test Data
 
-The test cases in this section can be carried out against the TA alone. They use what the TA publishes itself, requests that the tester constructs, and, for document reviews, the federation's own documents.
+The test cases in this section can be carried out against the TA alone. They use what the TA publishes itself, and requests that the tester constructs.
 
 <a name="keys-and-transport"></a>
 ### 2.1. Keys and Transport
@@ -130,7 +125,7 @@ The test cases in this section can be carried out against the TA alone. They use
 
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The key length requirements for Federation Entity Keys.
 - **Purpose**: Assert that the Trust Anchor's Federation Entity Keys have adequate lengths, although \[[BAS.Security](#bas-security)\] does not apply to Federation Entity Keys.
-- **Instructions**: Use the key types and lengths noted in [TA-OS-006](ta_oidf_sweden_test.md#ta-os-006). Compare them with any key length requirement stated in \[[BAS.Rules](#bas-rules)\].
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and note the type and length of each key in its `jwks` claim. Compare them with any key length requirement stated in \[[BAS.Rules](#bas-rules)\].
 - **Expected result**:
   - If \[[BAS.Rules](#bas-rules)\] states key length requirements for Federation Entity Keys, the keys MUST meet them.
   - Otherwise, the keys are compared with a baseline: RSA keys of at least 2048 bits, and EC keys on one of the curves P-256, P-384 or P-521. Any deviation should be noted in the report as an observation, together with the absence of a requirement in the BAS rules.
@@ -140,45 +135,11 @@ The test cases in this section can be carried out against the TA alone. They use
 #### TA-BAS-002: TLS configuration
 
 - **Purpose**: Assert that all TA endpoints are protected by TLS according to the federation's security requirements.
-- **Instructions**: Analyze the TLS configuration of the hosts serving the Entity Configuration and all federation endpoints, using a TLS analysis tool.
+- **Instructions**: Analyze the TLS configuration of the hosts serving the Entity Configuration and all federation endpoints published in it ([P-EC](procedures.md#p-ec)), using a TLS analysis tool.
 - **Expected result**:
   - The configuration MUST follow Section 8.1 of \[[Ena.OAuth2](#ena-oauth2)\], as required by Section 2 of \[[BAS.Security](#bas-security)\].
   - Weak protocol versions or cipher suites must be noted in the report.
 - **References**: Section 2 of \[[BAS.Security](#bas-security)\] and Section 8.1 of \[[Ena.OAuth2](#ena-oauth2)\]
-
-<a name="review-of-the-bas-documents"></a>
-### 2.2. Review of the BAS Documents
-
-The test cases in this section are document reviews of the BAS documents.
-
-<a name="ta-bas-003"></a>
-#### TA-BAS-003: Reviewing how BAS handles algorithms and client authentication
-
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The algorithm and client authentication rules, together with BAS Security Requirements.
-- **Purpose**: Assert that the BAS documents handle the interoperability issues that Section 7 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] requires federation rules to address (see [TA-OS-026](ta_oidf_sweden_test.md#ta-os-026)).
-- **Instructions**: Review \[[BAS.Security](#bas-security)\] and \[[BAS.Rules](#bas-rules)\], and compare with the Trust Anchor metadata policy published in Section 7.1 of \[[BAS.Metadata](#bas-metadata)\]. Whether the Trust Anchor actually applies that policy is tested in [TA-BAS-006](#ta-bas-006).
-- **Expected result**:
-  - The rules MUST state the signature algorithms that every Entity validates. \[[BAS.Security](#bas-security)\] requires `RS256` and `ES256` and recommends `RS384`, `RS512`, `ES384` and `ES512`.
-  - The rules MUST address encryption. \[[BAS.Security](#bas-security)\] states that protocol messages are not encrypted, so no encryption algorithms are mandatory.
-  - The rules state that `private_key_jwt` is the only client authentication method, and that symmetric algorithms and shared secrets MUST NOT be used.
-  - If Collaboration Contexts restrict the algorithms, they MUST NOT permit an algorithm that \[[BAS.Security](#bas-security)\] prohibits, and MUST NOT remove the requirement to support validation of `RS256` and `ES256`.
-  - The rules are expected to be consistent with the Trust Anchor policy. Differences must be noted in the report.
-- **References**: Section 2, 3, 3.1 and 3.2 of \[[BAS.Security](#bas-security)\] and Section 7 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
-
-<a name="ta-bas-004"></a>
-#### TA-BAS-004: Reviewing what the BAS specifications defer to the federation rules
-
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: Everything that the other BAS documents defer to BAS.Rules.
-- **Purpose**: Assert that \[[BAS.Rules](#bas-rules)\] states what the other BAS documents leave to it, and what the Swedish profile expects of federation rules (see [TA-OS-024](ta_oidf_sweden_test.md#ta-os-024)).
-- **Instructions**: Review \[[BAS.Rules](#bas-rules)\] and \[[SIB.Registration](#sib-registration)\].
-- **Expected result**: The following are expected to be stated:
-  - The grant types BAS permits, currently `client_credentials`.
-  - How often Entities replace their keys.
-  - Validity periods for Entity Statements, and key length requirements for Federation Entity Keys.
-  - The registration checks and their registration policy URIs. URIs not yet assigned, such as for verification of registration submitter, must be noted in the report.
-  - Whether Trust Marks are used in BAS, and if so, the Trust Mark Policy.
-  - Since \[[BAS.Rules](#bas-rules)\] is in preparation, every missing item must be noted in the report.
-- **References**: Section 4 of \[[BAS.Security](#bas-security)\], Section 2, 4 and 7 of \[[BAS.Metadata](#bas-metadata)\], \[[SIB.Registration](#sib-registration)\] and Section 2.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
 <a name="tests-requiring-a-chain-of-test-data"></a>
 ## 3. Tests Requiring a Chain of Test Data
@@ -194,7 +155,7 @@ The test cases in this section need test data from other Entities in the federat
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The grant types that BAS permits.
 - **Purpose**: Assert that the TA applies exactly the metadata policy that the federation has published, to all Entities resolved through it.
-- **Instructions**: Compare the `metadata_policy` claim of each Subordinate Statement with the policy published in Section 7.1 of \[[BAS.Metadata](#bas-metadata)\], for the Entity Types `oauth_client`, `oauth_authorization_server` and `oauth_resource`.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Compare the `metadata_policy` claim of each Subordinate Statement with the policy published in Section 7.1 of \[[BAS.Metadata](#bas-metadata)\], for the Entity Types `oauth_client`, `oauth_authorization_server` and `oauth_resource`.
 - **Expected result**:
   - For every Entity Type covered by the published policy, the policy in the Subordinate Statement MUST hold the same metadata parameters, operators and operator values.
   - The policy MUST be the same in all Subordinate Statements that the TA issues, since it is federation-wide.
@@ -208,7 +169,7 @@ The test cases in this section need test data from other Entities in the federat
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the policy enforces the single client authentication method of BAS and the signature algorithms that every Entity validates, so that any Client can authenticate at any Authorization Server.
-- **Instructions**: Inspect the entries for client authentication and signature algorithms in the `metadata_policy` claim of the Subordinate Statements from [TA-OS-028](ta_oidf_sweden_test.md#ta-os-028).
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Inspect the entries for client authentication and signature algorithms in its `metadata_policy` claim.
 - **Expected result**:
   - `oauth_client` / `token_endpoint_auth_method` MUST be `essential` and restricted to `private_key_jwt` with `one_of`.
   - `oauth_authorization_server` / `token_endpoint_auth_methods_supported` MUST be `essential` and set to exactly `private_key_jwt`, using `subset_of` and `superset_of` with identical values. The same MUST apply to `revocation_endpoint_auth_methods_supported` and `introspection_endpoint_auth_methods_supported`, without `essential`.
@@ -221,7 +182,7 @@ The test cases in this section need test data from other Entities in the federat
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the only values the BAS policy assigns, rather than constrains, are values that follow from the BAS requirements, as the Swedish profile requires (see [TA-OS-035](ta_oidf_sweden_test.md#ta-os-035)).
-- **Instructions**: Identify the `value`, `add` and `default` operators in the `metadata_policy` claim.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Identify the `value`, `add` and `default` operators in its `metadata_policy` claim.
 - **Expected result**:
   - The only assigned value is expected to be an empty `response_types` array for `oauth_client`, set with the `value` operator. This follows from the `client_credentials` grant, which uses no response type.
   - Any other assigned value must be noted in the report, together with the requirement in the BAS documents that motivates it.
@@ -232,7 +193,7 @@ The test cases in this section need test data from other Entities in the federat
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2, and the list of connected Federation Registration Operators.
 - **Purpose**: Assert that the Trust Anchor only admits the Entity Types that BAS covers, and that its Immediate Subordinates are the Federation Registration Entities.
-- **Instructions**: Inspect the Entity Types covered by the `metadata_policy` claim and any `allowed_entity_types` constraint. Compare the list from [TA-OS-039](ta_oidf_sweden_test.md#ta-os-039) with the Federation Registration Entities of the connected Federation Registration Operators.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)), and inspect the Entity Types covered by the `metadata_policy` claim and any `allowed_entity_types` constraint. List the Immediate Subordinates of the TA ([P-LIST](procedures.md#p-list)) and compare the list with the Federation Registration Entities of the connected Federation Registration Operators.
 - **Expected result**:
   - The policy is expected to cover `oauth_client`, `oauth_authorization_server` and `oauth_resource`.
   - If `allowed_entity_types` is present, it is expected to list only these three Entity Types.
@@ -246,7 +207,7 @@ The test cases in this section need test data from other Entities in the federat
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: Which registration checks are required, and their registration policy URIs.
 - **Purpose**: Assert that the Trust Anchor requires, when Trust Chains are built, that verification of organisational affiliation has been performed for every Entity.
-- **Instructions**: Inspect the `registration_policy` constraint in the `constraints` claim of the Subordinate Statements from [TA-OS-028](ta_oidf_sweden_test.md#ta-os-028).
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Inspect the `registration_policy` constraint in its `constraints` claim.
 - **Expected result**:
   - A rule without `entity_types` is expected to require `https://id.ena-infrastructure.se/regpolicy/v1/orgconnection`, since this check is always performed in BAS.
   - Rules for other checks, such as verification of registration submitter, must be noted in the report together with their URIs.
@@ -259,9 +220,9 @@ The test cases in this section need test data from other Entities in the federat
 <a name="ta-bas-010"></a>
 #### TA-BAS-010: Verifying the Resolved Metadata of registered Entities
 
-- **Test data**: REG-C1, REG-AS1 and REG-PR1, and their Trust Chains.
-- **Purpose**: Assert that the BAS policy, together with the values set by the Federation Registration Entities, gives Resolved Metadata that meets the BAS requirements.
-- **Instructions**: Use the Trust Chains and Resolved Metadata from [TA-OS-038](ta_oidf_sweden_test.md#ta-os-038), with at least one Client, one Authorization Server and one Protected Resource. Compare the Resolved Metadata with the tables in Section 3 to 6 of \[[BAS.Metadata](#bas-metadata)\].
+- **Test data**: All Entities registered under the Immediate Subordinates of FED-TA.
+- **Purpose**: Assert that the BAS policy, together with the values set by the Federation Registration Entities, gives Resolved Metadata that meets the BAS requirements for every Entity in the federation.
+- **Instructions**: List the Immediate Subordinates of the TA ([P-LIST](procedures.md#p-list)), and for each of them list the Entities it has registered ([P-LIST](procedures.md#p-list)). For each listed Leaf Entity, build the Trust Chain to the TA and resolve its metadata ([P-CHAIN](procedures.md#p-chain)). The check is expected to be carried out with a tool, since the number of Entities can be large. Compare the Resolved Metadata with the tables in Section 3 to 6 of \[[BAS.Metadata](#bas-metadata)\].
 - **Expected result**:
   - For every Entity: `organization_name`, `organization_identifier` (in the format `urn:glue:iso6523:0007:<organization number>`) and `contacts` (with at least one email address) MUST be present.
   - Client: `token_endpoint_auth_method` MUST be `private_key_jwt`, `grant_types` MUST be `["client_credentials"]`, `response_types` MUST be an empty array, and exactly one of `jwks` and `jwks_uri` MUST be present.

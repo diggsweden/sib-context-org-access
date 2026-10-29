@@ -1,16 +1,16 @@
 # Overview of Test Cases – Federation Registration Entity
 
-This page lists all test cases for the BAS Federation Registration Entity: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. The OIDF Sweden conformance tests are carried out first. Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Federation Registration Entity: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
-| [OIDF Sweden Conformance](#oidf-sweden-conformance) | 17 | 23 | 40 |
-| [BAS Conformance](#bas-conformance) | 2 | 10 | 12 |
-| **Total** | **19** | **33** | **52** |
+| [OIDF Sweden Conformance](#oidf-sweden-conformance) | 17 | 22 | 39 |
+| [BAS Conformance](#bas-conformance) | 2 | 7 | 9 |
+| **Total** | **19** | **29** | **48** |
 
 <a name="oidf-sweden-conformance"></a>
 ## 1. OIDF Sweden Conformance
@@ -41,9 +41,9 @@ Can be carried out against the FRE alone, as soon as it is deployed.
 | [FRE-OS-016](fre_oidf_sweden_test.md#fre-os-016) | Retrieving the historical keys *(Only if `federation_historical_keys_endpoint` is published)* |
 | [FRE-OS-017](fre_oidf_sweden_test.md#fre-os-017) | Format of error responses |
 
-### 1.2. Tests requiring a chain of test data (23)
+### 1.2. Tests requiring a chain of test data (22)
 
-Need test data from other Entities in the federation, such as the Trust Anchor, Entities registered by the FRE, or test Entities submitted for registration. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
+Need test data from other Entities in the federation, such as the Trust Anchor, Entities registered by the FRE, or changes made by the Federation Registration Operator. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
 
 | ID | Test case |
 | :--- | :--- |
@@ -66,7 +66,6 @@ Need test data from other Entities in the federation, such as the Trust Anchor, 
 | [FRE-OS-034](fre_oidf_sweden_test.md#fre-os-034) | Listing with the entity_type parameter |
 | [FRE-OS-035](fre_oidf_sweden_test.md#fre-os-035) | Client authentication at federation endpoints |
 | [FRE-OS-036](fre_oidf_sweden_test.md#fre-os-036) | Registering a new Entity |
-| [FRE-OS-037](fre_oidf_sweden_test.md#fre-os-037) | Registering a Federation Protocol Entity that declares federation_entity |
 | [FRE-OS-038](fre_oidf_sweden_test.md#fre-os-038) | Key change at a registered Entity |
 | [FRE-OS-039](fre_oidf_sweden_test.md#fre-os-039) | Removing a registered Entity |
 | [FRE-OS-040](fre_oidf_sweden_test.md#fre-os-040) | Federation key rollover at the Intermediate *(Depends on BAS.Rules)* |
@@ -85,9 +84,9 @@ Can be carried out against the FRE alone, as soon as it is deployed.
 | [FRE-BAS-001](fre_bas_test.md#fre-bas-001) | Verifying the federation keys against the BAS rules *(Depends on BAS.Rules)* |
 | [FRE-BAS-002](fre_bas_test.md#fre-bas-002) | TLS configuration |
 
-### 2.2. Tests requiring a chain of test data (10)
+### 2.2. Tests requiring a chain of test data (7)
 
-Need test data from other Entities in the federation, such as the Trust Anchor, Entities registered by the FRE, or test Entities submitted for registration. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
+Need test data from other Entities in the federation, such as the Trust Anchor, Entities registered by the FRE, or changes made by the Federation Registration Operator. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
 
 | ID | Test case |
 | :--- | :--- |
@@ -97,7 +96,4 @@ Need test data from other Entities in the federation, such as the Trust Anchor, 
 | [FRE-BAS-006](fre_bas_test.md#fre-bas-006) | Verifying the BAS registration policies *(Depends on BAS.Rules)* |
 | [FRE-BAS-007](fre_bas_test.md#fre-bas-007) | Verifying the Resolved Metadata of registered Entities |
 | [FRE-BAS-008](fre_bas_test.md#fre-bas-008) | Registering a new Entity in BAS |
-| [FRE-BAS-009](fre_bas_test.md#fre-bas-009) | Registering an Entity with metadata that the BAS policy rejects |
-| [FRE-BAS-010](fre_bas_test.md#fre-bas-010) | Registering an Entity with metadata that the policy cannot check |
-| [FRE-BAS-011](fre_bas_test.md#fre-bas-011) | Registering an Entity with incorrect organization details |
 | [FRE-BAS-012](fre_bas_test.md#fre-bas-012) | Changing a verified value in the Entity Configuration |

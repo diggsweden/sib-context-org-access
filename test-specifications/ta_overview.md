@@ -1,23 +1,23 @@
 # Overview of Test Cases – Trust Anchor
 
-This page lists all test cases for the BAS Trust Anchor: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. The OIDF Sweden conformance tests are carried out first. Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Trust Anchor: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
-| [OIDF Sweden Conformance](#oidf-sweden-conformance) | 26 | 20 | 46 |
-| [BAS Conformance](#bas-conformance) | 4 | 6 | 10 |
-| **Total** | **30** | **26** | **56** |
+| [OIDF Sweden Conformance](#oidf-sweden-conformance) | 23 | 20 | 43 |
+| [BAS Conformance](#bas-conformance) | 2 | 6 | 8 |
+| **Total** | **25** | **26** | **51** |
 
 <a name="oidf-sweden-conformance"></a>
 ## 1. OIDF Sweden Conformance
 
 Tests against OpenID Federation and the Swedish OpenID Federation profile. They contain no BAS-specific requirement. Test specification: [ta_oidf_sweden_test.md](ta_oidf_sweden_test.md).
 
-### 1.1. Standalone tests (26)
+### 1.1. Standalone tests (23)
 
 Can be carried out against the TA alone, as soon as it is deployed.
 
@@ -46,9 +46,6 @@ Can be carried out against the TA alone, as soon as it is deployed.
 | [TA-OS-021](ta_oidf_sweden_test.md#ta-os-021) | Retrieving the historical keys *(Only if `federation_historical_keys_endpoint` is published)* |
 | [TA-OS-022](ta_oidf_sweden_test.md#ta-os-022) | Unauthenticated requests |
 | [TA-OS-023](ta_oidf_sweden_test.md#ta-os-023) | Format of error responses |
-| [TA-OS-024](ta_oidf_sweden_test.md#ta-os-024) | Reviewing the federation rules *(Depends on BAS.Rules)* |
-| [TA-OS-025](ta_oidf_sweden_test.md#ta-os-025) | Reviewing the Trust Mark Policy *(Only if the federation uses Trust Marks; Depends on BAS.Rules)* |
-| [TA-OS-026](ta_oidf_sweden_test.md#ta-os-026) | Reviewing algorithm and interoperability rules *(Depends on BAS.Rules)* |
 
 ### 1.2. Tests requiring a chain of test data (20)
 
@@ -82,7 +79,7 @@ Need test data from other Entities in the federation, such as registered Federat
 
 Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules and SIB Registration. Test specification: [ta_bas_test.md](ta_bas_test.md).
 
-### 2.1. Standalone tests (4)
+### 2.1. Standalone tests (2)
 
 Can be carried out against the TA alone, as soon as it is deployed.
 
@@ -90,8 +87,6 @@ Can be carried out against the TA alone, as soon as it is deployed.
 | :--- | :--- |
 | [TA-BAS-001](ta_bas_test.md#ta-bas-001) | Verifying the federation keys against the BAS rules *(Depends on BAS.Rules)* |
 | [TA-BAS-002](ta_bas_test.md#ta-bas-002) | TLS configuration |
-| [TA-BAS-003](ta_bas_test.md#ta-bas-003) | Reviewing how BAS handles algorithms and client authentication *(Depends on BAS.Rules)* |
-| [TA-BAS-004](ta_bas_test.md#ta-bas-004) | Reviewing what the BAS specifications defer to the federation rules *(Depends on BAS.Rules)* |
 
 ### 2.2. Tests requiring a chain of test data (6)
 

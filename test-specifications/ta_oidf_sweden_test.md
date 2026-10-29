@@ -4,9 +4,9 @@ This document contains a set of test cases that are applied to the Trust Anchor 
 
 Version: 0.1.0 (draft)
 
-Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md)
+Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
-This document holds the **OIDF Sweden conformance tests**. They test the Trust Anchor against OpenID Federation \[[OpenID.Federation](#openid-federation)\] and the Swedish OpenID Federation profile \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\], with the extensions the profile references. They contain no BAS-specific requirement, and can be reused for any federation based on the Swedish profile. The requirements that BAS adds are tested in the BAS conformance tests, [ta_bas_test.md](ta_bas_test.md). The OIDF Sweden conformance tests are carried out first.
+This document holds the **OIDF Sweden conformance tests**. They test the Trust Anchor against OpenID Federation \[[OpenID.Federation](#openid-federation)\] and the Swedish OpenID Federation profile \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\], with the extensions the profile references. They contain no BAS-specific requirement, and can be reused for any federation based on the Swedish profile. The requirements that BAS adds are tested in the BAS conformance tests, [ta_bas_test.md](ta_bas_test.md). Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md).
 
 The test cases are grouped by the test data they need:
 
@@ -83,14 +83,6 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [TA-OS-023](#ta-os-023) Format of error responses
 
-    2.7. [**Document Review**](#document-review)
-
-    [TA-OS-024](#ta-os-024) Reviewing the federation rules
-
-    [TA-OS-025](#ta-os-025) Reviewing the Trust Mark Policy
-
-    [TA-OS-026](#ta-os-026) Reviewing algorithm and interoperability rules
-
 3. [**Tests Requiring a Chain of Test Data**](#tests-requiring-a-chain-of-test-data)
 
     3.1. [**Verification of the Trust Anchor's Entity Configuration**](#verification-of-the-trust-anchors-entity-configuration-3.1)
@@ -145,7 +137,6 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [TA-OS-046](#ta-os-046) Key change at an Immediate Subordinate
 
-
 <a name="references"></a>
 ## 1. References
 
@@ -185,6 +176,8 @@ This section contains the specifications that this document tests compliance aga
 <a name="test-setup"></a>
 ### 1.2. Test Setup
 
+Each test case obtains the data it verifies itself, using the common procedures in [procedures.md](procedures.md), such as fetching an Entity Configuration ([P-EC](procedures.md#p-ec)) or building a Trust Chain ([P-CHAIN](procedures.md#p-chain)). No test case depends on the outcome of another. If a procedure cannot be completed, the test case is reported as *Inconclusive*, with the reason.
+
 Before the tests are carried out, the tester collects the following information about the Trust Anchor (TA) under test:
 
 | Item | Description |
@@ -204,7 +197,7 @@ Note: The tool at https://jwt.io can be used to inspect Entity Statements and Tr
 <a name="tests-without-external-test-data"></a>
 ## 2. Tests Without External Test Data
 
-The test cases in this section can be carried out against the TA alone. They use what the TA publishes itself, requests that the tester constructs, and, for document reviews, the federation's own documents.
+The test cases in this section can be carried out against the TA alone. They use what the TA publishes itself, and requests that the tester constructs.
 
 <a name="verification-of-the-trust-anchors-entity-configuration"></a>
 ### 2.1. Verification of the Trust Anchor's Entity Configuration
@@ -217,7 +210,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-001: Retrieving the Entity Configuration
 
 - **Purpose**: Assert that the TA publishes its Entity Configuration at the well-known location, which is mandatory for Trust Anchors, and that it is delivered as an Entity Statement over TLS.
-- **Instructions**: Send an HTTP GET request to `<TA Entity Identifier>/.well-known/openid-federation`.
+- **Instructions**: Send an HTTP GET request to `<TA Entity Identifier>/.well-known/openid-federation`. This is the retrieval step of [P-EC](procedures.md#p-ec).
 - **Expected result**:
   - The TA Entity Identifier MUST use the `https` scheme, MUST have a host component and MUST NOT contain query or fragment components.
   - The response MUST have HTTP status code 200.
@@ -229,7 +222,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-002: Verifying the signature of the Entity Configuration
 
 - **Purpose**: Assert that the Entity Configuration is correctly typed and self-signed with one of the TA's Federation Entity Keys.
-- **Instructions**: Decode the JWT from [TA-OS-001](#ta-os-001) and check its header and signature.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and check its header and signature.
 - **Expected result**:
   - The `typ` header parameter MUST be `entity-statement+jwt`.
   - The `alg` header parameter MUST be present and MUST NOT be `none`. It SHOULD be one of `RS256`, `RS384`, `RS512`, `ES256`, `ES384` or `ES512`, since these are the algorithms all federation members must be able to validate. Any other algorithm should be noted in the report.
@@ -242,7 +235,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-003: Verifying the claims of the Entity Configuration
 
 - **Purpose**: Assert that the Entity Configuration contains the claims required for a Trust Anchor, and none of the claims that belong to other kinds of Entity Statements.
-- **Instructions**: Decode the JWT from [TA-OS-001](#ta-os-001) and inspect its claims.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect its claims.
 - **Expected result**:
   - `iss` and `sub` MUST both be equal to the TA Entity Identifier.
   - `iat` and `exp` MUST be present and be JSON numbers.
@@ -259,7 +252,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that the Entity Configuration is valid at the time of testing, and that its validity period follows the federation rules.
-- **Instructions**: Retrieve the Entity Configuration according to [TA-OS-001](#ta-os-001) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period stated in the federation rules.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period stated in the federation rules.
 - **Expected result**:
   - `iat` MUST NOT be later than the time of retrieval.
   - `exp` MUST be later than the time of retrieval.
@@ -271,7 +264,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-005: Verifying that the Entity Configuration is renewed before it expires
 
 - **Purpose**: Assert that the TA publishes a new Entity Configuration well before the current one expires, so that participants always find a valid Entity Configuration.
-- **Instructions**: Retrieve the Entity Configuration and note `iat` and `exp`. Retrieve it again after half of the lifetime (`(exp - iat) / 2`) has elapsed, and again shortly before `exp`.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and note `iat` and `exp`. Fetch it again after half of the lifetime (`(exp - iat) / 2`) has elapsed, and again shortly before `exp`.
 - **Expected result**:
   - Before the first `exp` is reached, the TA MUST publish an Entity Configuration with a later `exp`.
   - It is RECOMMENDED that a new Entity Configuration is published when half of the lifetime has elapsed. If the TA renews later than that, this should be noted in the report.
@@ -281,7 +274,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-006: Verifying the federation keys
 
 - **Purpose**: Assert that the TA's Federation Entity Keys meet the security requirements and can be told apart during key rollover.
-- **Instructions**: Inspect each key in the `jwks` claim of the Entity Configuration.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect each key in its `jwks` claim.
 - **Expected result**:
   - `jwks` MUST be a valid JWK Set.
   - Every key MUST have a `kid`, and each `kid` MUST be unique within the set. It is RECOMMENDED that the `kid` is the SHA-256 JWK Thumbprint of the key. Other `kid` values should be noted in the report.
@@ -293,7 +286,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-007: Comparing the keys with the keys distributed out-of-band
 
 - **Purpose**: Assert that the keys in the Entity Configuration are the keys that the Federation Operator distributes by other means, since federation participants configure their trust in the TA from those.
-- **Instructions**: Obtain the TA keys that the Federation Operator publishes independently of the Entity Configuration. Compare them with the keys in the `jwks` claim.
+- **Instructions**: Obtain the TA keys that the Federation Operator publishes independently of the Entity Configuration. Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and compare them with the keys in its `jwks` claim.
 - **Expected result**:
   - The key that signed the Entity Configuration MUST be among the keys distributed out-of-band.
   - The two sets SHOULD be identical. Differences, for example during an ongoing key rollover, must be noted in the report.
@@ -306,7 +299,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 - **Applies to**: Only if the federation uses Trust Marks
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: Whether Trust Marks are used in BAS, and if so, which Trust Mark types and issuers are recognized.
 - **Purpose**: Assert that the TA states which Trust Mark Issuers are accredited to issue each Trust Mark type recognized by the federation, in accordance with the Trust Mark Policy.
-- **Instructions**: Before the test, note the Trust Mark types and Trust Mark Issuers that the federation's Trust Mark Policy recognizes. Inspect the `trust_mark_issuers` claim of the Entity Configuration.
+- **Instructions**: Before the test, note the Trust Mark types and Trust Mark Issuers that the federation's Trust Mark Policy recognizes. Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect its `trust_mark_issuers` claim.
 - **Expected result**:
   - `trust_mark_issuers` MUST be a JSON object whose member names are Trust Mark type identifiers and whose values are arrays of Entity Identifiers.
   - Each recognized Trust Mark type MUST be present, with exactly the Trust Mark Issuers that the Trust Mark Policy authorizes.
@@ -320,7 +313,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 - **Applies to**: Only if Trust Mark delegation is used
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: Whether Trust Marks, and Trust Mark delegation, are used in BAS.
 - **Purpose**: Assert that the TA states the owners of Trust Mark types that are issued by delegation, so that delegated Trust Marks can be validated.
-- **Instructions**: Inspect the `trust_mark_owners` claim of the Entity Configuration, if present.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect its `trust_mark_owners` claim, if present.
 - **Expected result**:
   - If the Federation Operator knows that a Trust Mark type is owned by an Entity other than its issuer, `trust_mark_owners` MUST be present for that type.
   - Each member MUST be a JSON object with `sub` holding an Entity Identifier and `jwks` holding a valid JWK Set.
@@ -331,7 +324,7 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 #### TA-OS-010: Verifying that the Trust Anchor does not act as Trust Mark Issuer
 
 - **Purpose**: Assert that the TA is not also a Trust Mark Issuer, which the Swedish profile advises against since it makes Trust Chain evaluation ambiguous for other federations that chain to the Trust Anchor's Subordinates.
-- **Instructions**: Inspect the `federation_entity` metadata and the `trust_mark_issuers` claim of the Entity Configuration.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect its `federation_entity` metadata and `trust_mark_issuers` claim.
 - **Expected result**:
   - The `federation_entity` metadata SHOULD NOT contain `federation_trust_mark_endpoint`, `federation_trust_mark_status_endpoint` or `federation_trust_mark_list_endpoint`.
   - The TA Entity Identifier SHOULD NOT be listed as an issuer in `trust_mark_issuers`.
@@ -347,7 +340,7 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-011: Verifying the fetch and list endpoints
 
 - **Purpose**: Assert that the TA publishes the endpoints that participants need to build Trust Chains and to discover the federation.
-- **Instructions**: Inspect `federation_fetch_endpoint` and `federation_list_endpoint` in the `federation_entity` metadata.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect `federation_fetch_endpoint` and `federation_list_endpoint` in its `federation_entity` metadata.
 - **Expected result**:
   - Both parameters MUST be present.
   - Each URL MUST use the `https` scheme and MUST NOT contain a fragment component.
@@ -357,7 +350,7 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-012: Verifying the availability of a Federation Resolver
 
 - **Purpose**: Assert that the Federation Operator makes at least one Federation Resolver available for the TA, preferably provided by the TA itself.
-- **Instructions**: Inspect `federation_resolve_endpoint` in the `federation_entity` metadata. If it is absent, find out from the Federation Operator which Entity provides the resolver for the TA, and retrieve that Entity's Entity Configuration.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect `federation_resolve_endpoint` in its `federation_entity` metadata. If it is absent, find out from the Federation Operator which Entity provides the resolver for the TA, and fetch that Entity's Entity Configuration ([P-EC](procedures.md#p-ec)).
 - **Expected result**:
   - A Federation Resolver that supports resolving for the TA MUST be available.
   - It is RECOMMENDED that the resolver is provided by the TA itself, that is, that `federation_resolve_endpoint` is present in the TA's metadata. If it is present, the URL MUST use the `https` scheme and MUST NOT contain a fragment component.
@@ -368,7 +361,7 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-013: Verifying other endpoint parameters
 
 - **Purpose**: Assert that any other federation endpoint the TA publishes is correctly declared.
-- **Instructions**: Inspect all parameters ending in `_endpoint` in the `federation_entity` metadata, other than those tested in [TA-OS-011](#ta-os-011) and [TA-OS-012](#ta-os-012).
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect all parameters ending in `_endpoint` in its `federation_entity` metadata, other than those tested in [TA-OS-011](#ta-os-011) and [TA-OS-012](#ta-os-012).
 - **Expected result**:
   - Each URL MUST use the `https` scheme and MUST NOT contain a fragment component.
   - `federation_historical_keys_endpoint` is OPTIONAL. If present, it is tested in [TA-OS-021](#ta-os-021).
@@ -379,7 +372,7 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-014: Verifying informational metadata
 
 - **Purpose**: Assert that the TA states who operates it, how the operators can be reached, and where the federation rules are found.
-- **Instructions**: Inspect the informational parameters in the `federation_entity` metadata.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect the informational parameters in its `federation_entity` metadata.
 - **Expected result**:
   - `organization_name` is RECOMMENDED and is expected to be the name of the Federation Operator.
   - `contacts` is expected to hold at least one email address.
@@ -392,7 +385,7 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-015: Verifying client authentication metadata for federation endpoints
 
 - **Purpose**: Assert that, where the TA requires client authentication at its endpoints, it declares the methods and the mandatory signature algorithms.
-- **Instructions**: Inspect any `*_auth_methods` parameters and `endpoint_auth_signing_alg_values_supported` in the `federation_entity` metadata.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect any `*_auth_methods` parameters and `endpoint_auth_signing_alg_values_supported` in its `federation_entity` metadata.
 - **Expected result**:
   - If no `*_auth_methods` parameter is present, all endpoints are expected to accept unauthenticated requests (tested in [TA-OS-022](#ta-os-022)).
   - If any `*_auth_methods` parameter contains `private_key_jwt`, `endpoint_auth_signing_alg_values_supported` MUST be present and MUST contain `RS256`, `RS384`, `RS512`, `ES256`, `ES384` and `ES512`.
@@ -403,20 +396,20 @@ This section contains tests for the `federation_entity` part of the `metadata` c
 #### TA-OS-016: Verifying that no protocol key parameters are used
 
 - **Purpose**: Assert that the TA does not publish protocol keys in its `federation_entity` metadata, since its Federation Entity Keys belong in the `jwks` claim.
-- **Instructions**: Inspect the `federation_entity` metadata.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and inspect its `federation_entity` metadata.
 - **Expected result**: `jwks`, `jwks_uri` and `signed_jwks_uri` MUST NOT be present in the `federation_entity` metadata.
 - **References**: Section 5.2.1 of \[[OpenID.Federation](#openid-federation)\]
 
 <a name="fetch-endpoint"></a>
 ### 2.3. Fetch Endpoint
 
-The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-011](#ta-os-011). Unless stated otherwise, requests are sent using GET without client authentication.
+The tests in this section use the `federation_fetch_endpoint` of the TA's Entity Configuration ([P-EC](procedures.md#p-ec)). Unless stated otherwise, requests are sent using GET without client authentication.
 
 <a name="ta-os-017"></a>
 #### TA-OS-017: Fetch request for an unknown subject
 
 - **Purpose**: Assert that the TA does not issue a Subordinate Statement for an Entity it has not registered, and that it responds with a correct error.
-- **Instructions**: Send a GET request to the fetch endpoint with `sub` set to an Entity Identifier that is not known to the federation, for example `https://unknown.example.se`.
+- **Instructions**: Send a GET request to the fetch endpoint with `sub` set to an Entity Identifier that is not known to the federation, for example `https://unknown.example.se` ([P-ERROR](procedures.md#p-error)).
 - **Expected result**:
   - No Entity Statement MUST be returned.
   - The response MUST have the content type `application/json` and contain `error` and `error_description`.
@@ -427,7 +420,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 #### TA-OS-018: Fetch request with sub set to the Trust Anchor itself
 
 - **Purpose**: Assert that the TA does not issue a Subordinate Statement about itself.
-- **Instructions**: Send a GET request to the fetch endpoint with `sub` set to the TA Entity Identifier.
+- **Instructions**: Send a GET request to the fetch endpoint with `sub` set to the TA Entity Identifier ([P-ERROR](procedures.md#p-error)).
 - **Expected result**:
   - No Entity Statement MUST be returned.
   - `error` SHOULD be `invalid_request` with HTTP status code 400. Any other code should be noted in the report.
@@ -437,7 +430,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 #### TA-OS-019: Fetch request without sub
 
 - **Purpose**: Assert that the TA rejects a fetch request that lacks the required `sub` parameter.
-- **Instructions**: Send a GET request to the fetch endpoint without query parameters.
+- **Instructions**: Send a GET request to the fetch endpoint without query parameters ([P-ERROR](procedures.md#p-error)).
 - **Expected result**:
   - No Entity Statement MUST be returned.
   - `error` SHOULD be `invalid_request` with HTTP status code 400, and the response MUST have the content type `application/json`. Anything else should be noted in the report.
@@ -450,7 +443,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 #### TA-OS-020: Listing with Trust Mark parameters
 
 - **Purpose**: Find out how the TA handles Trust Mark filtering, which is only meaningful for a Trust Mark Issuer.
-- **Instructions**: Send GET requests to the list endpoint with `trust_marked=true`, and with `trust_mark_type` set to one of the types in `trust_mark_issuers`.
+- **Instructions**: Send requests to the list endpoint of the TA ([P-LIST](procedures.md#p-list)) with `trust_marked=true`, and with `trust_mark_type` set to one of the types in `trust_mark_issuers` of the TA's Entity Configuration ([P-EC](procedures.md#p-ec)).
 - **Expected result**: Since the TA is not expected to issue Trust Marks (see [TA-OS-010](#ta-os-010)), it is expected to respond with HTTP status code 400 and the error code `unsupported_parameter`. If it returns a list, the contents must be noted in the report.
 - **References**: Section 8.2.1 of \[[OpenID.Federation](#openid-federation)\]
 
@@ -462,7 +455,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 
 - **Applies to**: Only if `federation_historical_keys_endpoint` is published
 - **Purpose**: Assert that the TA publishes its previously used Federation Entity Keys in a signed and correctly formed document, so that historical Trust Chains can be verified.
-- **Instructions**: Send a GET request to the `federation_historical_keys_endpoint`.
+- **Instructions**: Fetch the historical keys of the TA ([P-HIST](procedures.md#p-hist)).
 - **Expected result**:
   - The response MUST have HTTP status code 200 and the content type `application/jwk-set+jwt`.
   - `typ` MUST be `jwk-set+jwt`, `kid` MUST be present, and the signature MUST validate with a key in the TA's current `jwks`.
@@ -478,7 +471,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 #### TA-OS-022: Unauthenticated requests
 
 - **Purpose**: Assert that the TA's endpoints behave according to the client authentication methods it declares.
-- **Instructions**: For each endpoint, check the corresponding `*_auth_methods` parameter from [TA-OS-015](#ta-os-015). Send an unauthenticated GET request to each endpoint that does not declare a requirement for client authentication.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)). For each endpoint in its `federation_entity` metadata, check the corresponding `*_auth_methods` parameter. Send an unauthenticated GET request to each endpoint that does not declare a requirement for client authentication.
 - **Expected result**: An endpoint that declares no `*_auth_methods` parameter, or declares `none`, MUST accept unauthenticated GET requests.
 - **References**: Section 8.8 and 8.8.1 of \[[OpenID.Federation](#openid-federation)\]
 
@@ -486,59 +479,9 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 #### TA-OS-023: Format of error responses
 
 - **Purpose**: Assert that the TA's error responses can be interpreted by participants.
-- **Instructions**: Review the error responses received in [TA-OS-017](#ta-os-017), [TA-OS-018](#ta-os-018), [TA-OS-019](#ta-os-019) and in Section [2.4](#subordinate-listing-endpoint).
+- **Instructions**: Send the following requests to the TA ([P-ERROR](procedures.md#p-error)) and inspect each error response:<br/>1. A fetch request with `sub` set to an Entity Identifier that is not known to the federation, for example `https://unknown.example.se`.<br/>2. A fetch request with `sub` set to the TA Entity Identifier.<br/>3. A fetch request without `sub`.<br/>4. A list request with `trust_marked=true`.
 - **Expected result**: Every error response SHOULD have the content type `application/json` and MUST contain `error` and `error_description`. The HTTP status code SHOULD match the error code as stated in Section 8.9 of \[[OpenID.Federation](#openid-federation)\].
 - **References**: Section 8.9 and 18.2 of \[[OpenID.Federation](#openid-federation)\]
-
-<a name="document-review"></a>
-### 2.7. Document Review
-
-The test cases in this section are document reviews. They assert that the Federation Operator, as manifested by the TA, has defined the rules the Swedish profile requires. How the BAS documents fulfil the rules is reviewed in the BAS conformance tests, see [TA-BAS-003](ta_bas_test.md#ta-bas-003) and [TA-BAS-004](ta_bas_test.md#ta-bas-004).
-
-<a name="ta-os-024"></a>
-#### TA-OS-024: Reviewing the federation rules
-
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The content of the federation rules as a whole.
-- **Purpose**: Assert that the federation rules cover what the Swedish profile requires of a Federation Operator.
-- **Instructions**: Review the published federation rules.
-- **Expected result**: The federation rules:
-  - MUST define the rules and requirements for joining the federation. Registration Policies are RECOMMENDED.
-  - MUST define the protocol-specific requirements, including referenced standards and profiles, algorithm support and metadata requirements.
-  - SHOULD define a Trust Mark Policy (see [TA-OS-025](#ta-os-025)).
-  - SHOULD define federation-wide security requirements, such as minimum key lengths, key rollover frequency and client authentication requirements.
-  - SHOULD define recommended validity periods for Entity Statements.
-  - SHOULD define a base URL for the federation, used for collision-resistant identifiers.
-  - Every missing item must be noted in the report.
-- **References**: Section 2.1, 2.4.1 and 3.2 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
-
-<a name="ta-os-025"></a>
-#### TA-OS-025: Reviewing the Trust Mark Policy
-
-- **Applies to**: Only if the federation uses Trust Marks
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The Trust Mark Policy, if Trust Marks are used in BAS.
-- **Purpose**: Assert that the Trust Mark Policy defines how Trust Marks are issued, recognized and obtained, and that it matches what the TA publishes.
-- **Instructions**: Review the Trust Mark Policy and compare it with `trust_mark_issuers` (see [TA-OS-008](#ta-os-008)).
-- **Expected result**: The Trust Mark Policy SHOULD define:
-  - How Trust Mark Issuers are accredited, and the requirements that apply to them.
-  - The Trust Mark types recognized by the federation, their identifiers, and which Trust Mark Issuers may issue each type.
-  - Whether Trust Mark Issuers may issue types that are not recognized federation-wide.
-  - Whether Entities are required to include their Trust Marks in their Entity Configurations, or whether peers and resolvers may obtain them from the Trust Mark Issuer.
-  - Rules for validating Trust Marks, including status checking, MAY be defined, and it is RECOMMENDED that they cover status checking.
-  - The policy is expected to match `trust_mark_issuers`. Differences must be noted in the report.
-- **References**: Section 5.1, 5.2 and 5.3 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 7 of \[[OpenID.Federation](#openid-federation)\]
-
-<a name="ta-os-026"></a>
-#### TA-OS-026: Reviewing algorithm and interoperability rules
-
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The algorithm and client authentication rules, together with BAS Security Requirements.
-- **Purpose**: Assert that the federation rules handle the interoperability issues that arise when protocol metadata is consumed by many peers.
-- **Instructions**: Review the federation rules for the items listed in Section 7 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\].
-- **Expected result**:
-  - If support for OpenID Connect Relying Party Metadata Choices is not mandated, the rules SHOULD state the algorithms that are mandatory to support for signature validation and, where encryption is used, for encryption and decryption.
-  - It is RECOMMENDED that the rules state which client authentication methods servers support.
-  - It is RECOMMENDED that the rules require OpenID Providers to support both the `public` and `pairwise` subject types, where the federation admits OpenID Providers. Not applicable to BAS.
-  - Missing items must be noted in the report.
-- **References**: Section 7 and 7.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
 <a name="tests-requiring-a-chain-of-test-data"></a>
 ## 3. Tests Requiring a Chain of Test Data
@@ -564,14 +507,14 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 <a name="fetch-endpoint-3.2"></a>
 ### 3.2. Fetch Endpoint
 
-The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-011](#ta-os-011). Unless stated otherwise, requests are sent using GET without client authentication.
+The tests in this section use the `federation_fetch_endpoint` of the TA's Entity Configuration ([P-EC](procedures.md#p-ec)). Unless stated otherwise, requests are sent using GET without client authentication.
 
 <a name="ta-os-028"></a>
 #### TA-OS-028: Fetching a Subordinate Statement about an Immediate Subordinate
 
 - **Test data**: FED-FRE1 and FED-FRE2, registered as Immediate Subordinates of FED-TA.
 - **Purpose**: Assert that the TA issues a correctly formed and signed Subordinate Statement about each of its Immediate Subordinates.
-- **Instructions**: For each expected Immediate Subordinate (see [1.2](#test-setup)), send a GET request to the fetch endpoint with `sub` set to the Subordinate's Entity Identifier.
+- **Instructions**: For each expected Immediate Subordinate (see [1.2](#test-setup)), fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)).
 - **Expected result**: For each request:
   - The response MUST have HTTP status code 200 and the content type `application/entity-statement+jwt`.
   - `typ` MUST be `entity-statement+jwt`, `alg` MUST NOT be `none`, and `kid` MUST match a key in the `jwks` claim of the TA's Entity Configuration. The signature MUST validate with that key.
@@ -586,7 +529,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 
 - **Test data**: The Entity Configurations of FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the Subordinate Statement binds the correct Federation Entity Keys to the Subordinate, so that a Trust Chain can be built.
-- **Instructions**: For each Subordinate Statement from [TA-OS-028](#ta-os-028), retrieve the Subordinate's Entity Configuration from its well-known location.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)), and fetch the Subordinate's Entity Configuration from its well-known location ([P-EC](procedures.md#p-ec)).
 - **Expected result**:
   - The key that signed the Subordinate's Entity Configuration MUST be present in the `jwks` claim of the Subordinate Statement.
   - The keys in the Subordinate Statement are expected to be identical to the keys in the Subordinate's Entity Configuration. Differences, for example during a key rollover, must be noted in the report.
@@ -600,7 +543,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that Subordinate Statements are valid when issued and that their validity follows the federation rules.
-- **Instructions**: For each Subordinate Statement from [TA-OS-028](#ta-os-028), compare `iat` and `exp` with the time of retrieval and with the validity period in the federation rules.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)) and note the time of retrieval. Compare `iat` and `exp` with the time of retrieval and with the validity period in the federation rules.
 - **Expected result**:
   - `iat` MUST NOT be later, and `exp` MUST be later, than the time of retrieval. A clock skew of 10 seconds is allowed.
   - `exp` minus `iat` is expected to follow the federation rules. Deviations, or the absence of a stated period, should be noted in the report.
@@ -611,7 +554,7 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that optional location claims in Subordinate Statements are correct.
-- **Instructions**: Inspect `source_endpoint` and `ec_location` in the Subordinate Statements from [TA-OS-028](#ta-os-028).
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)), and inspect its `source_endpoint` and `ec_location`.
 - **Expected result**:
   - If `source_endpoint` is present, it MUST be equal to the TA's `federation_fetch_endpoint`.
   - Support for `ec_location` is OPTIONAL. If present, the URL MUST return the Subordinate's Entity Configuration. Its presence should be noted in the report.
@@ -622,8 +565,8 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 
 - **Test data**: REG-C1, registered under FED-FRE1.
 - **Purpose**: Assert that the TA only issues Subordinate Statements about its Immediate Subordinates, and not about Entities registered further down the hierarchy.
-- **Instructions**: Choose a Leaf Entity registered under one of the Intermediates (in BAS, an OAuth 2.0 Client registered by a Federation Registration Entity). Send a GET request to the TA's fetch endpoint with `sub` set to its Entity Identifier.
-- **Expected result**: No Entity Statement MUST be returned. The response is expected to be an error as in [TA-OS-017](#ta-os-017).
+- **Instructions**: Choose a Leaf Entity registered under one of the Intermediates (in BAS, an OAuth 2.0 Client registered by a Federation Registration Entity). Send a fetch request to the TA with `sub` set to its Entity Identifier ([P-ERROR](procedures.md#p-error)).
+- **Expected result**: No Entity Statement MUST be returned. The response is expected to meet the expected result of [TA-OS-017](#ta-os-017).
 - **References**: Section 4 and 8.1 of \[[OpenID.Federation](#openid-federation)\] and Section 2.6.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
 <a name="ta-os-033"></a>
@@ -631,21 +574,21 @@ The tests in this section use the `federation_fetch_endpoint` found in [TA-OS-01
 
 - **Test data**: FED-FRE1.
 - **Purpose**: Assert that the TA ignores request parameters it does not understand.
-- **Instructions**: Repeat one request from [TA-OS-028](#ta-os-028) with an additional parameter, for example `foo=bar`.
-- **Expected result**: The response MUST be the same as in [TA-OS-028](#ta-os-028).
+- **Instructions**: Fetch the Subordinate Statement about FED-FRE1 from the TA ([P-FETCH](procedures.md#p-fetch)). Repeat the request with an additional parameter, for example `foo=bar`.
+- **Expected result**: The response MUST be the same as the response to the request without the additional parameter.
 - **References**: Section 8 of \[[OpenID.Federation](#openid-federation)\]
 
 <a name="metadata-policy-and-constraints"></a>
 ### 3.3. Metadata Policy and Constraints
 
-The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_policy_crit` and `constraints` claims of the Subordinate Statements from [TA-OS-028](#ta-os-028). They check that the policy and constraints are well-formed and used as the Swedish profile intends. That the policy holds the values BAS requires is tested in the BAS conformance tests, see [TA-BAS-005](ta_bas_test.md#ta-bas-005).
+The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_policy_crit` and `constraints` claims of the Subordinate Statements that the TA issues about its Immediate Subordinates ([P-FETCH](procedures.md#p-fetch)). They check that the policy and constraints are well-formed and used as the Swedish profile intends. That the policy holds the values BAS requires is tested in the BAS conformance tests, see [TA-BAS-005](ta_bas_test.md#ta-bas-005).
 
 <a name="ta-os-034"></a>
 #### TA-OS-034: Verifying that the metadata policy is well-formed
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the metadata policy can be resolved by any compliant implementation without producing a policy error.
-- **Instructions**: Validate the `metadata_policy` claim of each Subordinate Statement against the rules of Section 6.1 of \[[OpenID.Federation](#openid-federation)\], for example using an independent implementation.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Validate the `metadata_policy` claim of each Subordinate Statement against the rules of Section 6.1 of \[[OpenID.Federation](#openid-federation)\], for example using an independent implementation.
 - **Expected result**:
   - The structure MUST have the three levels Entity Type, metadata parameter and operator, with no duplicate member names.
   - Every operator MUST be configured with a JSON value type that the operator supports, and only allowed operator combinations MUST be used (for example, the values of `value` within `one_of`, and `subset_of` being a superset of `superset_of`).
@@ -658,7 +601,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the policy is used to constrain, filter or refine what Entities declare, and that values added by the policy are values that every Entity in the federation is required to support.
-- **Instructions**: Identify the operators in the policy that add values (`value`, `add` and `default`). For each, find the requirement in the federation rules that motivates it.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Identify the operators in its `metadata_policy` claim that add values (`value`, `add` and `default`). For each, find the requirement in the federation rules that motivates it.
 - **Expected result**:
   - Values added by the policy SHOULD NOT introduce capabilities or preferences that an Entity may not support. Values that the federation rules require every Entity to support are accepted. The values added by the BAS policy are reviewed in [TA-BAS-007](ta_bas_test.md#ta-bas-007).
   - Every added value that is not backed by a requirement in the federation rules must be noted in the report.
@@ -669,7 +612,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the TA does not set per-Entity values for Entities other than its Immediate Subordinates, since such values are set by the Intermediate that registers an Entity.
-- **Instructions**: Inspect the `metadata` claim, if present, of each Subordinate Statement.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Inspect the `metadata` claim, if present, of each Subordinate Statement.
 - **Expected result**:
   - If present, the `metadata` claim SHOULD only hold descriptive values for the Immediate Subordinate itself, such as `organization_name` under `federation_entity`.
   - The TA MUST NOT use the `metadata` claim to set values for protocol Entity Types, since these would only apply to the Intermediate and not to the Leaf Entities.
@@ -681,7 +624,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that any constraints the TA places on its Subordinates are well-formed and consistent with the federation structure.
-- **Instructions**: Inspect the `constraints` claim, if present, of each Subordinate Statement. Compare it with the federation structure (TA, Intermediate, Leaf Entity).
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)). Inspect the `constraints` claim, if present, of each Subordinate Statement. Compare it with the federation structure (TA, Intermediate, Leaf Entity).
 - **Expected result**:
   - If `max_path_length` is present, it MUST be an integer greater than or equal to 0, and MUST allow the Intermediate (at least 1 when the Intermediate is counted between the TA and the Leaf).
   - If `naming_constraints` is present, the `permitted` and `excluded` names MUST be valid domain name constraints, and MUST allow the Entity Identifiers of Entities already registered.
@@ -695,7 +638,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: REG-C1, REG-AS1 and REG-PR1 under FED-FRE1, and REG-X under FED-FRE2.
 - **Purpose**: Assert that the policy and constraints of the TA, merged with those of the Intermediates, can be resolved for registered Entities without errors.
-- **Instructions**: For each Immediate Subordinate, choose at least one registered Leaf Entity of each Entity Type it registers. Build and validate the Trust Chain from the Leaf Entity to the TA using an independent implementation, and resolve its metadata.
+- **Instructions**: For each Immediate Subordinate, choose at least one registered Leaf Entity of each Entity Type it registers. Build and validate the Trust Chain from the Leaf Entity to the TA, and resolve its metadata ([P-CHAIN](procedures.md#p-chain)).
 - **Expected result**:
   - The Trust Chain MUST validate, and metadata policy resolution MUST NOT produce a policy error.
   - Whether the Resolved Metadata meets the BAS requirements is tested in [TA-BAS-010](ta_bas_test.md#ta-bas-010).
@@ -710,7 +653,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the TA lists exactly the Entities it issues Subordinate Statements about.
-- **Instructions**: Send a GET request to the `federation_list_endpoint` without parameters.
+- **Instructions**: List the Immediate Subordinates of the TA without parameters ([P-LIST](procedures.md#p-list)). For every listed Entity, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)).
 - **Expected result**:
   - The response MUST have HTTP status code 200 and the content type `application/json`, and MUST be a JSON array of Entity Identifiers.
   - The array MUST contain all expected Immediate Subordinates (see [1.2](#test-setup)). Additional Entities must be noted in the report.
@@ -722,7 +665,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: The Entity Configurations of FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that Federation Protocol Entities are registered under an Intermediate and not directly under the TA.
-- **Instructions**: For each Entity in the list from [TA-OS-039](#ta-os-039), retrieve its Entity Configuration and inspect the Entity Types in its `metadata` claim.
+- **Instructions**: List the Immediate Subordinates of the TA ([P-LIST](procedures.md#p-list)). For each listed Entity, fetch its Entity Configuration ([P-EC](procedures.md#p-ec)) and inspect the Entity Types in its `metadata` claim.
 - **Expected result**: Every Immediate Subordinate SHOULD hold only the `federation_entity` Entity Type. Any Federation Protocol Entity directly under the TA must be noted in the report.
 - **References**: Section 2.2 and 2.6.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
@@ -731,7 +674,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the TA either filters on Entity Type or reports that it does not support the filter.
-- **Instructions**: Send GET requests to the list endpoint with `entity_type=federation_entity`, with `entity_type=oauth_client`, and with both parameters together.
+- **Instructions**: Send requests to the list endpoint of the TA ([P-LIST](procedures.md#p-list)) with `entity_type=federation_entity`, with `entity_type=oauth_client`, and with both parameters together.
 - **Expected result**: Two outcomes are accepted:<br/>1. The TA filters the result. With `federation_entity`, all Intermediates are listed. With `oauth_client` alone, the list is expected to be empty (see [TA-OS-040](#ta-os-040)). With both, the union is listed.<br/>2. The TA responds with HTTP status code 400, the content type `application/json` and the error code `unsupported_parameter`.<br/>The test fails if the TA returns an unfiltered list. The outcome must be noted in the report.
 - **References**: Section 8.2.1 and 8.9 of \[[OpenID.Federation](#openid-federation)\]
 
@@ -740,8 +683,8 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 
 - **Test data**: FED-FRE1 and FED-FRE2.
 - **Purpose**: Assert that the TA either filters on whether its Subordinates are Intermediates or reports that it does not support the filter.
-- **Instructions**: Send a GET request to the list endpoint with `intermediate=true`.
-- **Expected result**: Either all Intermediates are listed (in practice the same list as in [TA-OS-039](#ta-os-039)), or the TA responds with HTTP status code 400 and the error code `unsupported_parameter`. The outcome must be noted in the report.
+- **Instructions**: Send requests to the list endpoint of the TA ([P-LIST](procedures.md#p-list)) with `intermediate=true`, and without parameters.
+- **Expected result**: Either all Intermediates are listed (in practice the same list as without parameters), or the TA responds with HTTP status code 400 and the error code `unsupported_parameter`. The outcome must be noted in the report.
 - **References**: Section 8.2.1 of \[[OpenID.Federation](#openid-federation)\]
 
 <a name="client-authentication-and-error-handling-3.5"></a>
@@ -753,7 +696,7 @@ The tests in this section inspect the `metadata_policy`, `metadata`, `metadata_p
 - **Applies to**: Only if the TA declares `private_key_jwt` for any endpoint
 - **Test data**: REG-C1, whose Federation Entity Keys sign the client assertion.
 - **Purpose**: Assert that the TA accepts correctly authenticated requests, and rejects authentication that is not bound to it or not signed with a Federation Entity Key.
-- **Instructions**: Using a test Entity registered in the federation, send POST requests to an endpoint that requires `private_key_jwt`:<br/>1. With a client assertion signed with the test Entity's Federation Entity Key and `aud` set to the TA Entity Identifier.<br/>2. With `aud` set to the endpoint URL instead.<br/>3. With a client assertion signed with a key that is not a Federation Entity Key of the test Entity.<br/>4. Without client authentication, using GET.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and take the endpoints and their authentication methods from its `federation_entity` metadata. Using a test Entity registered in the federation, send POST requests to an endpoint that requires `private_key_jwt`:<br/>1. With a client assertion signed with the test Entity's Federation Entity Key and `aud` set to the TA Entity Identifier.<br/>2. With `aud` set to the endpoint URL instead.<br/>3. With a client assertion signed with a key that is not a Federation Entity Key of the test Entity.<br/>4. Without client authentication, using GET.
 - **Expected result**:
   - Request 1 MUST succeed.
   - Requests 2, 3 and 4 MUST be rejected. The error code SHOULD be `invalid_client` with HTTP status code 401. Any other code should be noted in the report.
@@ -770,7 +713,7 @@ The test cases in this section are carried out over time, or in coordination wit
 - **Test data**: A planned key rollover of FED-TA, coordinated with the Federation Operator, and REG-C1, REG-AS1 and REG-PR1.
 - **Depends on** \[[BAS.Rules](#bas-rules)\]: The key rollover periods, including how long an old key is kept after a new key is put into use.
 - **Purpose**: Assert that the TA can replace its Federation Entity Keys without disrupting federation participants.
-- **Instructions**: In coordination with the Federation Operator, follow a planned key rollover of the TA in the Sandbox. Retrieve the Entity Configuration, the out-of-band published keys and a Subordinate Statement at regular intervals during the rollover.
+- **Instructions**: In coordination with the Federation Operator, follow a planned key rollover of the TA in the Sandbox. At regular intervals during the rollover, fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)), the out-of-band published keys and a Subordinate Statement ([P-FETCH](procedures.md#p-fetch)), and build the Trust Chains of REG-C1, REG-AS1 and REG-PR1 ([P-CHAIN](procedures.md#p-chain)).
 - **Expected result**:
   - The new key MUST be published in `jwks`, and out-of-band, before it is used for signing. The time between publication and first use MUST be at least as long as the validity period of the Entity Configuration (`exp` minus `iat`).
   - During that time, the Entity Configuration and the Subordinate Statements MUST still be signed with the old key.
@@ -783,7 +726,7 @@ The test cases in this section are carried out over time, or in coordination wit
 
 - **Test data**: FED-IMT, which the Federation Operator adds and removes.
 - **Purpose**: Assert that an Intermediate that is removed from the federation stops being reachable through the TA.
-- **Instructions**: In coordination with the Federation Operator, have a test Intermediate added under the TA and then removed. After removal, send a fetch request and a list request for it.
+- **Instructions**: In coordination with the Federation Operator, have a test Intermediate added under the TA and then removed. After removal, send a fetch request for it ([P-FETCH](procedures.md#p-fetch)) and a list request ([P-LIST](procedures.md#p-list)).
 - **Expected result**:
   - After removal, the fetch endpoint MUST NOT return a Subordinate Statement about the Intermediate, and the list endpoint MUST NOT list it.
   - The time until the last issued Subordinate Statement expires should be noted in the report, since participants may use it until then.
@@ -794,6 +737,6 @@ The test cases in this section are carried out over time, or in coordination wit
 
 - **Test data**: FED-IMT, whose operator carries out a key rollover.
 - **Purpose**: Assert that the TA issues an updated Subordinate Statement when an Intermediate replaces its Federation Entity Keys, before the Intermediate starts signing with the new key.
-- **Instructions**: In coordination with the Federation Operator and the operator of a test Intermediate, follow a key rollover at the Intermediate. Fetch the Subordinate Statement about it at regular intervals.
+- **Instructions**: In coordination with the Federation Operator and the operator of a test Intermediate, follow a key rollover at the Intermediate. Fetch the Subordinate Statement about it from the TA at regular intervals ([P-FETCH](procedures.md#p-fetch)).
 - **Expected result**: The new key MUST appear in the Subordinate Statement before the Intermediate's Entity Configuration is signed with it, so that Trust Chains through the Intermediate validate throughout the rollover.
 - **References**: Section 3.1.1, 4 and 11.1 of \[[OpenID.Federation](#openid-federation)\]
