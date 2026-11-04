@@ -92,7 +92,7 @@ awk '
 
   # ---------- PASS 2: Patch HTML ----------
   BEGIN {
-    body_logo = "<div><img style=\"margin-bottom: 24px;\" align=\"left\" src=\"img/sweden-connect.png\"></img></div>"
+    body_logo = "<div><img style=\"margin-bottom: 24px;\" align=\"left\" src=\"img/sib.png\"></img></div>"
     logo_inserted = 0
     body_seen = 0
   }

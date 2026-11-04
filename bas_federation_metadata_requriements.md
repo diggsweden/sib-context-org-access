@@ -334,7 +334,7 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 <reference anchor="BAS.Security">
   <front>
     <title>Federationskontext BAS: Security Requirements 1.0, draft 01</title>
-    <author>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
     <date month="October" year="2026"/>
@@ -344,6 +344,9 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
     <title>Ena OAuth 2.0 Interoperability Profile, Version 1.0, draft 01</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström">
+      <organization>The Swedish Agency for Digital Government (Digg)</organization>
+    </author>
     <date day="16" month="October" year="2025"/>
   </front>
 </reference>
@@ -351,6 +354,9 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 <reference anchor="ISO.6523">
   <front>
     <title>ISO/IEC 6523-1:2023. Part 1: Identification of organization identification schemes</title>
+    <author>
+      <organization>ISO/IEC</organization>
+    </author>
     <date year="2023"/>
   </front>
 </reference>
@@ -412,6 +418,8 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 <reference anchor="Ena.Federation">
   <front>
     <title>Ena OAuth 2.0 Federation Interoperability Profile</title>
+    <author initials="M." surname="Lindström"/>
+    <date day="31" month="March" year="2025"/>
     <date/>
   </front>
   <annotation>Referred to by Section 1.4 of [Ena.OAuth2], not yet published.</annotation>

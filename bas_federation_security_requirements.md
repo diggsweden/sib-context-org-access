@@ -200,8 +200,8 @@ the exposure.
 
 <reference anchor="BAS.Metadata">
   <front>
-    <title>BAS: Federation Metadata Requirements, draft 04</title>
-    <author>
+    <title>BAS: Federation Metadata Requirements, draft 01</title>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
     <date month="October" year="2026"/>
@@ -210,7 +210,7 @@ the exposure.
 
 <reference anchor="BAS.Rules">
   <front>
-    <title>BAS: Federation Rules and Policies 1.0, draft 02</title>
+    <title>BAS: Federation Rules and Policies 1.0, draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
@@ -218,13 +218,11 @@ the exposure.
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] Author and date of Ena.OAuth2 are not known. -->
-
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
     <title>Ena OAuth 2.0 Interoperability Profile 1.0, draft 01</title>
-    <author fullname="<Full Name>" initials="<X.>" surname="<Surname>"/>
-    <date day="<dd>" month="<Month>" year="<YYYY>"/>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <date day="31" month="March" year="2025"/>
   </front>
 </reference>
 
