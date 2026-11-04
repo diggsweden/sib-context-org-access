@@ -195,7 +195,7 @@ Other changes, such as changes to its protocol keys, are made by the Entity itse
 
 OAuth 2.0 Clients, Authorization Servers and Protected Resources **MUST** comply with the Ena OAuth 2.0 Interoperability Profile [@!Ena.OAuth2].
 
-The metadata of OAuth 2.0 Clients, Authorization Servers and Protected Resources **MUST** meet the requirements of [@!BAS.Metadata].
+The metadata of OAuth 2.0 Clients and Authorization Servers MUST meet the requirements of [@!BAS.Metadata]. The metadata of Protected Resources MAY meet the requirements of [@!BAS.Metadata].
 
 [@!BAS.Metadata] profiles only the metadata that the federation needs. Protocol metadata follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope, and is decided by the parties to the exchange or by a Collaboration Context.
 

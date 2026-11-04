@@ -65,7 +65,7 @@ Everything else follows [@!Ena.OAuth2]. The information exchange between Entitie
 
 # General Requirements {#general_requirements}
 
-Every Client, Authorization Server and Protected Resource in BAS publishes an Entity Configuration. Its metadata is carried in the `metadata` Claim under the Entity Type Identifier `oauth_client`, `oauth_authorization_server` or `oauth_resource`, as specified in Sections 5.1.3 to 5.1.5 of [@!OpenID.Federation.Connect]. These are the Entity Types that the `allowed_entity_types` constraint of the BAS Trust Anchor admits, see [@!BAS.Rules, section 4.2]. Hosted Entity Configurations are not yet defined for BAS, see [@!BAS.Rules, section 3.2].
+Every Client and Authorization Server in BAS, and every Protected Resource registered in BAS, MUST publish an Entity Configuration.. Its metadata is carried in the `metadata` Claim under the Entity Type Identifier `oauth_client`, `oauth_authorization_server` or `oauth_resource`, as specified in Sections 5.1.3 to 5.1.5 of [@!OpenID.Federation.Connect]. These are the Entity Types that the `allowed_entity_types` constraint of the BAS Trust Anchor admits, see [@!BAS.Rules, section 4.2]. Hosted Entity Configurations are not yet defined for BAS, see [@!BAS.Rules, section 3.2].
 
 The requirements apply to the Resolved Metadata, meaning the metadata that results from applying the Subordinate Statements of the Trust Chain to the Entity's own declarations, see [@!OpenID.Federation, section 10]. A parameter that is **REQUIRED** in the Resolved Metadata is therefore not always one the Entity declares itself: a Federation Registration Entity may assign it in the Subordinate Statement, and the Trust Anchor metadata policy may constrain it. Where that is the case, the tables below say so, and (#bas_metadata_policies) shows how.
 
@@ -180,12 +180,12 @@ An Authorization Server also publishes its metadata at the location stated in [@
 
 # Protected Resource Requirements {#protected_resource_requirements}
 
-A Protected Resource in BAS always publishes an Entity Configuration, see (#general_requirements). Its `oauth_resource` metadata uses the parameters defined in [@!RFC9728, section 2], which [@!OpenID.Federation.Connect, section 5.1.5] makes available, and conforms to [@!Ena.OAuth2, section 4.3]. The table below lists only the parameters for which BAS adds a requirement, in addition to those in (#common_requirements).
+A Protected Resource is not required to be registered in BAS, see [@!BAS.Rules, section 8]. A Protected Resource that is registered in BAS MUST publish an Entity Configuration with oauth_resource metadata, see (#general_requirements), and its Resolved Metadata MUST meet the requirements of this section and of (#common_requirements). Within BAS, this replaces the optional publication of metadata in [@!Ena.OAuth2, section 4.3]. The oauth_resource metadata uses the parameters defined in [@!RFC9728, section 2], which [@!OpenID.Federation.Connect, section 5.1.5] makes available. The table below lists only the parameters for which BAS adds a requirement.
 
 | Parameter | Requirement | Description | Defined in |
 | --- | --- | --- | --- |
 | `resource` | **REQUIRED** | **MUST** be equal to the Protected Resource's Entity Identifier, see (#resource_identifier). | [@!RFC9728, section 2] and [@!Ena.OAuth2, section 4.3] |
-| `authorization_servers` | **OPTIONAL** | If present, **MUST** contain the Entity Identifier of at least one Authorization Server in BAS. | [@!RFC9728, section 2] |
+| authorization_servers | OPTIONAL | If present, MUST contain the Entity Identifier of at least one Authorization Server in BAS. It MAY also contain Authorization Servers outside BAS. Checked at registration, see (#requirements_not_expressed_as_policy). | [@!RFC9728, section 2] |
 
 ## Resource Identifier {#resource_identifier}
 
