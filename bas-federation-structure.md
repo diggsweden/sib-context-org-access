@@ -181,4 +181,5 @@ Copyright (c) The Swedish Agency for Digital Government (Digg), 2026. All Rights
 
 # Document History
 
-1.0 - draft 01: Initial version.
+**1.0**
+: Initial version

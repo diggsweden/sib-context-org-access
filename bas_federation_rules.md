@@ -195,7 +195,7 @@ Other changes, such as changes to its protocol keys, are made by the Entity itse
 
 OAuth 2.0 Clients, Authorization Servers and Protected Resources **MUST** comply with the Ena OAuth 2.0 Interoperability Profile [@!Ena.OAuth2].
 
-The metadata of OAuth 2.0 Clients and Authorization Servers MUST meet the requirements of [@!BAS.Metadata]. The metadata of Protected Resources MAY meet the requirements of [@!BAS.Metadata].
+A Protected Resource is not required to be registered in BAS. The metadata of OAuth 2.0 Clients and Authorization Servers, and of Protected Resources registered in BAS, **MUST** meet the requirements of [@!BAS.Metadata].
 
 [@!BAS.Metadata] profiles only the metadata that the federation needs. Protocol metadata follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope, and is decided by the parties to the exchange or by a Collaboration Context.
 
@@ -207,22 +207,20 @@ The Federation Registration Operator checks that the security requirements are m
 
 {backmatter}
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Metadata">
   <front>
-    <title>BAS: Federation Metadata Requirements, draft 04</title>
-    <author>
+    <title>BAS: Federation Metadata Requirements, draft 01</title>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
     <date month="October" year="2026"/>
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Security">
   <front>
-    <title>BAS: Security Requirements 1.0, draft 02</title>
-    <author>
+    <title>BAS: Security Requirements 1.0, draft 01</title>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
     <date month="October" year="2026"/>
@@ -232,20 +230,23 @@ The Federation Registration Operator checks that the security requirements are m
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
     <title>Ena OAuth 2.0 Interoperability Profile, Version 1.0, draft 01</title>
-    <author/>
+    <author initials="M." surname="Lindström">
+      <organization>The Swedish Agency for Digital Government (Digg)</organization>
+    </author>
     <date day="16" month="October" year="2025"/>
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] Utgivare, datum och URL saknas. -->
-<reference anchor="SIB.BAS.Structure">
+<reference anchor="BAS.Structure">
   <front>
     <title>BAS Federation Structure</title>
-    <author/>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
+      <organization>The Swedish Agency for Digital Government (Digg)</organization>
+    </author>
+    <date month="October" year="2026"/>
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="SIB.Connection">
   <front>
     <title>Anslutning – Tillämpningskrav och vägledning, version 12</title>
@@ -256,7 +257,6 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="SIB.Registration">
   <front>
     <title>Registrering – Tillämpningskrav och vägledning, version 13</title>
@@ -283,7 +283,6 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="OpenID.Federation">
   <front>
     <title>OpenID Federation 1.1</title>
@@ -297,7 +296,6 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
-<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="OpenID.Federation.Connect">
   <front>
     <title>OpenID Federation for OpenID Connect 1.1</title>
@@ -317,4 +315,5 @@ Copyright (c) The Swedish Agency for Digital Government (Digg), 2015-2026. All R
 
 # Document History
 
-1.0 - draft 01: Initial version.
+**1.0**
+: Initial version
