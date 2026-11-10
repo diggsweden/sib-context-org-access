@@ -17,7 +17,7 @@ surname = "Norlander"
 fullname = "Henric Norlander"
 organization = "The Swedish Agency for Digital Government (Digg)"
   [author.address]
-  email = "extern.henric.norlander@digg.se"
+  emails = ["extern.henric.norlander@digg.se", "henric@nodnio.se"]
 %%%
 
 .# Abstract
@@ -26,7 +26,7 @@ This specification defines the metadata requirements for OAuth 2.0 Clients, Auth
 
 .# Registration Number
 
-PLATSHÅLLARE: diarienummer
+\<YYYY-nnnn\>
 
 {mainmatter}
 
@@ -48,7 +48,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Terminology {#terminology}
 
-This specification uses the terms "Entity", "Entity Configuration", "Entity Identifier", "Entity Type Identifier", "Leaf Entity", "Subordinate Statement", "Trust Anchor", "Trust Chain" and "Resolved Metadata" as defined in [@!OpenID.Federation], the term "Federation Protocol Entity" as defined in [@!OIDC.Sweden.Federation], the terms "Client", "Authorization Server" and "Protected Resource" as defined in [@!Ena.OAuth2], and the terms "Federation Operator", "Federation Registration Operator", "Federation Registration Entity" and "Federation Member" as defined in [@!BAS.Rules, section 1.2]. The term "Collaboration Context" (Swedish: samverkanskontext) is used as in [@!BAS.Rules, section 8].
+This specification uses the terms "Entity", "Entity Configuration", "Entity Identifier", "Entity Type Identifier", "Leaf Entity", "Subordinate Statement", "Trust Anchor", "Trust Chain" and "Resolved Metadata" as defined in [@!OpenID.Federation], the term "Federation Protocol Entity" as defined in [@!OIDC.Sweden.Federation], the terms "Client", "Authorization Server" and "Protected Resource" as defined in [@!Ena.OAuth2], and the terms "Federation Operator", "Federation Registration Operator", "Federation Registration Entity" and "Federation Member" as defined in [@!BAS.Rules, section 1.2]. The term "Collaboration Context" (Swedish: samverkanskontext) is used as defined in [@!BAS.Rules, section 1.2].
 
 This specification also defines the following term:
 
@@ -61,11 +61,11 @@ A requirement is placed in this specification only if it is needed for one of th
 1. to verify the identity of an Entity and the organization it is registered for, or
 2. to make an Entity's metadata resolvable and reliable through its Trust Chain in BAS.
 
-Everything else follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope and is decided by the parties or by a Collaboration Context, see [@!BAS.Rules, section 8].
+Everything else follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope and is decided by the parties or by a Collaboration Context, see [@!BAS.Rules, section 2.3].
 
 # General Requirements {#general_requirements}
 
-Every Client and Authorization Server in BAS, and every Protected Resource registered in BAS, MUST publish an Entity Configuration.. Its metadata is carried in the `metadata` Claim under the Entity Type Identifier `oauth_client`, `oauth_authorization_server` or `oauth_resource`, as specified in Sections 5.1.3 to 5.1.5 of [@!OpenID.Federation.Connect]. These are the Entity Types that the `allowed_entity_types` constraint of the BAS Trust Anchor admits, see [@!BAS.Rules, section 4.2]. Hosted Entity Configurations are not yet defined for BAS, see [@!BAS.Rules, section 3.2].
+Every Client and Authorization Server in BAS, and every Protected Resource registered in BAS, **MUST** publish an Entity Configuration. Its metadata is carried in the `metadata` Claim under the Entity Type Identifier `oauth_client`, `oauth_authorization_server` or `oauth_resource`, as specified in Sections 5.1.3 to 5.1.5 of [@!OpenID.Federation.Connect]. These are the Entity Types that the `allowed_entity_types` constraint of the BAS Trust Anchor admits, see [@!BAS.Rules, section 4.2]. Hosted Entity Configurations are not yet defined for BAS, see [@!BAS.Rules, section 3.2].
 
 The requirements apply to the Resolved Metadata, meaning the metadata that results from applying the Subordinate Statements of the Trust Chain to the Entity's own declarations, see [@!OpenID.Federation, section 10]. A parameter that is **REQUIRED** in the Resolved Metadata is therefore not always one the Entity declares itself: a Federation Registration Entity may assign it in the Subordinate Statement, and the Trust Anchor metadata policy may constrain it. Where that is the case, the tables below say so, and (#bas_metadata_policies) shows how.
 
@@ -180,12 +180,12 @@ An Authorization Server also publishes its metadata at the location stated in [@
 
 # Protected Resource Requirements {#protected_resource_requirements}
 
-A Protected Resource is not required to be registered in BAS, see [@!BAS.Rules, section 8]. A Protected Resource that is registered in BAS MUST publish an Entity Configuration with oauth_resource metadata, see (#general_requirements), and its Resolved Metadata MUST meet the requirements of this section and of (#common_requirements). Within BAS, this replaces the optional publication of metadata in [@!Ena.OAuth2, section 4.3]. The oauth_resource metadata uses the parameters defined in [@!RFC9728, section 2], which [@!OpenID.Federation.Connect, section 5.1.5] makes available. The table below lists only the parameters for which BAS adds a requirement.
+A Protected Resource is not required to be registered in BAS, see [@!BAS.Rules, section 8]. A Protected Resource that is registered in BAS **MUST** publish an Entity Configuration with `oauth_resource` metadata, see (#general_requirements), and its Resolved Metadata **MUST** meet the requirements of this section and of (#common_requirements). Within BAS, this replaces the optional publication of metadata in [@!Ena.OAuth2, section 4.3]. The `oauth_resource` metadata uses the parameters defined in [@!RFC9728, section 2], which [@!OpenID.Federation.Connect, section 5.1.5] makes available. The table below lists only the parameters for which BAS adds a requirement.
 
 | Parameter | Requirement | Description | Defined in |
 | --- | --- | --- | --- |
 | `resource` | **REQUIRED** | **MUST** be equal to the Protected Resource's Entity Identifier, see (#resource_identifier). | [@!RFC9728, section 2] and [@!Ena.OAuth2, section 4.3] |
-| authorization_servers | OPTIONAL | If present, MUST contain the Entity Identifier of at least one Authorization Server in BAS. It MAY also contain Authorization Servers outside BAS. Checked at registration, see (#requirements_not_expressed_as_policy). | [@!RFC9728, section 2] |
+| `authorization_servers` | **OPTIONAL** | If present, **MUST** contain the Entity Identifier of at least one Authorization Server in BAS. It **MAY** also contain Authorization Servers outside BAS. Checked at registration, see (#requirements_not_expressed_as_policy). | [@!RFC9728, section 2] |
 
 ## Resource Identifier {#resource_identifier}
 
@@ -321,29 +321,31 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 
 {backmatter}
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Rules">
   <front>
-    <title>BAS: Federation Rules and Policies 1.0, draft 01</title>
+    <title>BAS – Federation Rules and Policies 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="27" month="October" year="2026"/>
   </front>
 </reference>
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Security">
   <front>
-    <title>Federationskontext BAS: Security Requirements 1.0, draft 01</title>
+    <title>BAS: Federation Security Requirements 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="23" month="October" year="2026"/>
   </front>
 </reference>
 
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
-    <title>Ena OAuth 2.0 Interoperability Profile, Version 1.0, draft 01</title>
+    <title>Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01</title>
     <author fullname="Martin Lindström" initials="M." surname="Lindström">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
@@ -351,7 +353,7 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
   </front>
 </reference>
 
-<reference anchor="ISO.6523">
+<reference anchor="ISO.6523" target="https://www.iso.org/standard/82246.html">
   <front>
     <title>ISO/IEC 6523-1:2023. Part 1: Identification of organization identification schemes</title>
     <author>
@@ -361,16 +363,16 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
   </front>
 </reference>
 
-<reference anchor="OIDC.Sweden.Federation">
+<reference anchor="OIDC.Sweden.Federation" target="https://www.oidc.se/specifications/swedish-openid-federation-profile-1_0.html">
   <front>
-    <title>Swedish OpenID Federation Deployment and Interoperability Profile 1.0, draft 03</title>
-    <author initials="M." surname="Lindström"/>
-    <author initials="S." surname="Santesson"/>
-    <date day="2" month="October" year="2026"/>
+    <title>Swedish OpenID Federation Deployment and Interoperability Profile 1.0</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <author fullname="Stefan Santesson" initials="S." surname="Santesson"/>
+    <date day="16" month="October" year="2026"/>
   </front>
 </reference>
 
-<reference anchor="OIDC.Sweden.OrgId">
+<reference anchor="OIDC.Sweden.OrgId" target="https://www.oidc.se/specifications/openid-federation-organization-identifier-1_0.html">
   <front>
     <title>OpenID Federation Organization Identifier Metadata Parameter 1.0</title>
     <author initials="M. B." surname="Jones"/>
@@ -380,16 +382,16 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
   </front>
 </reference>
 
-<reference anchor="OIDC.Sweden.RegPolicy">
+<reference anchor="OIDC.Sweden.RegPolicy" target="https://www.oidc.se/specifications/openid-federation-registration-policy-1_0.html">
   <front>
-    <title>OpenID Federation Registration Policy 1.0, draft 01</title>
-    <author initials="M." surname="Lindström"/>
-    <author initials="S." surname="Santesson"/>
+    <title>OpenID Federation Registration Policy 1.0 – draft 01</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <author fullname="Stefan Santesson" initials="S." surname="Santesson"/>
     <date day="30" month="March" year="2026"/>
   </front>
 </reference>
 
-<reference anchor="OpenID.Federation">
+<reference anchor="OpenID.Federation" target="https://openid.net/specs/openid-federation-1_1.html">
   <front>
     <title>OpenID Federation 1.1</title>
     <author initials="R." surname="Hedberg"/>
@@ -402,7 +404,7 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
   </front>
 </reference>
 
-<reference anchor="OpenID.Federation.Connect">
+<reference anchor="OpenID.Federation.Connect" target="https://openid.net/specs/openid-federation-connect-1_1.html">
   <front>
     <title>OpenID Federation for OpenID Connect 1.1</title>
     <author initials="R." surname="Hedberg"/>
@@ -417,10 +419,9 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
 
 <reference anchor="Ena.Federation">
   <front>
-    <title>Ena OAuth 2.0 Federation Interoperability Profile</title>
+    <title>Ena OAuth 2.0 Federation Interoperability Profile 1.0 – draft 01</title>
     <author initials="M." surname="Lindström"/>
     <date day="31" month="March" year="2025"/>
-    <date/>
   </front>
   <annotation>Referred to by Section 1.4 of [Ena.OAuth2], not yet published.</annotation>
 </reference>
@@ -436,7 +437,7 @@ A Federation Registration Entity **MUST** reject the registration of an Entity w
   <seriesInfo name="Internet-Draft" value="draft-ietf-spice-glue-id-10"/>
 </reference>
 
-<reference anchor="SKV709">
+<reference anchor="SKV709" target="https://docs.swedenconnect.se/technical-framework/mirror/skv/skv709-8.pdf">
   <front>
     <title>SKV 709, Utgåva 8, Organisationsnummer</title>
     <author>
@@ -453,4 +454,5 @@ Rights Reserved.
 
 # Document History
 
-1.0 – draft 01: Initial version.
+1.0 – draft 01
+: Initial version.

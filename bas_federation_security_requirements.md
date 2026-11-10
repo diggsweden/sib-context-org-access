@@ -1,6 +1,6 @@
 %%%
 title = "BAS: Federation Security Requirements 1.0 – draft 01"
-abbrev = "BAS Federation Security Requirements"
+abbrev = "bas_federation_security_requirements"
 ipr = "none"
 workgroup = ""
 keyword = ["oauth 2.0", "openid federation"]
@@ -8,7 +8,7 @@ date = 2026-10-23T00:00:00Z
 
 [seriesInfo]
 name = "Internet-Draft"
-value = "BAS Security Requirements"
+value = "bas_federation_security_requirements"
 status = "informational"
 
 [[author]]
@@ -17,8 +17,7 @@ surname = "Norlander"
 fullname = "Henric Norlander"
 organization = "The Swedish Agency for Digital Government (Digg)"
   [author.address]
-  email = "extern.henric.norlander@digg.se"
-  emails = ["henric@nodnio.se"]
+  emails = ["extern.henric.norlander@digg.se", "henric@nodnio.se"]
 %%%
 
 .# Abstract
@@ -27,13 +26,13 @@ This specification defines security requirements for OAuth 2.0 Clients,
 Authorization Servers and Protected Resources participating in BAS. It
 establishes requirements for transport protection, client authentication,
 keys, signature algorithms and key rollover. The requirements extend, and are
-intended to be read together with, BAS: Federation Metadata Requirements
+intended to be read together with, BAS Federation Metadata Requirements
 [@!BAS.Metadata] and the Ena OAuth 2.0 Interoperability Profile
 [@!Ena.OAuth2].
 
 .# Registration Number
 
-<YYYY-nnnn>
+\<YYYY-nnnn\>
 
 {mainmatter}
 
@@ -95,8 +94,8 @@ the parties to an exchange. Where they are used within BAS, the calling Entity
 **MUST** authenticate using `private_key_jwt`, with keys published in its
 Resolved Metadata. At a revocation endpoint the caller is a Client. At an
 introspection endpoint the caller is normally a Protected Resource, which
-**MUST** then publish its keys in its `oauth_resource` metadata, see
-[@!BAS.Metadata, section 2.2].
+**MUST** then be registered in BAS and publish its keys in its
+`oauth_resource` metadata, see [@!BAS.Metadata, section 2.2].
 
 An Authorization Server **MUST NOT** accept any other client authentication
 method from an Entity in BAS.
@@ -116,9 +115,9 @@ verified by the parties to an exchange.
 # Cryptographic Requirements {#cryptographic_requirements}
 
 BAS does not require support for OpenID Connect Relying Party Metadata Choices
-1.0. As [@!OIDC.Sweden.Federation, section 7] permits, the interoperability
-issues that specification addresses are instead handled by a single client
-authentication method, see (#general_security_requirements),
+1.0 [@?OpenID.RP.Choices]. As [@!OIDC.Sweden.Federation, section 7] permits,
+the interoperability issues that specification addresses are instead handled
+by a single client authentication method, see (#general_security_requirements),
 (#general_security_requirements, use title), and a common set of signature
 algorithms that all Entities support for validation, see
 (#signature_algorithms), (#signature_algorithms, use title).
@@ -152,7 +151,7 @@ that relies on SHA-1, **MUST NOT** be used.
 
 A Collaboration Context **MAY** restrict which of the algorithms permitted by
 (#signature_algorithms), (#signature_algorithms, use title), are used within
-it, as [@!BAS.Rules, section 1.2] allows. It **MUST NOT** permit an algorithm
+it, as [@!BAS.Rules, section 2.3] allows. It **MUST NOT** permit an algorithm
 that (#signature_algorithms), (#signature_algorithms, use title), prohibits,
 and **MUST NOT** remove the requirement to support validation of RS256 and
 ES256.
@@ -164,8 +163,8 @@ peer to select the correct key during a rollover, each JWK in the JWK Set of
 an Entity **MUST** include a `kid` parameter [@!RFC7517], also when the JWK
 Set holds a single key, and the value **MUST** be unique within the JWK Set.
 Every signed object **MUST** include the `kid` of the signing key in its JOSE
-header. How often an Entity replaces its keys is stated in [@!BAS.Rules], as
-[@!OIDC.Sweden.Federation, section 2.1] recommends.
+header. How often an Entity replaces its protocol keys is decided by the
+Entity, within the requirements of [@!Ena.OAuth2, section 8.2].
 
 The following requirements apply to a planned key rollover.
 
@@ -198,40 +197,44 @@ the exposure.
 
 {backmatter}
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Metadata">
   <front>
-    <title>BAS: Federation Metadata Requirements, draft 01</title>
+    <title>BAS Federation Metadata Requirements 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="26" month="October" year="2026"/>
   </front>
 </reference>
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Rules">
   <front>
-    <title>BAS: Federation Rules and Policies 1.0, draft 01</title>
+    <title>BAS – Federation Rules and Policies 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="27" month="October" year="2026"/>
   </front>
 </reference>
 
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
-    <title>Ena OAuth 2.0 Interoperability Profile 1.0, draft 01</title>
-    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
-    <date day="31" month="March" year="2025"/>
+    <title>Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01</title>
+    <author initials="M." surname="Lindström">
+      <organization>The Swedish Agency for Digital Government (Digg)</organization>
+    </author>
+    <date day="16" month="October" year="2025"/>
   </front>
 </reference>
 
 <reference anchor="OIDC.Sweden.Federation" target="https://www.oidc.se/specifications/swedish-openid-federation-profile.html">
   <front>
-    <title>Swedish OpenID Federation Deployment and Interoperability Profile 1.0, draft 03</title>
-    <author fullname="M. Lindström" initials="M." surname="Lindström"/>
-    <author fullname="S. Santesson" initials="S." surname="Santesson"/>
-    <date day="2" month="October" year="2026"/>
+    <title>Swedish OpenID Federation Deployment and Interoperability Profile 1.0</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <author fullname="Stefan Santesson" initials="S." surname="Santesson"/>
+    <date day="16" month="October" year="2026"/>
   </front>
 </reference>
 
@@ -260,6 +263,16 @@ the exposure.
     <date day="5" month="May" year="2026"/>
   </front>
 </reference>
+<reference anchor="OpenID.RP.Choices" target="https://openid.net/specs/openid-connect-rp-metadata-choices-1_0.html">
+  <front>
+    <title>OpenID Connect Relying Party Metadata Choices 1.0</title>
+    <author fullname="M. B. Jones" initials="M. B." surname="Jones"/>
+    <author fullname="R. Hedberg" initials="R." surname="Hedberg"/>
+    <author fullname="J. Bradley" initials="J." surname="Bradley"/>
+    <author fullname="F. Skokan" initials="F." surname="Skokan"/>
+    <date day="25" month="March" year="2026"/>
+  </front>
+</reference>
 
 # Notices
 
@@ -268,5 +281,5 @@ Rights Reserved.
 
 # Document History
 
-1.0 - draft 01: Initial version.
-
+1.0 – draft 01
+: Initial version.

@@ -17,7 +17,7 @@ surname = "Norlander"
 fullname = "Henric Norlander"
 organization = "The Swedish Agency for Digital Government (Digg)"
   [author.address]
-  email = "extern.henric.norlander@digg.se"
+  emails = ["extern.henric.norlander@digg.se", "henric@nodnio.se"]
 %%%
 
 .# Abstract
@@ -36,12 +36,12 @@ BAS (Swedish: Federationskontext BAS) is a federation context for machine-to-mac
 
 This document is the Federation Rules of BAS required by [@!OIDC.Sweden.Federation, section 2.1]. It is the entry document for the federation. It states what a participant has to comply with, and refers to the other BAS documents for the details. A participant that follows these rules thereby follows the documents they refer to:
 
-- [@!SIB.BAS.Structure] describes the structure of the federation and its environments, and gives the Entity Identifiers, endpoints, and Trust Anchor keys of each environment.
+- [@!BAS.Structure] describes the structure of the federation and its environments, and gives the Entity Identifiers, endpoints, and Trust Anchor keys of each environment.
 - [@!BAS.Metadata] states the metadata requirements and the Trust Anchor metadata policy.
 - [@!BAS.Security] states the requirements on keys, algorithms and client authentication.
 - [@!Ena.OAuth2] is the OAuth 2.0 profile that OAuth 2.0 Clients, Authorization Servers and Protected Resources follow.
 
-(#federation_setup), (#federation_setup, use title), covers the Federation Operator, the Federation Registration Operators and the federation endpoints, and (#entity_statements), (#entity_statements, use title), covers the validity of Entity Statements. (#trust_chains), (#trust_chains, use title), covers how Trust Chains are resolved, the constraints set by the Trust Anchor, and how long a Client Registration may remain valid. The Registration Policies applied when an Entity is registered are given in (#registration_policies), (#registration_policies, use title), and how an Entity joins BAS is described in (#joining_the_federation), (#joining_the_federation, use title). (#protocol_compliance), (#protocol_compliance, use title), covers the requirements that OAuth 2.0 Clients, Authorization Servers and Protected Resources comply with, and (#security_requirements), (#security_requirements, use title), covers the security requirements.
+(#federation_setup), (#federation_setup, use title), covers the Federation Operator, the Federation Registration Operators, Collaboration Contexts and the federation endpoints, and (#entity_statements), (#entity_statements, use title), covers the validity of Entity Statements. (#trust_chains), (#trust_chains, use title), covers how Trust Chains are resolved, the constraints set by the Trust Anchor, and how long a Client Registration may remain valid. The Registration Policies applied when an Entity is registered are given in (#registration_policies), (#registration_policies, use title), and how an Entity joins BAS is described in (#joining_the_federation), (#joining_the_federation, use title). (#protocol_compliance), (#protocol_compliance, use title), covers the requirements that OAuth 2.0 Clients, Authorization Servers and Protected Resources comply with, and (#security_requirements), (#security_requirements, use title), covers the security requirements.
 
 ## Requirements Notation and Conventions {#requirements_notation_and_conventions}
 
@@ -51,11 +51,11 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 Terms are used as defined in [@!OpenID.Federation], [@!OIDC.Sweden.Federation] and [@!Ena.OAuth2]. In addition, this document defines the following terms:
 
-- Federation Operator (Federationsoperatör) – Operates the BAS Trust Anchor; Digg.
-- Federation Registration Operator (Anslutningsoperatör) – Registers the Entities of Federation Members in BAS.
+- Federation Operator (federationsoperatör) – Operates the BAS Trust Anchor; Digg.
+- Federation Registration Operator (anslutningsoperatör) – Registers the Entities of Federation Members in BAS.
 - Federation Registration Entity (anslutningstjänst) – As defined in [@!OIDC.Sweden.Federation]; in BAS operated by a Federation Registration Operator.
-- Federation Member (Federationsmedlem) – An organization connected to BAS, on whose behalf Entities are registered.
-- Collaboration Context (samverkanskontext) – A context in which a set of parties agree on the information exchange between their Entities, such as scopes and access decisions. A Collaboration Context **MAY** restrict further what BAS permits, but **MUST NOT** relax the requirements of BAS.
+- Federation Member (federationsmedlem) – An organization connected to BAS, on whose behalf Entities are registered.
+- Collaboration Context (samverkanskontext) – A context in which a set of parties agree on the information exchange between their Entities, such as scopes and access decisions, see (#collaboration_contexts), (#collaboration_contexts, use title).
 
 # Federation Setup {#federation_setup}
 
@@ -65,15 +65,19 @@ The Swedish Agency for Digital Government (Digg) is the Federation Operator of B
 
 The base URL of BAS is `https://fed.ena-infrastructure.se`. Identifiers that the Federation Operator defines are formed under this URL. This is the base URL that [@!OIDC.Sweden.Federation, section 2.1] requires the Federation Rules to define. The Registration Policy URIs defined by [@!SIB.Registration] are an exception: they are shared across Ena and are formed under `https://id.ena-infrastructure.se`, see (#registration_policies), (#registration_policies, use title).
 
-The Entity Identifiers, endpoints and Federation Entity Keys of the Trust Anchor for each environment are published in [@!SIB.BAS.Structure].
+The Entity Identifiers, endpoints and Federation Entity Keys of the Trust Anchor for each environment are published in [@!BAS.Structure].
 
 ## Federation Registration Operators {#federation_registration_operators}
 
-Apart from the Trust Anchor, the Entities that provide federation services in BAS are operated by Federation Registration Operators. A Federation Registration Operator is connected to BAS under [@!SIB.Connection] and operates a Federation Registration Entity, through which it registers the Entities of Federation Members under [@!SIB.Registration]. The Federation Registration Entities of BAS are listed in [@!SIB.BAS.Structure].
+Apart from the Trust Anchor, the Entities that provide federation services in BAS are operated by Federation Registration Operators. A Federation Registration Operator is connected to BAS under [@!SIB.Connection] and operates a Federation Registration Entity, through which it registers the Entities of Federation Members under [@!SIB.Registration]. The Federation Registration Entities of BAS are listed in [@!BAS.Structure].
+
+## Collaboration Contexts {#collaboration_contexts}
+
+Parties that exchange information within BAS may agree on the terms of the exchange in a Collaboration Context. A Collaboration Context **MAY** restrict further what BAS permits, in this document and in the documents it refers to, such as [@!BAS.Metadata] and [@!BAS.Security].
 
 ## Federation Endpoints {#federation_endpoints}
 
-The federation endpoints of the Trust Anchor and the Federation Registration Entities do not require client authentication, see [@!OpenID.Federation, section 8.8]. The endpoints of each environment are listed in [@!SIB.BAS.Structure].
+The federation endpoints of the Trust Anchor and the Federation Registration Entities do not require client authentication, see [@!OpenID.Federation, section 8.8]. The endpoints of each environment are listed in [@!BAS.Structure].
 
 # Entity Statements {#entity_statements}
 
@@ -93,7 +97,7 @@ Hosted Entity Configurations will be defined in a later version of this document
 
 ## Resolving Trust Chains {#resolving_trust_chains}
 
-The BAS Trust Anchor provides a resolve endpoint, see [@!OpenID.Federation, section 8.3]. The endpoint of each environment is listed in [@!SIB.BAS.Structure]. Since the resolver is the Trust Anchor itself, an Entity that uses it does not need to configure trust in any other Entity than the Trust Anchor.
+The BAS Trust Anchor provides a resolve endpoint, see [@!OpenID.Federation, section 8.3]. The endpoint of each environment is listed in [@!BAS.Structure]. Since the resolver is the Trust Anchor itself, an Entity that uses it does not need to configure trust in any other Entity than the Trust Anchor.
 
 It is **RECOMMENDED** that Entities use the Trust Anchor's resolver to obtain the Resolved Metadata and Trust Marks of peer Entities, in line with [@!OIDC.Sweden.Federation, section 2.3]. An Entity that does so does not build or validate Trust Chains itself.
 
@@ -173,7 +177,7 @@ Verification of Registration Submitter will be defined in a later version of thi
 
 ## Joining as a Federation Registration Operator {#joining_as_a_federation_registration_operator}
 
-An organization joins BAS as a Federation Registration Operator by being connected in that role under [@!SIB.Connection]. The Federation Operator then registers its Federation Registration Entity by issuing a Subordinate Statement for it from the Trust Anchor, with the constraints of (#constraints), (#constraints, use title). The Federation Registration Entity is listed in [@!SIB.BAS.Structure].
+An organization joins BAS as a Federation Registration Operator by being connected in that role under [@!SIB.Connection]. The Federation Operator then registers its Federation Registration Entity by issuing a Subordinate Statement for it from the Trust Anchor, with the constraints of (#constraints), (#constraints, use title). The Federation Registration Entity is listed in [@!BAS.Structure].
 
 A> A reference to the relevant SIB agreement is to be added.
 
@@ -197,7 +201,7 @@ OAuth 2.0 Clients, Authorization Servers and Protected Resources **MUST** comply
 
 A Protected Resource is not required to be registered in BAS. The metadata of OAuth 2.0 Clients and Authorization Servers, and of Protected Resources registered in BAS, **MUST** meet the requirements of [@!BAS.Metadata].
 
-[@!BAS.Metadata] profiles only the metadata that the federation needs. Protocol metadata follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope, and is decided by the parties to the exchange or by a Collaboration Context.
+[@!BAS.Metadata] profiles only the metadata that the federation needs. Protocol metadata follows [@!Ena.OAuth2]. The information exchange between Entities, such as scopes and access decisions, is out of scope, and is decided by the parties to the exchange or by a Collaboration Context, see (#collaboration_contexts), (#collaboration_contexts, use title).
 
 # Security Requirements {#security_requirements}
 
@@ -207,29 +211,42 @@ The Federation Registration Operator checks that the security requirements are m
 
 {backmatter}
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Metadata">
   <front>
-    <title>BAS: Federation Metadata Requirements, draft 01</title>
+    <title>BAS Federation Metadata Requirements 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="26" month="October" year="2026"/>
   </front>
 </reference>
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="BAS.Security">
   <front>
-    <title>BAS: Security Requirements 1.0, draft 01</title>
+    <title>BAS: Federation Security Requirements 1.0 – draft 01</title>
     <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
-    <date month="October" year="2026"/>
+    <date day="23" month="October" year="2026"/>
+  </front>
+</reference>
+
+<!-- [PLATSHÅLLARE] URL saknas. -->
+<reference anchor="BAS.Structure">
+  <front>
+    <title>BAS: OpenID Federation Structure 1.0 – draft 01</title>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
+      <organization>The Swedish Agency for Digital Government (Digg)</organization>
+    </author>
+    <date day="26" month="October" year="2026"/>
   </front>
 </reference>
 
 <reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
-    <title>Ena OAuth 2.0 Interoperability Profile, Version 1.0, draft 01</title>
+    <title>Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01</title>
     <author initials="M." surname="Lindström">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
@@ -237,16 +254,7 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
-<reference anchor="BAS.Structure">
-  <front>
-    <title>BAS Federation Structure</title>
-    <author fullname="Henric Norlander" initials="H." surname="Norlander">
-      <organization>The Swedish Agency for Digital Government (Digg)</organization>
-    </author>
-    <date month="October" year="2026"/>
-  </front>
-</reference>
-
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="SIB.Connection">
   <front>
     <title>Anslutning – Tillämpningskrav och vägledning, version 12</title>
@@ -257,6 +265,7 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
+<!-- [PLATSHÅLLARE] URL saknas. -->
 <reference anchor="SIB.Registration">
   <front>
     <title>Registrering – Tillämpningskrav och vägledning, version 13</title>
@@ -270,20 +279,22 @@ The Federation Registration Operator checks that the security requirements are m
 <reference anchor="OIDC.Sweden.Federation" target="https://www.oidc.se/specifications/swedish-openid-federation-profile.html">
   <front>
     <title>Swedish OpenID Federation Deployment and Interoperability Profile 1.0</title>
-    <author initials="M." surname="Lindström"/>
-    <author initials="S." surname="Santesson"/>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <author fullname="Stefan Santesson" initials="S." surname="Santesson"/>
+    <date day="16" month="October" year="2026"/>
   </front>
 </reference>
 
 <reference anchor="OIDC.Sweden.RegPolicy" target="https://www.oidc.se/openid-federation-registration-policy/main.html">
   <front>
-    <title>OpenID Federation Registration Policy 1.0</title>
-    <author initials="M." surname="Lindström"/>
-    <author initials="S." surname="Santesson"/>
+    <title>OpenID Federation Registration Policy 1.0 – draft 01</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <author fullname="Stefan Santesson" initials="S." surname="Santesson"/>
+    <date day="30" month="March" year="2026"/>
   </front>
 </reference>
 
-<reference anchor="OpenID.Federation">
+<reference anchor="OpenID.Federation" target="https://openid.net/specs/openid-federation-1_1.html">
   <front>
     <title>OpenID Federation 1.1</title>
     <author initials="R." surname="Hedberg"/>
@@ -296,7 +307,7 @@ The Federation Registration Operator checks that the security requirements are m
   </front>
 </reference>
 
-<reference anchor="OpenID.Federation.Connect">
+<reference anchor="OpenID.Federation.Connect" target="https://openid.net/specs/openid-federation-connect-1_1.html">
   <front>
     <title>OpenID Federation for OpenID Connect 1.1</title>
     <author initials="R." surname="Hedberg"/>
@@ -311,9 +322,9 @@ The Federation Registration Operator checks that the security requirements are m
 
 # Notices
 
-Copyright (c) The Swedish Agency for Digital Government (Digg), 2015-2026. All Rights Reserved.
+Copyright (c) The Swedish Agency for Digital Government (Digg), 2026. All Rights Reserved.
 
 # Document History
 
-**1.0**
-: Initial version
+1.0 – draft 01
+: Initial version.

@@ -16,6 +16,8 @@ initials = "H."
 surname = "Norlander"
 fullname = "Henric Norlander"
 organization = "The Swedish Agency for Digital Government (Digg)"
+  [author.address]
+  emails = ["extern.henric.norlander@digg.se", "henric@nodnio.se"]
 %%%
 
 .# Abstract
@@ -98,9 +100,9 @@ Trust Marks are not yet defined for BAS, see [@!BAS.Rules, section 5].
 
 ### Federation Registration Entities {#production_federation_registration_entities}
 
-| Federation Registration Operator | Entity Identifier | Federation List Endpoint | Registration interface |
-| --- | --- | --- | --- |
-|  |  |  |  |
+| Federation Registration Operator | Entity Identifier | Registration interface |
+| --- | --- | --- |
+|  |  |  |
 
 ## QA {#qa}
 
@@ -146,27 +148,23 @@ Trust Marks are not yet defined for BAS, see [@!BAS.Rules, section 5].
   </front>
 </reference>
 
-<!-- TODO: target URL, author and date. -->
-
-<reference anchor="Ena.OAuth2">
+<reference anchor="Ena.OAuth2" target="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">
   <front>
-    <title>Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01</title>
-    <author fullname="TODO"/>
+    <title>Ena OAuth 2.0 Interoperability Profile 1.0, draft 01</title>
+    <author fullname="Martin Lindström" initials="M." surname="Lindström"/>
+    <date day="31" month="March" year="2025"/>
   </front>
 </reference>
-
-<!-- TODO: target URL and date. -->
 
 <reference anchor="BAS.Rules">
   <front>
-    <title>BAS: Federation Rules and Policies 1.0 – draft 02</title>
-    <author>
+    <title>BAS: Federation Rules and Policies 1.0, draft 01</title>
+    <author fullname="Henric Norlander" initials="H." surname="Norlander">
       <organization>The Swedish Agency for Digital Government (Digg)</organization>
     </author>
+    <date month="October" year="2026"/>
   </front>
 </reference>
-
-<!-- TODO: target URL, author and date. -->
 
 <reference anchor="SIB.Registration">
   <front>
@@ -181,5 +179,5 @@ Copyright (c) The Swedish Agency for Digital Government (Digg), 2026. All Rights
 
 # Document History
 
-**1.0**
-: Initial version
+1.0 – draft 01
+: Initial version.
