@@ -149,12 +149,7 @@ that relies on SHA-1, **MUST NOT** be used.
 
 ## Collaboration Contexts {#collaboration_contexts}
 
-A Collaboration Context **MAY** restrict which of the algorithms permitted by
-(#signature_algorithms), (#signature_algorithms, use title), are used within
-it, as [@!BAS.Rules, section 2.3] allows. It **MUST NOT** permit an algorithm
-that (#signature_algorithms), (#signature_algorithms, use title), prohibits,
-and **MUST NOT** remove the requirement to support validation of RS256 and
-ES256.
+A Collaboration Context MAY restrict which of the algorithms permitted by (#signature_algorithms), (#signature_algorithms, use title), are used within it, as [@!BAS.Rules, section 2.3] allows. Such a restriction applies to the algorithms used, and does not affect the requirement that all Entities support validation of RS256 and ES256.
 
 # Key Rollover {#key_rollover}
 

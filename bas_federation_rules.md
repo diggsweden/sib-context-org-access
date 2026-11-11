@@ -73,7 +73,7 @@ Apart from the Trust Anchor, the Entities that provide federation services in BA
 
 ## Collaboration Contexts {#collaboration_contexts}
 
-Parties that exchange information within BAS may agree on the terms of the exchange in a Collaboration Context. A Collaboration Context **MAY** restrict further what BAS permits, in this document and in the documents it refers to, such as [@!BAS.Metadata] and [@!BAS.Security].
+Parties that exchange information within BAS may agree on the terms of the exchange in a Collaboration Context. A Collaboration Context MAY restrict further what BAS permits, in this document and in the documents it refers to, such as [@!BAS.Metadata] and [@!BAS.Security]. It MUST NOT relax a requirement of BAS or permit what BAS prohibits.
 
 ## Federation Endpoints {#federation_endpoints}
 
