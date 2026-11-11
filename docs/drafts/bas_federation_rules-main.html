@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>BAS – Federation Rules and Policies 1.0 – draft 01</title>
+<meta content="Henric Norlander" name="author">
+<meta content="
+       This document states the rules and policies of the BAS federation, which is built upon OpenID Federation 1.1 and profiled by the Swedish OpenID Federation Deployment and Interoperability Profile. 
+    " name="description">
+<meta content="xml2rfc 3.16.0" name="generator">
+<meta content="openid federation" name="keyword">
+<meta content="oauth 2.0" name="keyword">
+<meta content="bas_federation_rules" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.16.0
+    Python 3.10.2
+    appdirs 1.4.4
+    ConfigArgParse 1.5.3
+    google-i18n-address 2.5.2
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.2
+    lxml 4.9.2
+    MarkupSafe 2.1.2
+    pycountry 22.3.5
+    PyYAML 6.0
+    requests 2.28.2
+    setuptools 57.5.0
+    six 1.16.0
+    wcwidth 0.2.6
+-->
+<link href="./bas_federation_rules.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necessary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+:root {
+  --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Noto Serif', 'Times', 'Times New Roman', serif;
+  --font-mono: 'Roboto Mono', Courier, 'Courier New', monospace;
+}
+
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+svg[font-family~="serif" i], svg [font-family~="serif" i] {
+  font-family: var(--font-serif);
+}
+svg[font-family~="sans-serif" i], svg [font-family~="sans-serif" i] {
+  font-family: var(--font-sans);
+}
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  display: table;
+  border: none;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre {
+  background-color: #f9f9f9;
+  font-family: var(--font-mono);
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+/* Fix PDF info block run off issue */
+@media print {
+  #identifiers dd {
+    float: none;
+  }
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: var(--font-sans);
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  .breakable pre {
+    break-inside: auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The following is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+.sourcecode pre,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .artwork > pre,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: lower-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background slightly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr {
+  break-inside: avoid;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: auto;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottom margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the compact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div.sourcecode:first-child,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type:only-child {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+</head>
+<body class="xml2rfc">
+<div><img style="margin-bottom: 24px;" align="left" src="img/sib.png"></img></div>
+<script src="metadata.min.js"></script>
+<table class="ears">
+<thead><tr>
+<td class="left"></td>
+<td class="center">bas_federation_rules</td>
+<td class="right">October 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Norlander</td>
+<td class="center">Informational</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-10-27" class="published">27 October 2026</time>
+    </dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">H. Norlander</div>
+<div class="org">The Swedish Agency for Digital Government (Digg)</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">BAS – Federation Rules and Policies 1.0 – draft 01</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document states the rules and policies of the BAS federation, which is built upon OpenID Federation 1.1 and profiled by the Swedish OpenID Federation Deployment and Interoperability Profile.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.1">
+      <h2 id="name-registration-number">
+<a href="#name-registration-number" class="section-name selfRef">Registration Number</a>
+      </h2>
+<p id="section-note.1-1">&lt;YYYY-nnnn&gt;<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+</section>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-notation-and-c" class="internal xref">Requirements Notation and Conventions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-federation-setup" class="internal xref">Federation Setup</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-the-federation-operator" class="internal xref">The Federation Operator</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-federation-registration-ope" class="internal xref">Federation Registration Operators</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-collaboration-contexts" class="internal xref">Collaboration Contexts</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-federation-endpoints" class="internal xref">Federation Endpoints</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-entity-statements" class="internal xref">Entity Statements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-validity" class="internal xref">Validity</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-hosted-entity-configuration" class="internal xref">Hosted Entity Configurations</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-trust-chains" class="internal xref">Trust Chains</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-resolving-trust-chains" class="internal xref">Resolving Trust Chains</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-constraints" class="internal xref">Constraints</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-validity-of-client-registra" class="internal xref">Validity of Client Registrations</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-trust-marks" class="internal xref">Trust Marks</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-registration-policies" class="internal xref">Registration Policies</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-verification-of-organisatio" class="internal xref">Verification of Organisational Affiliation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-verification-of-registratio" class="internal xref">Verification of Registration Submitter</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-joining-the-federation" class="internal xref">Joining the Federation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-joining-as-a-federation-reg" class="internal xref">Joining as a Federation Registration Operator</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-joining-as-a-federation-mem" class="internal xref">Joining as a Federation Member</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-updating-a-registration" class="internal xref">Updating a Registration</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-oauth-20-compliance" class="internal xref">OAuth 2.0 Compliance</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-requirements" class="internal xref">Security Requirements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-notices" class="internal xref">Notices</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">BAS (Swedish: Federationskontext BAS) is a federation context for machine-to-machine access within, and towards, the Swedish public sector. It is built upon <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> and <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span>, profiled by <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>. Its Entities are OAuth 2.0 Clients, Authorization Servers and Protected Resources following <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">This document is the Federation Rules of BAS required by <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html" class="relref">Section 2.1</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>. It is the entry document for the federation. It states what a participant has to comply with, and refers to the other BAS documents for the details. A participant that follows these rules thereby follows the documents they refer to:<a href="#section-1-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-1-3.1">
+          <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span> describes the structure of the federation and its environments, and gives the Entity Identifiers, endpoints, and Trust Anchor keys of each environment.<a href="#section-1-3.1" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-1-3.2">
+          <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span> states the metadata requirements and the Trust Anchor metadata policy.<a href="#section-1-3.2" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-1-3.3">
+          <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> states the requirements on keys, algorithms and client authentication.<a href="#section-1-3.3" class="pilcrow">¶</a>
+</li>
+        <li class="compact" id="section-1-3.4">
+          <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> is the OAuth 2.0 profile that OAuth 2.0 Clients, Authorization Servers and Protected Resources follow.<a href="#section-1-3.4" class="pilcrow">¶</a>
+</li>
+      </ul>
+<p id="section-1-4"><a href="#federation_setup" class="auto internal xref">Section 2</a>, <a href="#federation_setup" class="internal xref">Federation Setup</a>, covers the Federation Operator, the Federation Registration Operators, Collaboration Contexts and the federation endpoints, and <a href="#entity_statements" class="auto internal xref">Section 3</a>, <a href="#entity_statements" class="internal xref">Entity Statements</a>, covers the validity of Entity Statements. <a href="#trust_chains" class="auto internal xref">Section 4</a>, <a href="#trust_chains" class="internal xref">Trust Chains</a>, covers how Trust Chains are resolved, the constraints set by the Trust Anchor, and how long a Client Registration may remain valid. The Registration Policies applied when an Entity is registered are given in <a href="#registration_policies" class="auto internal xref">Section 6</a>, <a href="#registration_policies" class="internal xref">Registration Policies</a>, and how an Entity joins BAS is described in <a href="#joining_the_federation" class="auto internal xref">Section 7</a>, <a href="#joining_the_federation" class="internal xref">Joining the Federation</a>. <a href="#protocol_compliance" class="auto internal xref">Section 8</a>, <a href="#protocol_compliance" class="internal xref">OAuth 2.0 Compliance</a>, covers the requirements that OAuth 2.0 Clients, Authorization Servers and Protected Resources comply with, and <a href="#security_requirements" class="auto internal xref">Section 9</a>, <a href="#security_requirements" class="internal xref">Security Requirements</a>, covers the security requirements.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<div id="requirements_notation_and_conventions">
+<section id="section-1.1">
+        <h3 id="name-requirements-notation-and-c">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-notation-and-c" class="section-name selfRef">Requirements Notation and Conventions</a>
+        </h3>
+<p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-1.2">
+        <h3 id="name-terminology">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-1.2-1">Terms are used as defined in <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span> and <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. In addition, this document defines the following terms:<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-1.2-2.1">Federation Operator (federationsoperat&#246;r) - Operates the BAS Trust Anchor; Digg.<a href="#section-1.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-1.2-2.2">Federation Registration Operator (anslutningsoperat&#246;r) - Registers the Entities of Federation Members in BAS.<a href="#section-1.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-1.2-2.3">Federation Registration Entity (anslutningstj&#228;nst) - As defined in <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>; in BAS operated by a Federation Registration Operator.<a href="#section-1.2-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-1.2-2.4">Federation Member (federationsmedlem) - An organization connected to BAS, on whose behalf Entities are registered.<a href="#section-1.2-2.4" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-1.2-2.5">Collaboration Context (samverkanskontext) - A context in which a set of parties agree on the information exchange between their Entities, such as scopes and access decisions, see <a href="#collaboration_contexts" class="auto internal xref">Section 2.3</a>, <a href="#collaboration_contexts" class="internal xref">Collaboration Contexts</a>.<a href="#section-1.2-2.5" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="federation_setup">
+<section id="section-2">
+      <h2 id="name-federation-setup">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-federation-setup" class="section-name selfRef">Federation Setup</a>
+      </h2>
+<div id="the_federation_operator">
+<section id="section-2.1">
+        <h3 id="name-the-federation-operator">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-the-federation-operator" class="section-name selfRef">The Federation Operator</a>
+        </h3>
+<p id="section-2.1-1">The Swedish Agency for Digital Government (Digg) is the Federation Operator of BAS. Digg operates the Trust Anchor and maintains its metadata policy, see <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span>. The Federation Registration Entities are operated by Federation Registration Operators, not by the Federation Operator, see <a href="#federation_registration_operators" class="auto internal xref">Section 2.2</a>, <a href="#federation_registration_operators" class="internal xref">Federation Registration Operators</a>.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">The base URL of BAS is <code>https://fed.ena-infrastructure.se</code>. Identifiers that the Federation Operator defines are formed under this URL. This is the base URL that <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html" class="relref">Section 2.1</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span> requires the Federation Rules to define. The Registration Policy URIs defined by <span>[<a href="#SIB.Registration" class="cite xref">SIB.Registration</a>]</span> are an exception: they are shared across Ena and are formed under <code>https://id.ena-infrastructure.se</code>, see <a href="#registration_policies" class="auto internal xref">Section 6</a>, <a href="#registration_policies" class="internal xref">Registration Policies</a>.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">The Entity Identifiers, endpoints and Federation Entity Keys of the Trust Anchor for each environment are published in <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span>.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="federation_registration_operators">
+<section id="section-2.2">
+        <h3 id="name-federation-registration-ope">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-federation-registration-ope" class="section-name selfRef">Federation Registration Operators</a>
+        </h3>
+<p id="section-2.2-1">Apart from the Trust Anchor, the Entities that provide federation services in BAS are operated by Federation Registration Operators. A Federation Registration Operator is connected to BAS under <span>[<a href="#SIB.Connection" class="cite xref">SIB.Connection</a>]</span> and operates a Federation Registration Entity, through which it registers the Entities of Federation Members under <span>[<a href="#SIB.Registration" class="cite xref">SIB.Registration</a>]</span>. The Federation Registration Entities of BAS are listed in <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span>.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="collaboration_contexts">
+<section id="section-2.3">
+        <h3 id="name-collaboration-contexts">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-collaboration-contexts" class="section-name selfRef">Collaboration Contexts</a>
+        </h3>
+<p id="section-2.3-1">Parties that exchange information within BAS may agree on the terms of the exchange in a Collaboration Context. A Collaboration Context <span class="bcp14">MAY</span> restrict further what BAS permits, in this document and in the documents it refers to, such as <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span> and <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="federation_endpoints">
+<section id="section-2.4">
+        <h3 id="name-federation-endpoints">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-federation-endpoints" class="section-name selfRef">Federation Endpoints</a>
+        </h3>
+<p id="section-2.4-1">The federation endpoints of the Trust Anchor and the Federation Registration Entities do not require client authentication, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 8.8</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>. The endpoints of each environment are listed in <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span>.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="entity_statements">
+<section id="section-3">
+      <h2 id="name-entity-statements">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-entity-statements" class="section-name selfRef">Entity Statements</a>
+      </h2>
+<div id="validity">
+<section id="section-3.1">
+        <h3 id="name-validity">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-validity" class="section-name selfRef">Validity</a>
+        </h3>
+<p id="section-3.1-1">It is <span class="bcp14">RECOMMENDED</span> that an Entity set the validity of its Entity Configuration, as given by the <code>exp</code> Claim, to 7 days. An Entity that knows that a change to its metadata is about to happen <span class="bcp14">MAY</span> set a shorter validity.<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2">New Entity Configurations <span class="bcp14">SHOULD</span> be published according to the recommendation in <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html" class="relref">Section 2.4.1</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>, that is, when half the lifetime of the current one has elapsed.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">The Entity Configuration of the Trust Anchor, and the Subordinate Statements issued by the Trust Anchor and the Federation Registration Entities, have a validity of 7 days.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="hosted_entity_configurations">
+<section id="section-3.2">
+        <h3 id="name-hosted-entity-configuration">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-hosted-entity-configuration" class="section-name selfRef">Hosted Entity Configurations</a>
+        </h3>
+<p id="section-3.2-1">Hosted Entity Configurations will be defined in a later version of this document.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="trust_chains">
+<section id="section-4">
+      <h2 id="name-trust-chains">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-trust-chains" class="section-name selfRef">Trust Chains</a>
+      </h2>
+<div id="resolving_trust_chains">
+<section id="section-4.1">
+        <h3 id="name-resolving-trust-chains">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-resolving-trust-chains" class="section-name selfRef">Resolving Trust Chains</a>
+        </h3>
+<p id="section-4.1-1">The BAS Trust Anchor provides a resolve endpoint, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 8.3</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>. The endpoint of each environment is listed in <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span>. Since the resolver is the Trust Anchor itself, an Entity that uses it does not need to configure trust in any other Entity than the Trust Anchor.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">It is <span class="bcp14">RECOMMENDED</span> that Entities use the Trust Anchor's resolver to obtain the Resolved Metadata and Trust Marks of peer Entities, in line with <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html" class="relref">Section 2.3</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>. An Entity that does so does not build or validate Trust Chains itself.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="constraints">
+<section id="section-4.2">
+        <h3 id="name-constraints">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-constraints" class="section-name selfRef">Constraints</a>
+        </h3>
+<p id="section-4.2-1">Constraints are applied when Trust Chains are resolved and validated.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">The BAS Trust Anchor sets two constraints in the Subordinate Statement it issues for each Federation Registration Entity: <code>allowed_entity_types</code>, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 6.2.3</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, and <code>registration_policy</code>, see <span><a href="https://www.oidc.se/openid-federation-registration-policy/main.html" class="relref">Section 3</a> of [<a href="#OIDC.Sweden.RegPolicy" class="cite xref">OIDC.Sweden.RegPolicy</a>]</span>.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">The <code>allowed_entity_types</code> constraint holds <code>oauth_client</code>, <code>oauth_authorization_server</code> and <code>oauth_resource</code>. Entity Types not listed in the constraint are removed from the subject's metadata during Trust Chain resolution. The Entity Type <code>federation_entity</code> is always allowed and is not listed, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 6.2.3</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">The <code>registration_policy</code> constraint requires that the Registration Policies of <a href="#registration_policies" class="auto internal xref">Section 6</a>, <a href="#registration_policies" class="internal xref">Registration Policies</a> have been applied to every Entity registered by a Federation Registration Entity. A constraint rule is satisfied if at least one of the policies it lists appears in the <code>registration_policy</code> Claim of the Subordinate Statement, so the constraint holds one rule for each policy. A peer can therefore rely on what the policies check without checking it itself.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">The example below is non-normative.<a href="#section-4.2-5" class="pilcrow">¶</a></p>
+<span id="name-example-of-the-constraints-"></span><figure id="figure-1">
+          <div class="lang-json sourcecode" id="section-4.2-6.1">
+<pre>{
+  "iss": "https://ta.example.se",
+  "sub": "https://fre.example.se",
+  ...
+  "constraints": {
+    "allowed_entity_types": [
+      "oauth_client",
+      "oauth_authorization_server",
+      "oauth_resource"
+    ],
+    "registration_policy": [
+      {
+        "entity_types": [
+          "oauth_client",
+          "oauth_authorization_server",
+          "oauth_resource"
+        ],
+        "policy": [
+          "https://id.ena-infrastructure.se/regpolicy/v1/orgconnection"
+        ]
+      }
+    ]
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-example-of-the-constraints-" class="selfRef">Example of the constraints Claim of the Subordinate Statement issued by the BAS Trust Anchor for a Federation Registration Entity.</a>
+          </figcaption></figure>
+</section>
+</div>
+<div id="validity_of_client_registrations">
+<section id="section-4.3">
+        <h3 id="name-validity-of-client-registra">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-validity-of-client-registra" class="section-name selfRef">Validity of Client Registrations</a>
+        </h3>
+<p id="section-4.3-1">A Client Registration, meaning the incorporation of a Client into the service configuration of an Authorization Server based on the Client's Resolved Metadata, <span class="bcp14">MUST NOT</span> remain valid longer than the Trust Chain of the Client from which it was made. An Authorization Server that can no longer obtain a valid Trust Chain for a Client <span class="bcp14">MUST</span> stop issuing access tokens to it.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">With the validity periods of <a href="#validity" class="auto internal xref">Section 3.1</a>, <a href="#validity" class="internal xref">Validity</a>, an Entity removed from BAS can remain accepted for at most the remaining validity of the Trust Chain last resolved for it.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="trust_marks">
+<section id="section-5">
+      <h2 id="name-trust-marks">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-trust-marks" class="section-name selfRef">Trust Marks</a>
+      </h2>
+<p id="section-5-1">Trust Marks will be defined in a later version of this document.<a href="#section-5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="registration_policies">
+<section id="section-6">
+      <h2 id="name-registration-policies">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-registration-policies" class="section-name selfRef">Registration Policies</a>
+      </h2>
+<p id="section-6-1">A Registration Policy describes a policy under which an Entity was registered in the federation. The Registration Policies that were applied are listed in the <code>registration_policy</code> Claim of the Subordinate Statement issued for the Entity, see <span><a href="https://www.oidc.se/openid-federation-registration-policy/main.html" class="relref">Section 2</a> of [<a href="#OIDC.Sweden.RegPolicy" class="cite xref">OIDC.Sweden.RegPolicy</a>]</span>. BAS applies the Registration Policies of <span>[<a href="#SIB.Registration" class="cite xref">SIB.Registration</a>]</span> below.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<div id="verification_of_organisational_affiliation">
+<section id="section-6.1">
+        <h3 id="name-verification-of-organisatio">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-verification-of-organisatio" class="section-name selfRef">Verification of Organisational Affiliation</a>
+        </h3>
+<p id="section-6.1-1">Identifier: <code>https://id.ena-infrastructure.se/regpolicy/v1/orgconnection</code><a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-2">When this policy has been applied, the Federation Registration Entity asserts that:<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-6.1-3.1">the Entity belongs to a Federation Member connected under <span>[<a href="#SIB.Connection" class="cite xref">SIB.Connection</a>]</span>,<a href="#section-6.1-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-6.1-3.2">
+            <code>organization_name</code> is the name of that Federation Member, see <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span>, and<a href="#section-6.1-3.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-6.1-3.3">
+            <code>organization_identifier</code> holds the organization identifier of that Federation Member, in one of the formats of <span><a href="#" class="relref">Section 3.1</a> of [<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span>.<a href="#section-6.1-3.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-6.1-4">The verification is performed as defined in <span>[<a href="#SIB.Registration" class="cite xref">SIB.Registration</a>]</span>. These values are set in the Subordinate Statement issued for the Entity, and cannot be changed without the involvement of the Federation Registration Operator.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">With the <code>registration_policy</code> constraint the Trust Anchor requires that every Entity has been registered under this policy. A peer can then rely on the organization information of an Entity without checking it itself.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="verification_of_registration_submitter">
+<section id="section-6.2">
+        <h3 id="name-verification-of-registratio">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-verification-of-registratio" class="section-name selfRef">Verification of Registration Submitter</a>
+        </h3>
+<p id="section-6.2-1">Verification of Registration Submitter will be defined in a later version of this document.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="joining_the_federation">
+<section id="section-7">
+      <h2 id="name-joining-the-federation">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-joining-the-federation" class="section-name selfRef">Joining the Federation</a>
+      </h2>
+<div id="joining_as_a_federation_registration_operator">
+<section id="section-7.1">
+        <h3 id="name-joining-as-a-federation-reg">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-joining-as-a-federation-reg" class="section-name selfRef">Joining as a Federation Registration Operator</a>
+        </h3>
+<p id="section-7.1-1">An organization joins BAS as a Federation Registration Operator by being connected in that role under <span>[<a href="#SIB.Connection" class="cite xref">SIB.Connection</a>]</span>. The Federation Operator then registers its Federation Registration Entity by issuing a Subordinate Statement for it from the Trust Anchor, with the constraints of <a href="#constraints" class="auto internal xref">Section 4.2</a>, <a href="#constraints" class="internal xref">Constraints</a>. The Federation Registration Entity is listed in <span>[<a href="#BAS.Structure" class="cite xref">BAS.Structure</a>]</span>.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<aside id="section-7.1-2">
+          <p id="section-7.1-2.1">A reference to the relevant SIB agreement is to be added.<a href="#section-7.1-2.1" class="pilcrow">¶</a></p>
+</aside>
+</section>
+</div>
+<div id="joining_as_a_federation_member">
+<section id="section-7.2">
+        <h3 id="name-joining-as-a-federation-mem">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-joining-as-a-federation-mem" class="section-name selfRef">Joining as a Federation Member</a>
+        </h3>
+<p id="section-7.2-1">Each organization in the federation has one or more administrators, who are appointed when the organization signs the relevant SIB agreement. How this is done is described in other documentation. The administrators register the organization's Entities via a Federation Registration Operator, see <a href="#federation_registration_operators" class="auto internal xref">Section 2.2</a>, <a href="#federation_registration_operators" class="internal xref">Federation Registration Operators</a>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<aside id="section-7.2-2">
+          <p id="section-7.2-2.1">A reference to the relevant SIB agreement is to be added.<a href="#section-7.2-2.1" class="pilcrow">¶</a></p>
+</aside>
+</section>
+</div>
+<div id="updating_a_registration">
+<section id="section-7.3">
+        <h3 id="name-updating-a-registration">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-updating-a-registration" class="section-name selfRef">Updating a Registration</a>
+        </h3>
+<p id="section-7.3-1">Metadata values that are checked during registration are pinned in the Subordinate Statement that the Federation Registration Entity issues for the Entity. These values are listed in <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span>. Since a pinned value overrides the value in the Entity Configuration, a change to such a value <span class="bcp14">MUST</span> be requested via the Federation Registration Operator, where it is checked in the same way as during registration before the Subordinate Statement is updated.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-2">A change of the Federation Entity Keys of the Entity <span class="bcp14">MUST</span> also be requested via the Federation Registration Operator. An Entity Configuration is signed with a key from the <code>jwks</code> Claim of the Subordinate Statement issued for the Entity, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 4</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, so a new key can only be used after the Federation Registration Entity has issued a Subordinate Statement that contains it.<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+<p id="section-7.3-3">Other changes, such as changes to its protocol keys, are made by the Entity itself, by publishing an updated Entity Configuration.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="protocol_compliance">
+<section id="section-8">
+      <h2 id="name-oauth-20-compliance">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-oauth-20-compliance" class="section-name selfRef">OAuth 2.0 Compliance</a>
+      </h2>
+<p id="section-8-1">OAuth 2.0 Clients, Authorization Servers and Protected Resources <span class="bcp14">MUST</span> comply with the Ena OAuth 2.0 Interoperability Profile <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">A Protected Resource is not required to be registered in BAS. The metadata of OAuth 2.0 Clients and Authorization Servers, and of Protected Resources registered in BAS, <span class="bcp14">MUST</span> meet the requirements of <span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span>.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3"><span>[<a href="#BAS.Metadata" class="cite xref">BAS.Metadata</a>]</span> profiles only the metadata that the federation needs. Protocol metadata follows <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. The information exchange between Entities, such as scopes and access decisions, is out of scope, and is decided by the parties to the exchange or by a Collaboration Context, see <a href="#collaboration_contexts" class="auto internal xref">Section 2.3</a>, <a href="#collaboration_contexts" class="internal xref">Collaboration Contexts</a>.<a href="#section-8-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security_requirements">
+<section id="section-9">
+      <h2 id="name-security-requirements">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-requirements" class="section-name selfRef">Security Requirements</a>
+      </h2>
+<p id="section-9-1">Participants in BAS <span class="bcp14">MUST</span> comply with the security requirements of <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>. They apply to the keys and signatures of the OAuth 2.0 protocol as profiled by <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. For Federation Entity Keys and the signing of Entity Statements, <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html" class="relref">Section 6</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span> applies.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">The Federation Registration Operator checks that the security requirements are met when an Entity is registered.<a href="#section-9-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<section id="section-10">
+      <h2 id="name-normative-references">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
+<dl class="references">
+<dt id="BAS.Metadata">[BAS.Metadata]</dt>
+      <dd>
+<span class="refAuthor">Norlander, H.</span>, <span class="refTitle">"BAS Federation Metadata Requirements 1.0 – draft 01"</span>, <time datetime="2026-10-26" class="refDate">26 October 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="BAS.Security">[BAS.Security]</dt>
+      <dd>
+<span class="refAuthor">Norlander, H.</span>, <span class="refTitle">"BAS: Federation Security Requirements 1.0 – draft 01"</span>, <time datetime="2026-10-23" class="refDate">23 October 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="BAS.Structure">[BAS.Structure]</dt>
+      <dd>
+<span class="refAuthor">Norlander, H.</span>, <span class="refTitle">"BAS: OpenID Federation Structure 1.0 – draft 01"</span>, <time datetime="2026-10-26" class="refDate">26 October 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="Ena.OAuth2">[Ena.OAuth2]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span>, <span class="refTitle">"Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01"</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OIDC.Sweden.Federation">[OIDC.Sweden.Federation]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span> and <span class="refAuthor">S. Santesson</span>, <span class="refTitle">"Swedish OpenID Federation Deployment and Interoperability Profile 1.0"</span>, <time datetime="2026-10-16" class="refDate">16 October 2026</time>, <span>&lt;<a href="https://www.oidc.se/specifications/swedish-openid-federation-profile.html">https://www.oidc.se/specifications/swedish-openid-federation-profile.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OIDC.Sweden.RegPolicy">[OIDC.Sweden.RegPolicy]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span> and <span class="refAuthor">S. Santesson</span>, <span class="refTitle">"OpenID Federation Registration Policy 1.0 – draft 01"</span>, <time datetime="2026-03-30" class="refDate">30 March 2026</time>, <span>&lt;<a href="https://www.oidc.se/openid-federation-registration-policy/main.html">https://www.oidc.se/openid-federation-registration-policy/main.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation">[OpenID.Federation]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M. B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A. Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_1.html">https://openid.net/specs/openid-federation-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation.Connect">[OpenID.Federation.Connect]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M. B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A. Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation for OpenID Connect 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-connect-1_1.html">https://openid.net/specs/openid-federation-connect-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+      <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+      <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SIB.Connection">[SIB.Connection]</dt>
+      <dd>
+<span class="refAuthor">The Swedish Agency for Digital Government (Digg)</span>, <span class="refTitle">"Anslutning – Tillämpningskrav och vägledning, version 12"</span>, <time datetime="2026-09-29" class="refDate">29 September 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="SIB.Registration">[SIB.Registration]</dt>
+    <dd>
+<span class="refAuthor">The Swedish Agency for Digital Government (Digg)</span>, <span class="refTitle">"Registrering – Tillämpningskrav och vägledning, version 13"</span>, <time datetime="2026-09-29" class="refDate">29 September 2026</time>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<div id="notices">
+<section id="appendix-A">
+      <h2 id="name-notices">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-notices" class="section-name selfRef">Notices</a>
+      </h2>
+<p id="appendix-A-1">Copyright (c) The Swedish Agency for Digital Government (Digg), 2026. All Rights Reserved.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="document-history">
+<section id="appendix-B">
+      <h2 id="name-document-history">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
+      </h2>
+<span class="break"></span><dl class="dlCompact dlParallel" id="appendix-B-1">
+        <dt id="appendix-B-1.1">1.0 - draft 01</dt>
+        <dd style="margin-left: 1.5em" id="appendix-B-1.2">Initial version.<a href="#appendix-B-1.2" class="pilcrow">¶</a>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Henric Norlander</span></div>
+<div dir="auto" class="left"><span class="org">The Swedish Agency for Digital Government (Digg)</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:extern.henric.norlander@digg.se" class="email">extern.henric.norlander@digg.se</a>, <a href="mailto:henric@nodnio.se" class="email">henric@nodnio.se</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>

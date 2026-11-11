@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>BAS Federation Metadata Requirements 1.0 – draft 01</title>
+<meta content="Henric Norlander" name="author">
+<meta content="
+       This specification defines the metadata requirements for OAuth 2.0 Clients, Authorization Servers and Protected Resources participating in the BAS federation  . The metadata is published in Entity Configurations according to OpenID Federation 1.1   and  , as profiled by  . The requirements apply to the Resolved Metadata, meaning the metadata that results once the Trust Chain of an Entity has been applied to the declarations the Entity makes about itself. The OAuth 2.0 protocol itself follows the Ena OAuth 2.0 Interoperability Profile  . 
+    " name="description">
+<meta content="xml2rfc 3.16.0" name="generator">
+<meta content="openid federation" name="keyword">
+<meta content="oauth 2.0" name="keyword">
+<meta content="bas_federation_metadata_requriements" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.16.0
+    Python 3.10.2
+    appdirs 1.4.4
+    ConfigArgParse 1.5.3
+    google-i18n-address 2.5.2
+    html5lib 1.1
+    intervaltree 3.1.0
+    Jinja2 3.1.2
+    lxml 4.9.2
+    MarkupSafe 2.1.2
+    pycountry 22.3.5
+    PyYAML 6.0
+    requests 2.28.2
+    setuptools 57.5.0
+    six 1.16.0
+    wcwidth 0.2.6
+-->
+<link href="./bas_federation_metadata_requriements.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">/*
+
+  NOTE: Changes at the bottom of this file overrides some earlier settings.
+
+  Once the style has stabilized and has been adopted as an official RFC style,
+  this can be consolidated so that style settings occur only in one place, but
+  for now the contents of this file consists first of the initial CSS work as
+  provided to the RFC Formatter (xml2rfc) work, followed by itemized and
+  commented changes found necessary during the development of the v3
+  formatters.
+
+*/
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans'); /* Sans-serif */
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif'); /* Serif (print) */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); /* Monospace */
+
+:root {
+  --font-sans: 'Noto Sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'Noto Serif', 'Times', 'Times New Roman', serif;
+  --font-mono: 'Roboto Mono', Courier, 'Courier New', monospace;
+}
+
+@viewport {
+  zoom: 1.0;
+  width: extend-to-zoom;
+}
+@-ms-viewport {
+  width: extend-to-zoom;
+  zoom: 1.0;
+}
+/* general and mobile first */
+html {
+}
+body {
+  max-width: 90%;
+  margin: 1.5em auto;
+  color: #222;
+  background-color: #fff;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+.ears {
+  display: none;
+}
+
+/* headings */
+#title, h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.5em;
+  font-weight: bold;
+  line-height: 1.3;
+}
+#title {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  margin: 0 0 0.5em 0;
+  padding: 1em 0 0.5em;
+}
+.author {
+  padding-bottom: 4px;
+}
+h1 {
+  font-size: 26px;
+  margin: 1em 0;
+}
+h2 {
+  font-size: 22px;
+  margin-top: -20px;  /* provide offset for in-page anchors */
+  padding-top: 33px;
+}
+h3 {
+  font-size: 18px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h4 {
+  font-size: 16px;
+  margin-top: -36px;  /* provide offset for in-page anchors */
+  padding-top: 42px;
+}
+h5, h6 {
+  font-size: 14px;
+}
+#n-copyright-notice {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+}
+/* general structure */
+p {
+  padding: 0;
+  margin: 0 0 1em 0;
+  text-align: left;
+}
+div, span {
+  position: relative;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+svg[font-family~="serif" i], svg [font-family~="serif" i] {
+  font-family: var(--font-serif);
+}
+svg[font-family~="sans-serif" i], svg [font-family~="sans-serif" i] {
+  font-family: var(--font-sans);
+}
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  padding: 1em 1em 0;
+  margin-bottom: 1.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  display: table;
+  border: none;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 1em 2em;
+}
+ol ol, ul ul, ol ul, ul ol {
+  margin-left: 1em;
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+.ulCompact li {
+  margin: 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+}
+ul.empty li, .ulEmpty li {
+  margin-top: 0.5em;
+}
+ul.ulBare, li.ulBare {
+  margin-left: 0em !important;
+}
+ul.compact, .ulCompact,
+ol.compact, .olCompact {
+  line-height: 100%;
+  margin: 0 0 0 2em;
+}
+
+/* definition lists */
+dl {
+}
+dl > dt {
+  float: left;
+  margin-right: 1em;
+}
+/* 
+dl.nohang > dt {
+  float: none;
+}
+*/
+dl > dd {
+  margin-bottom: .8em;
+  min-height: 1.3em;
+}
+dl.compact > dd, .dlCompact > dd {
+  margin-bottom: 0em;
+}
+dl > dd > dl {
+  margin-top: 0.5em;
+  margin-bottom: 0em;
+}
+
+/* links */
+a {
+  text-decoration: none;
+}
+a[href] {
+  color: #22e; /* Arlen: WCAG 2019 */
+}
+a[href]:hover {
+  background-color: #f2f2f2;
+}
+figcaption a[href],
+a[href].selfRef {
+  color: #222;
+}
+/* XXX probably not this:
+a.selfRef:hover {
+  background-color: transparent;
+  cursor: default;
+} */
+
+/* Figures */
+tt, code, pre {
+  background-color: #f9f9f9;
+  font-family: var(--font-mono);
+}
+pre {
+  border: 1px solid #eee;
+  margin: 0;
+  padding: 1em;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption {
+  font-style: italic;
+  margin: 0 0 1em 0;
+}
+@media screen {
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    max-width: calc(100% - 22px);
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 1.2em 2em;
+}
+blockquote {
+  background-color: #f9f9f9;
+  color: #111; /* Arlen: WCAG 2019 */
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  margin: 1em 0;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.5em 0.75em;
+}
+th {
+  text-align: left;
+  background-color: #e9e9e9;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f5f5f5;
+}
+table caption {
+  font-style: italic;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+table p {
+  /* XXX to avoid bottom margin on table row signifiers. If paragraphs should
+     be allowed within tables more generally, it would be far better to select on a class. */
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  color: #666; /* Arlen: AHDJ 2019 */
+  text-decoration: none;
+  visibility: hidden;
+  user-select: none;
+  -ms-user-select: none;
+  -o-user-select:none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+@media screen {
+  aside:hover > a.pilcrow,
+  p:hover > a.pilcrow,
+  blockquote:hover > a.pilcrow,
+  div:hover > a.pilcrow,
+  li:hover > a.pilcrow,
+  pre:hover > a.pilcrow {
+    visibility: visible;
+  }
+  a.pilcrow:hover {
+    background-color: transparent;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+}
+.bcp14 {
+  font-variant: small-caps;
+}
+
+.role {
+  font-variant: all-small-caps;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: 0.9em;
+}
+#identifiers dt {
+  width: 3em;
+  clear: left;
+}
+#identifiers dd {
+  float: left;
+  margin-bottom: 0;
+}
+/* Fix PDF info block run off issue */
+@media print {
+  #identifiers dd {
+    float: none;
+  }
+}
+#identifiers .authors .author {
+  display: inline-block;
+  margin-right: 1.5em;
+}
+#identifiers .authors .org {
+  font-style: italic;
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #666; /* Arlen: WCAG 2019 */
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: left;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc  {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+}
+nav.toc ul {
+  margin: 0 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+}
+nav.toc li {
+  line-height: 1.3em;
+  margin: 0.75em 0;
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+/* references */
+.references dt {
+  text-align: right;
+  font-weight: bold;
+  min-width: 7em;
+}
+.references dd {
+  margin-left: 8em;
+  overflow: auto;
+}
+
+.refInstance {
+  margin-bottom: 1.25em;
+}
+
+.references .ascii {
+  margin-bottom: 0.25em;
+}
+
+/* index */
+.index ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.index ul ul {
+  margin: 0;
+}
+.index li {
+  margin: 0;
+  text-indent: -2em;
+  padding-left: 2em;
+  padding-bottom: 5px;
+}
+.indexIndex {
+  margin: 0.5em 0 1em;
+}
+.index a {
+  font-weight: 700;
+}
+/* make the index two-column on all but the smallest screens */
+@media (min-width: 600px) {
+  .index ul {
+    -moz-column-count: 2;
+    -moz-column-gap: 20px;
+  }
+  .index ul ul {
+    -moz-column-count: 1;
+    -moz-column-gap: 0;
+  }
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  margin: 1em 0;
+}
+
+address.vcard .nameRole {
+  font-weight: 700;
+  margin-left: 0;
+}
+address.vcard .label {
+  font-family: var(--font-sans);
+  margin: 0.5em 0;
+}
+address.vcard .type {
+  display: none;
+}
+.alternative-contact {
+  margin: 1.5em 0 1em;
+}
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+
+/* temporary notes */
+.rfcEditorRemove::before {
+  position: absolute;
+  top: 0.2em;
+  right: 0.2em;
+  padding: 0.2em;
+  content: "The RFC Editor will remove this note";
+  color: #9e2a00; /* Arlen: WCAG 2019 */
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+}
+.rfcEditorRemove {
+  position: relative;
+  padding-top: 1.8em;
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  border-radius: 3px;
+}
+.cref {
+  background-color: #ffd; /* Arlen: WCAG 2019 */
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+/* alternative layout for smaller screens */
+@media screen and (max-width: 1023px) {
+  body {
+    padding-top: 2em;
+  }
+  #title {
+    padding: 1em 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: -18px;  /* provide offset for in-page anchors */
+    padding-top: 38px;
+  }
+  #identifiers dd {
+    max-width: 60%;
+  }
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    background-color: inherit;
+    border-bottom: 1px solid #ccc;
+  }
+  #toc h2 {
+    margin: -1px 0 0 0;
+    padding: 4px 0 4px 6px;
+    padding-right: 1em;
+    min-width: 190px;
+    font-size: 1.1em;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+  }
+  #toc h2::before { /* css hamburger */
+    float: right;
+    position: relative;
+    width: 1em;
+    height: 1px;
+    left: -164px;
+    margin: 6px 0 0 0;
+    background: white none repeat scroll 0 0;
+    box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+    content: "";
+  }
+  #toc nav {
+    display: none;
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+}
+
+/* alternative layout for wide screens */
+@media screen and (min-width: 1024px) {
+  body {
+    max-width: 724px;
+    margin: 42px auto;
+    padding-left: 1.5em;
+    padding-right: 29em;
+  }
+  #toc {
+    position: fixed;
+    top: 42px;
+    right: 42px;
+    width: 25%;
+    margin: 0;
+    padding: 0 1em;
+    z-index: 1;
+  }
+  #toc h2 {
+    border-top: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+    font-weight: normal;
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 0;
+    overflow: auto;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre {
+    page-break-inside: avoid;
+  }
+  figure {
+    overflow: scroll;
+  }
+  .breakable pre {
+    break-inside: auto;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  h2+*, h3+*, h4+*, h5+*, h6+* {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+/* This is commented out here, as the string-set: doesn't
+   pass W3C validation currently */
+/*
+.ears thead .left {
+  string-set: ears-top-left content();
+}
+
+.ears thead .center {
+  string-set: ears-top-center content();
+}
+
+.ears thead .right {
+  string-set: ears-top-right content();
+}
+
+.ears tfoot .left {
+  string-set: ears-bottom-left content();
+}
+
+.ears tfoot .center {
+  string-set: ears-bottom-center content();
+}
+
+.ears tfoot .right {
+  string-set: ears-bottom-right content();
+}
+*/
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+  /* The following is commented out here, but set appropriately by in code, as
+     the content depends on the document */
+  /*
+  @top-left {
+    content: 'Internet-Draft';
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-left {
+    content: string(ears-top-left);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-center {
+    content: string(ears-top-center);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @top-right {
+    content: string(ears-top-right);
+    vertical-align: bottom;
+    border-bottom: solid 1px #ccc;
+  }
+  @bottom-left {
+    content: string(ears-bottom-left);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-center {
+    content: string(ears-bottom-center);
+    vertical-align: top;
+    border-top: solid 1px #ccc;
+  }
+  @bottom-right {
+      content: '[Page ' counter(page) ']';
+      vertical-align: top;
+      border-top: solid 1px #ccc;
+  }
+  */
+
+}
+
+/* Changes introduced to fix issues found during implementation */
+/* Make sure links are clickable even if overlapped by following H* */
+a {
+  z-index: 2;
+}
+/* Separate body from document info even without intervening H1 */
+section {
+  clear: both;
+}
+
+
+/* Top align author divs, to avoid names without organization dropping level with org names */
+.author {
+  vertical-align: top;
+}
+
+/* Leave room in document info to show Internet-Draft on one line */
+#identifiers dt {
+  width: 8em;
+}
+
+/* Don't waste quite as much whitespace between label and value in doc info */
+#identifiers dd {
+  margin-left: 1em;
+}
+
+/* Give floating toc a background color (needed when it's a div inside section */
+#toc {
+  background-color: white;
+}
+
+/* Make the collapsed ToC header render white on gray also when it's a link */
+@media screen and (max-width: 1023px) {
+  #toc h2 a,
+  #toc h2 a:link,
+  #toc h2 a:focus,
+  #toc h2 a:hover,
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+}
+
+/* Give the bottom of the ToC some whitespace */
+@media screen and (min-width: 1024px) {
+  #toc {
+    padding: 0 0 1em 1em;
+  }
+}
+
+/* Style section numbers with more space between number and title */
+.section-number {
+  padding-right: 0.5em;
+}
+
+/* prevent monospace from becoming overly large */
+tt, code, pre {
+  font-size: 95%;
+}
+
+/* Fix the height/width aspect for ascii art*/
+.sourcecode pre,
+.art-text pre {
+  line-height: 1.12;
+}
+
+
+/* Add styling for a link in the ToC that points to the top of the document */
+a.toplink {
+  float: right;
+  margin-right: 0.5em;
+}
+
+/* Fix the dl styling to match the RFC 7992 attributes */
+dl > dt,
+dl.dlParallel > dt {
+  float: left;
+  margin-right: 1em;
+}
+dl.dlNewline > dt {
+  float: none;
+}
+
+/* Provide styling for table cell text alignment */
+table td.text-left,
+table th.text-left {
+  text-align: left;
+}
+table td.text-center,
+table th.text-center {
+  text-align: center;
+}
+table td.text-right,
+table th.text-right {
+  text-align: right;
+}
+
+/* Make the alternative author contact information look less like just another
+   author, and group it closer with the primary author contact information */
+.alternative-contact {
+  margin: 0.5em 0 0.25em 0;
+}
+address .non-ascii {
+  margin: 0 0 0 2em;
+}
+
+/* With it being possible to set tables with alignment
+  left, center, and right, { width: 100%; } does not make sense */
+table {
+  width: auto;
+}
+
+/* Avoid reference text that sits in a block with very wide left margin,
+   because of a long floating dt label.*/
+.references dd {
+  overflow: visible;
+}
+
+/* Control caption placement */
+caption {
+  caption-side: bottom;
+}
+
+/* Limit the width of the author address vcard, so names in right-to-left
+   script don't end up on the other side of the page. */
+
+address.vcard {
+  max-width: 30em;
+  margin-right: auto;
+}
+
+/* For address alignment dependent on LTR or RTL scripts */
+address div.left {
+  text-align: left;
+}
+address div.right {
+  text-align: right;
+}
+
+/* Provide table alignment support.  We can't use the alignX classes above
+   since they do unwanted things with caption and other styling. */
+table.right {
+ margin-left: auto;
+ margin-right: 0;
+}
+table.center {
+ margin-left: auto;
+ margin-right: auto;
+}
+table.left {
+ margin-left: 0;
+ margin-right: auto;
+}
+
+/* Give the table caption label the same styling as the figcaption */
+caption a[href] {
+  color: #222;
+}
+
+@media print {
+  .toplink {
+    display: none;
+  }
+
+  /* avoid overwriting the top border line with the ToC header */
+  #toc {
+    padding-top: 1px;
+  }
+
+  /* Avoid page breaks inside dl and author address entries */
+  .vcard {
+    page-break-inside: avoid;
+  }
+
+}
+/* Tweak the bcp14 keyword presentation */
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* Tweak the invisible space above H* in order not to overlay links in text above */
+ h2 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 31px;
+ }
+ h3 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+ h4 {
+  margin-top: -18px;  /* provide offset for in-page anchors */
+  padding-top: 24px;
+ }
+/* Float artwork pilcrow to the right */
+@media screen {
+  .artwork a.pilcrow {
+    display: block;
+    line-height: 0.7;
+    margin-top: 0.15em;
+  }
+}
+/* Make pilcrows on dd visible */
+@media screen {
+  dd:hover > a.pilcrow {
+    visibility: visible;
+  }
+}
+/* Make the placement of figcaption match that of a table's caption
+   by removing the figure's added bottom margin */
+.alignLeft.art-text,
+.alignCenter.art-text,
+.alignRight.art-text {
+   margin-bottom: 0;
+}
+.alignLeft,
+.alignCenter,
+.alignRight {
+  margin: 1em 0 0 0;
+}
+/* In print, the pilcrow won't show on hover, so prevent it from taking up space,
+   possibly even requiring a new line */
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+/* Styling for the external metadata */
+div#external-metadata {
+  background-color: #eee;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  display: none;
+}
+div#internal-metadata {
+  padding: 0.5em;                       /* to match the external-metadata padding */
+}
+/* Styling for title RFC Number */
+h1#rfcnum {
+  clear: both;
+  margin: 0 0 -1em;
+  padding: 1em 0 0 0;
+}
+/* Make .olPercent look the same as <ol><li> */
+dl.olPercent > dd {
+  margin-bottom: 0.25em;
+  min-height: initial;
+}
+/* Give aside some styling to set it apart */
+aside {
+  border-left: 1px solid #ddd;
+  margin: 1em 0 1em 2em;
+  padding: 0.2em 2em;
+}
+aside > dl,
+aside > ol,
+aside > ul,
+aside > table,
+aside > p {
+  margin-bottom: 0.5em;
+}
+/* Additional page break settings */
+@media print {
+  figcaption, table caption {
+    page-break-before: avoid;
+  }
+}
+/* Font size adjustments for print */
+@media print {
+  body  { font-size: 10pt;      line-height: normal; max-width: 96%; }
+  h1    { font-size: 1.72em;    padding-top: 1.5em; } /* 1*1.2*1.2*1.2 */
+  h2    { font-size: 1.44em;    padding-top: 1.5em; } /* 1*1.2*1.2 */
+  h3    { font-size: 1.2em;     padding-top: 1.5em; } /* 1*1.2 */
+  h4    { font-size: 1em;       padding-top: 1.5em; }
+  h5, h6 { font-size: 1em;      margin: initial; padding: 0.5em 0 0.3em; }
+}
+/* Sourcecode margin in print, when there's no pilcrow */
+@media print {
+  .artwork,
+  .artwork > pre,
+  .sourcecode {
+    margin-bottom: 1em;
+  }
+}
+/* Avoid narrow tables forcing too narrow table captions, which may render badly */
+table {
+  min-width: 20em;
+}
+/* ol type a */
+ol.type-a { list-style-type: lower-alpha; }
+ol.type-A { list-style-type: upper-alpha; }
+ol.type-i { list-style-type: lower-roman; }
+ol.type-I { list-style-type: lower-roman; }
+/* Apply the print table and row borders in general, on request from the RPC,
+and increase the contrast between border and odd row background slightly */
+table {
+  border: 1px solid #ddd;
+}
+td {
+  border-top: 1px solid #ddd;
+}
+tr {
+  break-inside: avoid;
+}
+tr:nth-child(2n+1) > td {
+  background-color: #f8f8f8;
+}
+/* Use style rules to govern display of the TOC. */
+@media screen and (max-width: 1023px) {
+  #toc nav { display: none; }
+  #toc.active nav { display: block; }
+}
+/* Add support for keepWithNext */
+.keepWithNext {
+  break-after: avoid-page;
+  break-after: avoid-page;
+}
+/* Add support for keepWithPrevious */
+.keepWithPrevious {
+  break-before: avoid-page;
+}
+/* Change the approach to avoiding breaks inside artwork etc. */
+figure, pre, table, .artwork, .sourcecode  {
+  break-before: auto;
+  break-after: auto;
+}
+/* Avoid breaks between <dt> and <dd> */
+dl {
+  break-before: auto;
+  break-inside: auto;
+}
+dt {
+  break-before: auto;
+  break-after: avoid-page;
+}
+dd {
+  break-before: avoid-page;
+  break-after: auto;
+  orphans: 3;
+  widows: 3
+}
+span.break, dd.break {
+  margin-bottom: 0;
+  min-height: 0;
+  break-before: auto;
+  break-inside: auto;
+  break-after: auto;
+}
+/* Undo break-before ToC */
+@media print {
+  #toc {
+    break-before: auto;
+  }
+}
+/* Text in compact lists should not get extra bottom margin space,
+   since that would makes the list not compact */
+ul.compact p, .ulCompact p,
+ol.compact p, .olCompact p {
+ margin: 0;
+}
+/* But the list as a whole needs the extra space at the end */
+section ul.compact,
+section .ulCompact,
+section ol.compact,
+section .olCompact {
+  margin-bottom: 1em;                    /* same as p not within ul.compact etc. */
+}
+/* The tt and code background above interferes with for instance table cell
+   backgrounds.  Changed to something a bit more selective. */
+tt, code {
+  background-color: transparent;
+}
+p tt, p code, li tt, li code {
+  background-color: #f8f8f8;
+}
+/* Tweak the pre margin -- 0px doesn't come out well */
+pre {
+   margin-top: 0.5px;
+}
+/* Tweak the compact list text */
+ul.compact, .ulCompact,
+ol.compact, .olCompact,
+dl.compact, .dlCompact {
+  line-height: normal;
+}
+/* Don't add top margin for nested lists */
+li > ul, li > ol, li > dl,
+dd > ul, dd > ol, dd > dl,
+dl > dd > dl {
+  margin-top: initial;
+}
+/* Elements that should not be rendered on the same line as a <dt> */
+/* This should match the element list in writer.text.TextWriter.render_dl() */
+dd > div.artwork:first-child,
+dd > aside:first-child,
+dd > figure:first-child,
+dd > ol:first-child,
+dd > div.sourcecode:first-child,
+dd > table:first-child,
+dd > ul:first-child {
+  clear: left;
+}
+/* fix for weird browser behaviour when <dd/> is empty */
+dt+dd:empty::before{
+  content: "\00a0";
+}
+/* Make paragraph spacing inside <li> smaller than in body text, to fit better within the list */
+li > p {
+  margin-bottom: 0.5em
+}
+/* Don't let p margin spill out from inside list items */
+li > p:last-of-type:only-child {
+  margin-bottom: 0;
+}
+</style>
+<link href="rfc-local.css" rel="stylesheet" type="text/css">
+</head>
+<body class="xml2rfc">
+<div><img style="margin-bottom: 24px;" align="left" src="img/sib.png"></img></div>
+<script src="metadata.min.js"></script>
+<table class="ears">
+<thead><tr>
+<td class="left"></td>
+<td class="center">bas_federation_metadata_requriements</td>
+<td class="right">October 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Norlander</td>
+<td class="center">Informational</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-10-26" class="published">26 October 2026</time>
+    </dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">H. Norlander</div>
+<div class="org">The Swedish Agency for Digital Government (Digg)</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">BAS Federation Metadata Requirements 1.0 – draft 01</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This specification defines the metadata requirements for OAuth 2.0 Clients, Authorization Servers and Protected Resources participating in the BAS federation <span>[<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. The metadata is published in Entity Configurations according to OpenID Federation 1.1 <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> and <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span>, as profiled by <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>. The requirements apply to the Resolved Metadata, meaning the metadata that results once the Trust Chain of an Entity has been applied to the declarations the Entity makes about itself. The OAuth 2.0 protocol itself follows the Ena OAuth 2.0 Interoperability Profile <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.1">
+      <h2 id="name-registration-number">
+<a href="#name-registration-number" class="section-name selfRef">Registration Number</a>
+      </h2>
+<p id="section-note.1-1">&lt;YYYY-nnnn&gt;<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+</section>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-notation-and-c" class="internal xref">Requirements Notation and Conventions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-terminology" class="internal xref">Terminology</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
+                <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-scope" class="internal xref">Scope</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-general-requirements" class="internal xref">General Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-language" class="internal xref">Language</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-protocol-keys" class="internal xref">Protocol Keys</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-common-requirements" class="internal xref">Common Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-organization-identifier-for" class="internal xref">Organization Identifier Formats</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-oauth-client-requirements" class="internal xref">OAuth Client Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-client-identifier" class="internal xref">Client Identifier</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-client-authentication" class="internal xref">Client Authentication</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-authorization-server-requir" class="internal xref">Authorization Server Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-issuer-identifier" class="internal xref">Issuer Identifier</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-consistency-with-published-" class="internal xref">Consistency with Published Metadata</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-protected-resource-requirem" class="internal xref">Protected Resource Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-resource-identifier" class="internal xref">Resource Identifier</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-bas-metadata-policies" class="internal xref">BAS Metadata Policies</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-trust-anchor-metadata-polic" class="internal xref">Trust Anchor Metadata Policy</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-federation-registration-ent" class="internal xref">Federation Registration Entity Metadata Assignment</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-requirements-not-expressed-" class="internal xref">Requirements Not Expressed as Policy</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-notices" class="internal xref">Notices</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-document-history" class="internal xref">Document History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">This document specifies the requirements on the metadata an Entity in BAS publishes. It is written for the organizations that operate such Entities, and for the developers and operators who implement them.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The requirements stated here apply to OAuth 2.0 Clients, Authorization Servers and Protected Resources that adhere to <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>, which is the profile in use within BAS. This is the current scope rather than a permanent limitation. BAS may later admit other Entity Types, or Entities adhering to other profiles, and the requirements in this document would then not apply to them unaltered.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The requirements build on a number of specifications. <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> defines how metadata is published and resolved, and <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span> profiles OpenID Federation for use in Swedish federations, a profile that BAS follows. <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> defines the OAuth 2.0 metadata and the requirement levels that apply, and <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> states the algorithm and key requirements that apply within the federation. This document does not restate <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> and does not lower any of its requirement levels.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">The requirement chapters state what has to appear in the Resolved Metadata of an Entity, in addition to what <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> requires.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">The requirements on organization metadata (<a href="#common_requirements" class="auto internal xref">Section 3</a>) and on identifier bindings (<a href="#client_identifier" class="auto internal xref">Section 4.1</a>, <a href="#issuer_identifier" class="auto internal xref">Section 5.1</a> and <a href="#resource_identifier" class="auto internal xref">Section 6.1</a>) are not specific to BAS, and are intended to move to <span>[<a href="#Ena.Federation" class="cite xref">Ena.Federation</a>]</span> once it is published.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<div id="requirements_notation_and_conventions">
+<section id="section-1.1">
+        <h3 id="name-requirements-notation-and-c">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-notation-and-c" class="section-name selfRef">Requirements Notation and Conventions</a>
+        </h3>
+<p id="section-1.1-1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="terminology">
+<section id="section-1.2">
+        <h3 id="name-terminology">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-terminology" class="section-name selfRef">Terminology</a>
+        </h3>
+<p id="section-1.2-1">This specification uses the terms "Entity", "Entity Configuration", "Entity Identifier", "Entity Type Identifier", "Leaf Entity", "Subordinate Statement", "Trust Anchor", "Trust Chain" and "Resolved Metadata" as defined in <span>[<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>, the term "Federation Protocol Entity" as defined in <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>, the terms "Client", "Authorization Server" and "Protected Resource" as defined in <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>, and the terms "Federation Operator", "Federation Registration Operator", "Federation Registration Entity" and "Federation Member" as defined in <span><a href="#" class="relref">Section 1.2</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. The term "Collaboration Context" (Swedish: samverkanskontext) is used as defined in <span><a href="#" class="relref">Section 1.2</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">This specification also defines the following term:<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-1.2-3.1">
+            <strong>Client Registration:</strong> The incorporation of a Client into the service configuration of an Authorization Server, based on the Client's Resolved Metadata. It is distinct from the registration of an Entity in BAS, which a Federation Registration Entity performs by issuing a Subordinate Statement for the Entity.<a href="#section-1.2-3.1" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+<div id="scope">
+<section id="section-1.3">
+        <h3 id="name-scope">
+<a href="#section-1.3" class="section-number selfRef">1.3. </a><a href="#name-scope" class="section-name selfRef">Scope</a>
+        </h3>
+<p id="section-1.3-1">A requirement is placed in this specification only if it is needed for one of the following:<a href="#section-1.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="compact type-1" id="section-1.3-2">
+<li id="section-1.3-2.1">to verify the identity of an Entity and the organization it is registered for, or<a href="#section-1.3-2.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-1.3-2.2">to make an Entity's metadata resolvable and reliable through its Trust Chain in BAS.<a href="#section-1.3-2.2" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-1.3-3">Everything else follows <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. The information exchange between Entities, such as scopes and access decisions, is out of scope and is decided by the parties or by a Collaboration Context, see <span><a href="#" class="relref">Section 2.3</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>.<a href="#section-1.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="general_requirements">
+<section id="section-2">
+      <h2 id="name-general-requirements">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-general-requirements" class="section-name selfRef">General Requirements</a>
+      </h2>
+<p id="section-2-1">Every Client and Authorization Server in BAS, and every Protected Resource registered in BAS, <span class="bcp14">MUST</span> publish an Entity Configuration. Its metadata is carried in the <code>metadata</code> Claim under the Entity Type Identifier <code>oauth_client</code>, <code>oauth_authorization_server</code> or <code>oauth_resource</code>, as specified in Sections 5.1.3 to 5.1.5 of <span>[<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span>. These are the Entity Types that the <code>allowed_entity_types</code> constraint of the BAS Trust Anchor admits, see <span><a href="#" class="relref">Section 4.2</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. Hosted Entity Configurations are not yet defined for BAS, see <span><a href="#" class="relref">Section 3.2</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">The requirements apply to the Resolved Metadata, meaning the metadata that results from applying the Subordinate Statements of the Trust Chain to the Entity's own declarations, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 10</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>. A parameter that is <span class="bcp14">REQUIRED</span> in the Resolved Metadata is therefore not always one the Entity declares itself: a Federation Registration Entity may assign it in the Subordinate Statement, and the Trust Anchor metadata policy may constrain it. Where that is the case, the tables below say so, and <a href="#bas_metadata_policies" class="auto internal xref">Section 7</a> shows how.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">The Resolved Metadata of an Entity <span class="bcp14">MUST</span> conform to <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> for its Entity Type. A parameter not listed in this specification <span class="bcp14">MAY</span> be used at the requirement level given by <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> or, where that profile does not address it, by the specification that defines it.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-4">Where a value is checked at registration, the tables say so. A checked value is set by the Federation Registration Entity in the Subordinate Statement it issues for the Entity, so that the Resolved Metadata always carries the value that was checked, see <a href="#federation_registration_entity_metadata_assignment" class="auto internal xref">Section 7.2</a>.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<p id="section-2-5">This document does not specify the Entity Statement Claims themselves, such as <code>iss</code>, <code>sub</code>, <code>iat</code>, <code>exp</code>, <code>jwks</code>, <code>authority_hints</code> and <code>trust_marks</code>. Those are defined by <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 3.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> and profiled by <span>[<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>. Clients, Authorization Servers and Protected Resources are Federation Protocol Entities, and therefore always Leaf Entities, so their Entity Configurations <span class="bcp14">MUST NOT</span> contain metadata of the Entity Type <code>federation_entity</code>, see <span><a href="https://www.oidc.se/specifications/swedish-openid-federation-profile-1_0.html" class="relref">Section 2.2</a> of [<a href="#OIDC.Sweden.Federation" class="cite xref">OIDC.Sweden.Federation</a>]</span>.<a href="#section-2-5" class="pilcrow">¶</a></p>
+<div id="language">
+<section id="section-2.1">
+        <h3 id="name-language">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-language" class="section-name selfRef">Language</a>
+        </h3>
+<p id="section-2.1-1">Within BAS, Swedish is the default language. Metadata values intended for human consumption are provided in Swedish (<code>#sv</code>) and English (<code>#en</code>) as <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> recommends. For every such parameter that an Entity provides with a Swedish value, the Federation Registration Entity assigns the corresponding parameter without a language tag, holding the Swedish value, in the Subordinate Statement. The Resolved Metadata therefore always contains it, and implementations without support for language tags can use it. A value without a language tag that the Entity declares itself is replaced by the assigned value.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-2.1-2">
+<pre>"client_name#sv" : "Min tjänst",
+"client_name#en" : "My service",
+"client_name" : "Min tjänst"     &lt;- assigned by the Federation Registration Entity
+</pre><a href="#section-2.1-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="protocol_keys">
+<section id="section-2.2">
+        <h3 id="name-protocol-keys">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-protocol-keys" class="section-name selfRef">Protocol Keys</a>
+        </h3>
+<p id="section-2.2-1">The keys an Entity uses in the OAuth 2.0 protocol, as opposed to the Federation Entity Keys that sign its Entity Statements, are published in its <code>oauth_client</code>, <code>oauth_authorization_server</code> or <code>oauth_resource</code> metadata. Three representations are available, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>. The requirement levels below follow <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>, which states them separately for each Entity Type, and they therefore differ between the Entity Types.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+              <th class="text-left" rowspan="1" colspan="1">Requirement</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>jwks</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span class="bcp14">REQUIRED</span> for a Client, unless <code>jwks_uri</code> is used, see <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 2.2.2.4</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. <span class="bcp14">OPTIONAL</span> for an Authorization Server and a Protected Resource.</td>
+              <td class="text-left" rowspan="1" colspan="1">The Entity's JSON Web Key Set, included by value in the metadata.</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> and <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>jwks_uri</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span class="bcp14">REQUIRED</span> for an Authorization Server, see <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1.3</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. <span class="bcp14">REQUIRED</span> for a Client, unless <code>jwks</code> is used. <span class="bcp14">OPTIONAL</span> for a Protected Resource.</td>
+              <td class="text-left" rowspan="1" colspan="1">A URL from which the Entity's JSON Web Key Set can be retrieved. The URL <span class="bcp14">MUST</span> use the HTTPS scheme.</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span>, <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>, <span><a href="https://rfc-editor.org/rfc/rfc9728" class="relref">Section 2</a> of [<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> and <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>signed_jwks_uri</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span class="bcp14">OPTIONAL</span>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">A URL referencing a signed JWT that carries the Entity's JSON Web Key Set. The URL <span class="bcp14">MUST</span> use the HTTPS scheme, and the JWT <span class="bcp14">MUST</span> be signed with a Federation Entity Key.</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-2.2-3">It is <span class="bcp14">RECOMMENDED</span> that an Entity uses only one of the three representations, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.1.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">The keys an Entity publishes <span class="bcp14">MUST</span> meet the cryptographic requirements of <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>, which state the algorithms and minimum key lengths that apply within BAS, see <span><a href="#" class="relref">Section 3</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>. An Entity that replaces a key <span class="bcp14">MUST</span> follow the key rollover requirements of <span><a href="#" class="relref">Section 4</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>, so that other parties in the federation are not disrupted. To facilitate a smooth key rollover, each JWK <span class="bcp14">MUST</span> include a <code>kid</code> parameter, also in the cases where the JWK Set holds a single key, see <span><a href="#" class="relref">Section 4</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>.<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="common_requirements">
+<section id="section-3">
+      <h2 id="name-common-requirements">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-common-requirements" class="section-name selfRef">Common Requirements</a>
+      </h2>
+<p id="section-3-1">The parameters below identify the Entity and the organization it is registered for, and describe them. They are defined in <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> unless stated otherwise, and are published with the same meaning in <code>oauth_client</code>, <code>oauth_authorization_server</code> and <code>oauth_resource</code> metadata.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-2">
+        <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+            <th class="text-left" rowspan="1" colspan="1">Requirement</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>organization_name</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Assigned by the Federation Registration Entity; <span class="bcp14">OPTIONAL</span> for the Entity to supply.</td>
+            <td class="text-left" rowspan="1" colspan="1">The name of the organization the Entity is registered for. The value without a language tag <span class="bcp14">MUST</span> be the legal name of the organization. Values for <code>#sv</code> and <code>#en</code> <span class="bcp14">MAY</span> also be given.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>organization_identifier</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Assigned by the Federation Registration Entity; <span class="bcp14">OPTIONAL</span> for the Entity to supply.</td>
+            <td class="text-left" rowspan="1" colspan="1">The organization identifier of the organization the Entity is registered for, in one of the formats of <a href="#organization_identifier_formats" class="auto internal xref">Section 3.1</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://www.oidc.se/specifications/openid-federation-organization-identifier-1_0.html" class="relref">Section 2</a> of [<a href="#OIDC.Sweden.OrgId" class="cite xref">OIDC.Sweden.OrgId</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>contacts</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Contact addresses for the people or groups responsible for operating the Entity. The value <span class="bcp14">MUST</span> hold at least one email address.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span> and <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>display_name</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">A human-readable name of the Entity, given in the languages of <a href="#language" class="auto internal xref">Section 2.1</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>description</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">A human-readable description of the Entity, given in the languages of <a href="#language" class="auto internal xref">Section 2.1</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>keywords</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Keywords describing the Entity.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>logo_uri</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">An HTTPS URL of a logo for the Entity.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>policy_uri</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">An HTTPS URL of documentation of the conditions and policies that apply to the Entity.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>information_uri</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">An HTTPS URL of further information about the Entity.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>organization_uri</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">An HTTPS URL of a web page of the organization the Entity is registered for.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 5.2.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>
+</td>
+          </tr>
+        </tbody>
+      </table>
+<div id="organization_identifier_formats">
+<section id="section-3.1">
+        <h3 id="name-organization-identifier-for">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-organization-identifier-for" class="section-name selfRef">Organization Identifier Formats</a>
+        </h3>
+<p id="section-3.1-1">The organization identifier formats are defined by the following:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-3.1-2.1">
+            <strong>GLobal Unique Enterprise (GLUE) Identifiers</strong> <span>[<a href="#I-D.ietf-spice-glue-id" class="cite xref">I-D.ietf-spice-glue-id</a>]</span> define the structure of the identifier. GLUE makes it possible to support several types of identifiers side by side.<a href="#section-3.1-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-3.1-2.2">
+            <strong>ISO/IEC 6523</strong> <span>[<a href="#ISO.6523" class="cite xref">ISO.6523</a>]</span> is the international standard that defines how organizations, and parts of organizations, are identified unambiguously in electronic data interchange. Each identification scheme is designated by an International Code Designator (ICD).<a href="#section-3.1-2.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-3.1-3">The <code>organization_identifier</code> <span class="bcp14">MUST</span> be expressed as a GLUE-URI using ISO/IEC 6523 representation, in the format <code>urn:glue:iso6523:&lt;icd&gt;:&lt;identifier&gt;</code>. The recommended formats are listed below, and the list may be extended as needed.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<table class="center" id="table-3">
+          <caption><a href="#table-3" class="selfRef">Table 3</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Identifier</th>
+              <th class="text-left" rowspan="1" colspan="1">ICD</th>
+              <th class="text-left" rowspan="1" colspan="1">Format</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Swedish organization number</td>
+              <td class="text-left" rowspan="1" colspan="1">0007</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>urn:glue:iso6523:0007:&lt;organization-number&gt;</code>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">GLN (Global Location Number)</td>
+              <td class="text-left" rowspan="1" colspan="1">0088</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>urn:glue:iso6523:0088:&lt;gln&gt;</code>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Domain-based eDelivery Participant Identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">0203</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>urn:glue:iso6523:0203:&lt;domain&gt;</code>, for example <code>urn:glue:iso6523:0203:foretaget.se</code>
+</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-3.1-5">A Swedish organization number is a ten-digit string without a hyphen, according to <span>[<a href="#SKV709" class="cite xref">SKV709</a>]</span>. ICD 0007 is assigned to the Swedish Tax Agency (Skatteverket).<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-3.1-6">
+<pre>"organization_identifier" : "urn:glue:iso6523:0007:2021006883"
+</pre><a href="#section-3.1-6" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-7"><em>Example: the organization number of the Swedish Agency for Digital Government (Digg).</em><a href="#section-3.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="oauth_client_requirements">
+<section id="section-4">
+      <h2 id="name-oauth-client-requirements">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-oauth-client-requirements" class="section-name selfRef">OAuth Client Requirements</a>
+      </h2>
+<p id="section-4-1">A Client's <code>oauth_client</code> metadata conforms to <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 2.2</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. The table below lists only the parameters for which BAS adds a requirement, in addition to those in <a href="#common_requirements" class="auto internal xref">Section 3</a>.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-4">
+        <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+            <th class="text-left" rowspan="1" colspan="1">Requirement</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>token_endpoint_auth_method</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">The value <span class="bcp14">MUST</span> be <code>private_key_jwt</code>, see <a href="#client_authentication" class="auto internal xref">Section 4.2</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 2.2.2.2</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>grant_types</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">The grant types the Client uses. The value <span class="bcp14">MUST</span> be <code>["client_credentials"]</code>. BAS is a machine-to-machine federation, and <code>client_credentials</code> is the only grant type used in it.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 2.2.2.3</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>response_types</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Assigned by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">An empty array. A Client that uses no redirect-based grant has no response types, and the default of <code>code</code> in <span>[<a href="#RFC7591" class="cite xref">RFC7591</a>]</span> would otherwise be implied.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc7591" class="relref">Section 2</a> of [<a href="#RFC7591" class="cite xref">RFC7591</a>]</span>
+</td>
+          </tr>
+        </tbody>
+      </table>
+<div id="client_identifier">
+<section id="section-4.1">
+        <h3 id="name-client-identifier">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-client-identifier" class="section-name selfRef">Client Identifier</a>
+        </h3>
+<p id="section-4.1-1">The client identifier of a Client in BAS is its Entity Identifier. A Client <span class="bcp14">MUST</span> use its Entity Identifier as <code>client_id</code> at every Authorization Server it interacts with. This fulfils the requirement of <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 2.2.1</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> that a Client in a federative context uses the same client identifier for all registrations, and allows every Authorization Server to verify the Client's identity and organizational connection through its Trust Chain.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="client_authentication">
+<section id="section-4.2">
+        <h3 id="name-client-authentication">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-client-authentication" class="section-name selfRef">Client Authentication</a>
+        </h3>
+<p id="section-4.2-1">Within BAS, a Client authenticates using <code>private_key_jwt</code> as specified in <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 8.3.1</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>, with keys published in its Resolved Metadata. This binds client authentication to the Client's Trust Chain: an Authorization Server verifies the authentication with a key it has obtained through the same chain that establishes the Client's identity. The other methods that <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> permits are not used in BAS, see <span><a href="#" class="relref">Section 2</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="authorization_server_requirements">
+<section id="section-5">
+      <h2 id="name-authorization-server-requir">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-authorization-server-requir" class="section-name selfRef">Authorization Server Requirements</a>
+      </h2>
+<p id="section-5-1">An Authorization Server's <code>oauth_authorization_server</code> metadata conforms to <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. The table below lists only the parameters for which BAS adds a requirement, in addition to those in <a href="#common_requirements" class="auto internal xref">Section 3</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-5">
+        <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+            <th class="text-left" rowspan="1" colspan="1">Requirement</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>issuer</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">MUST</span> be equal to the Authorization Server's Entity Identifier, see <a href="#issuer_identifier" class="auto internal xref">Section 5.1</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1.1</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>grant_types_supported</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Checked by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">MUST</span> contain <code>client_credentials</code>. The Authorization Server <span class="bcp14">MAY</span> also list grant types it supports outside BAS.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1.5</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>token_endpoint_auth_methods_supported</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>private_key_jwt</code> only, as <span><a href="#" class="relref">Section 2</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> requires.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1.6</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>revocation_endpoint_auth_methods_supported</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span> if <code>revocation_endpoint</code> is present. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>private_key_jwt</code> only, as <span><a href="#" class="relref">Section 2</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> requires.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>introspection_endpoint_auth_methods_supported</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span> if <code>introspection_endpoint</code> is present. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>private_key_jwt</code> only, as <span><a href="#" class="relref">Section 2</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> requires.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>token_endpoint_auth_signing_alg_values_supported</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>. Constrained by the Trust Anchor metadata policy.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">MUST</span> meet <span><a href="#" class="relref">Section 3.1</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc8414" class="relref">Section 2</a> of [<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.1.7</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+        </tbody>
+      </table>
+<div id="issuer_identifier">
+<section id="section-5.1">
+        <h3 id="name-issuer-identifier">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-issuer-identifier" class="section-name selfRef">Issuer Identifier</a>
+        </h3>
+<p id="section-5.1-1">The issuer identifier of an Authorization Server in BAS is its Entity Identifier, see <span><a href="https://openid.net/specs/openid-federation-connect-1_1.html" class="relref">Section 5.1.3</a> of [<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span>. Access tokens and other objects the Authorization Server signs therefore carry an <code>iss</code> value that a peer can resolve to a Trust Chain, and from it to the organization the Authorization Server is registered for.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="consistency_with_published_metadata">
+<section id="section-5.2">
+        <h3 id="name-consistency-with-published-">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-consistency-with-published-" class="section-name selfRef">Consistency with Published Metadata</a>
+        </h3>
+<p id="section-5.2-1">An Authorization Server also publishes its metadata at the location stated in <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 3.1.2</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. For every parameter that appears in both, the value published there <span class="bcp14">MUST</span> be consistent with the Authorization Server's Resolved Metadata. Where the Trust Anchor metadata policy removes values that the Authorization Server supports outside BAS, the value in the Resolved Metadata is a subset of the published value, and the two are consistent in this sense. Within BAS, the Resolved Metadata takes precedence.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="protected_resource_requirements">
+<section id="section-6">
+      <h2 id="name-protected-resource-requirem">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-protected-resource-requirem" class="section-name selfRef">Protected Resource Requirements</a>
+      </h2>
+<p id="section-6-1">A Protected Resource is not required to be registered in BAS, see <span><a href="#" class="relref">Section 8</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. A Protected Resource that is registered in BAS <span class="bcp14">MUST</span> publish an Entity Configuration with <code>oauth_resource</code> metadata, see <a href="#general_requirements" class="auto internal xref">Section 2</a>, and its Resolved Metadata <span class="bcp14">MUST</span> meet the requirements of this section and of <a href="#common_requirements" class="auto internal xref">Section 3</a>. Within BAS, this replaces the optional publication of metadata in <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 4.3</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. The <code>oauth_resource</code> metadata uses the parameters defined in <span><a href="https://rfc-editor.org/rfc/rfc9728" class="relref">Section 2</a> of [<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>, which <span><a href="https://openid.net/specs/openid-federation-connect-1_1.html" class="relref">Section 5.1.5</a> of [<a href="#OpenID.Federation.Connect" class="cite xref">OpenID.Federation.Connect</a>]</span> makes available. The table below lists only the parameters for which BAS adds a requirement.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-6">
+        <caption><a href="#table-6" class="selfRef">Table 6</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+            <th class="text-left" rowspan="1" colspan="1">Requirement</th>
+            <th class="text-left" rowspan="1" colspan="1">Description</th>
+            <th class="text-left" rowspan="1" colspan="1">Defined in</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>resource</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">REQUIRED</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">MUST</span> be equal to the Protected Resource's Entity Identifier, see <a href="#resource_identifier" class="auto internal xref">Section 6.1</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc9728" class="relref">Section 2</a> of [<a href="#RFC9728" class="cite xref">RFC9728</a>]</span> and <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 4.3</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <code>authorization_servers</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span class="bcp14">OPTIONAL</span>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">If present, <span class="bcp14">MUST</span> contain the Entity Identifier of at least one Authorization Server in BAS. It <span class="bcp14">MAY</span> also contain Authorization Servers outside BAS. Checked at registration, see <a href="#requirements_not_expressed_as_policy" class="auto internal xref">Section 7.3</a>.</td>
+            <td class="text-left" rowspan="1" colspan="1">
+              <span><a href="https://rfc-editor.org/rfc/rfc9728" class="relref">Section 2</a> of [<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>
+</td>
+          </tr>
+        </tbody>
+      </table>
+<div id="resource_identifier">
+<section id="section-6.1">
+        <h3 id="name-resource-identifier">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-resource-identifier" class="section-name selfRef">Resource Identifier</a>
+        </h3>
+<p id="section-6.1-1">The resource identifier of a Protected Resource in BAS is its Entity Identifier. An Authorization Server uses it as the <code>aud</code> value of access tokens for the Protected Resource, see <span><a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html" class="relref">Section 6.1.1</a> of [<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>. A Client and an Authorization Server can thereby resolve the intended audience of a token to a Trust Chain, and from it to the organization the Protected Resource is registered for.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="bas_metadata_policies">
+<section id="section-7">
+      <h2 id="name-bas-metadata-policies">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-bas-metadata-policies" class="section-name selfRef">BAS Metadata Policies</a>
+      </h2>
+<p id="section-7-1">The requirements of this specification are enforced through two mechanisms that differ in scope and in who controls them. The Trust Anchor metadata policy is federation-wide, identical for every Entity of a given Entity Type, and controlled by the Federation Operator. The values a Federation Registration Entity sets when it registers an Entity differ from one Entity to the next, and are controlled by the Federation Registration Operator that registered it.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">A Trust Anchor issues Subordinate Statements only for its Immediate Subordinates, which within BAS are the Federation Registration Entities. A rule that is to reach every Leaf Entity therefore travels down the Trust Chain as a metadata policy, while a per-Entity value is set by the Leaf Entity's Immediate Superior. When metadata is resolved, the <code>metadata</code> Claim of the Subordinate Statement about the Leaf Entity is applied first, and the resolved metadata policy after that, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 6.1.4.2</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<div id="trust_anchor_metadata_policy">
+<section id="section-7.1">
+        <h3 id="name-trust-anchor-metadata-polic">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-trust-anchor-metadata-polic" class="section-name selfRef">Trust Anchor Metadata Policy</a>
+        </h3>
+<p id="section-7.1-1">The Trust Anchor metadata policy enforces the requirements of this specification and the choices of <span>[<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span> and <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> that can be expressed as policy. Conformance to <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span> is the responsibility of each Entity and is checked at registration, see <a href="#requirements_not_expressed_as_policy" class="auto internal xref">Section 7.3</a>. The policy below is carried in the Subordinate Statements that the BAS Trust Anchor issues and uses the operators of <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 6.1.3.1</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<div class="breakable lang-json sourcecode" id="section-7.1-2">
+<pre>{
+  "metadata_policy": {
+    "oauth_client": {
+      "organization_name": { "essential": true },
+      "organization_identifier": { "essential": true },
+      "contacts": { "essential": true },
+      "token_endpoint_auth_method": {
+        "essential": true,
+        "one_of": ["private_key_jwt"]
+      },
+      "grant_types": {
+        "essential": true,
+        "subset_of": ["client_credentials"],
+        "superset_of": ["client_credentials"]
+      },
+      "response_types": { "value": [] }
+    },
+    "oauth_authorization_server": {
+      "organization_name": { "essential": true },
+      "organization_identifier": { "essential": true },
+      "contacts": { "essential": true },
+      "grant_types_supported": {
+        "essential": true,
+        "superset_of": ["client_credentials"]
+      },
+      "token_endpoint_auth_methods_supported": {
+        "essential": true,
+        "subset_of": ["private_key_jwt"],
+        "superset_of": ["private_key_jwt"]
+      },
+      "revocation_endpoint_auth_methods_supported": {
+        "subset_of": ["private_key_jwt"],
+        "superset_of": ["private_key_jwt"]
+      },
+      "introspection_endpoint_auth_methods_supported": {
+        "subset_of": ["private_key_jwt"],
+        "superset_of": ["private_key_jwt"]
+      },
+      "token_endpoint_auth_signing_alg_values_supported": {
+        "essential": true,
+        "superset_of": ["RS256", "ES256"],
+        "subset_of": ["RS256", "RS384", "RS512", "ES256", "ES384", "ES512",
+                      "PS256", "PS384", "PS512"]
+      }
+    },
+    "oauth_resource": {
+      "organization_name": { "essential": true },
+      "organization_identifier": { "essential": true },
+      "contacts": { "essential": true },
+      "resource": { "essential": true }
+    }
+  }
+}
+</pre><a href="#section-7.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-7.1-3">The operators act as follows:<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-7.1-4.1">
+            <code>essential</code> makes the parameter mandatory in the Resolved Metadata. An Entity whose Resolved Metadata lacks it fails policy resolution, and its Trust Chain is not valid.<a href="#section-7.1-4.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.1-4.2">
+            <code>one_of</code> checks that a Client's <code>token_endpoint_auth_method</code> is <code>private_key_jwt</code>.<a href="#section-7.1-4.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.1-4.3">
+            <code>subset_of</code> and <code>superset_of</code> with identical values require the value to be exactly that set, see <span><a href="https://openid.net/specs/openid-federation-1_1.html" class="relref">Section 6.1.3.1.8</a> of [<a href="#OpenID.Federation" class="cite xref">OpenID.Federation</a>]</span>. For a Client's <code>grant_types</code>, this means the Client uses <code>client_credentials</code> and nothing else. For an Authorization Server's client authentication methods, a method it supports outside BAS is removed from its Resolved Metadata, since <span><a href="#" class="relref">Section 2</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> prohibits other methods for Clients in BAS.<a href="#section-7.1-4.3" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.1-4.4">
+            <code>superset_of</code> alone is a check that the value contains what BAS requires, and removes nothing. It is used for an Authorization Server's <code>grant_types_supported</code>, so that grant types it supports outside BAS remain visible to parties that agree to use them outside BAS. For <code>token_endpoint_auth_signing_alg_values_supported</code> it checks that RS256 and ES256 are declared, as <span><a href="#" class="relref">Section 3.1</a> of [<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> requires, and <code>subset_of</code> removes algorithms that <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> does not permit.<a href="#section-7.1-4.4" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.1-4.5">
+            <code>value</code> assigns an empty <code>response_types</code> array to every Client, whatever the Client declares.<a href="#section-7.1-4.5" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-7.1-5">If BAS later admits further grant types, the Federation Operator updates the grant type values of the policy accordingly.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="federation_registration_entity_metadata_assignment">
+<section id="section-7.2">
+        <h3 id="name-federation-registration-ent">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-federation-registration-ent" class="section-name selfRef">Federation Registration Entity Metadata Assignment</a>
+        </h3>
+<p id="section-7.2-1">A Federation Registration Entity sets the parameters below in the <code>metadata</code> Claim of the Subordinate Statement it issues for an Entity, under the Entity's Entity Type, having applied the Registration Policies of <span><a href="#" class="relref">Section 6</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. The values replace any the Entity declares itself. Verified values are pinned: a change <span class="bcp14">MUST</span> be requested via the Federation Registration Operator, which checks it as at registration before the Subordinate Statement is updated, see <span><a href="#" class="relref">Section 7.3</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-7">
+          <caption><a href="#table-7" class="selfRef">Table 7</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+              <th class="text-left" rowspan="1" colspan="1">Set when</th>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>organization_name</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">Always. Verified under verification of organisational affiliation.</td>
+              <td class="text-left" rowspan="1" colspan="1">The legal name of the organization, without a language tag. The <code>#sv</code> and <code>#en</code> values are set if the Federation Member has supplied them.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>organization_identifier</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">Always. Verified under verification of organisational affiliation.</td>
+              <td class="text-left" rowspan="1" colspan="1">The organization identifier of the Federation Member, in one of the formats of <a href="#organization_identifier_formats" class="auto internal xref">Section 3.1</a>.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Parameters without language tag</td>
+              <td class="text-left" rowspan="1" colspan="1">Whenever the Entity supplies a <code>#sv</code> value.</td>
+              <td class="text-left" rowspan="1" colspan="1">The Swedish value, see <a href="#language" class="auto internal xref">Section 2.1</a>.</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-7.2-3">The Federation Registration Entity also includes the <code>registration_policy</code> Claim defined in <span><a href="https://www.oidc.se/specifications/openid-federation-registration-policy-1_0.html" class="relref">Section 2</a> of [<a href="#OIDC.Sweden.RegPolicy" class="cite xref">OIDC.Sweden.RegPolicy</a>]</span> in the Subordinate Statement, listing the Registration Policy URI of every policy it has applied to the Entity. The Registration Policies are defined in <span><a href="#" class="relref">Section 6</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. Through the <code>registration_policy</code> constraint of <span><a href="#" class="relref">Section 4.2</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>, the Trust Anchor requires that the policy for verification of organisational affiliation has been applied to every Entity. A peer can therefore rely on <code>organization_name</code> and <code>organization_identifier</code> without checking them itself.<a href="#section-7.2-3" class="pilcrow">¶</a></p>
+<table class="center" id="table-8">
+          <caption><a href="#table-8" class="selfRef">Table 8</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Check</th>
+              <th class="text-left" rowspan="1" colspan="1">Registration policy URI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Verification of organisational affiliation</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>https://id.ena-infrastructure.se/regpolicy/v1/orgconnection</code>
+</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Verification of registration submitter</td>
+              <td class="text-left" rowspan="1" colspan="1">To be defined in a later version of <span>[<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>, see its Section 6.2</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-7.2-5">The example below is non-normative. It shows the <code>metadata</code> and <code>registration_policy</code> Claims of a Subordinate Statement for a Client of the Swedish Agency for Digital Government (Digg), registered under the policy for verification of organisational affiliation. The issuer is illustrative.<a href="#section-7.2-5" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-7.2-6">
+<pre>{
+  "iss": "https://anslutning.example.se",
+  "sub": "https://client.digg.se",
+  "metadata": {
+    "oauth_client": {
+      "organization_name": "Myndigheten för digital förvaltning",
+      "organization_name#sv": "Myndigheten för digital förvaltning",
+      "organization_name#en": "The Swedish Agency for Digital Government",
+      "organization_identifier": "urn:glue:iso6523:0007:2021006883",
+      "client_name": "Ärendetjänst"
+    }
+  },
+  "registration_policy": [
+    "https://id.ena-infrastructure.se/regpolicy/v1/orgconnection"
+  ]
+}
+</pre><a href="#section-7.2-6" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="requirements_not_expressed_as_policy">
+<section id="section-7.3">
+        <h3 id="name-requirements-not-expressed-">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-requirements-not-expressed-" class="section-name selfRef">Requirements Not Expressed as Policy</a>
+        </h3>
+<p id="section-7.3-1">Some requirements cannot be expressed with the standard operators. They fall into two groups, with different consequences.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-2"><strong>Identifier bindings.</strong> These carry the identity that BAS exists to make verifiable:<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+<ul class="compact">
+<li class="compact" id="section-7.3-3.1">an Authorization Server's <code>issuer</code> is equal to its Entity Identifier (<a href="#issuer_identifier" class="auto internal xref">Section 5.1</a>),<a href="#section-7.3-3.1" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.3-3.2">a Protected Resource's <code>resource</code> is equal to its Entity Identifier (<a href="#resource_identifier" class="auto internal xref">Section 6.1</a>), and<a href="#section-7.3-3.2" class="pilcrow">¶</a>
+</li>
+          <li class="compact" id="section-7.3-3.3">a Client's <code>client_id</code> is its Entity Identifier (<a href="#client_identifier" class="auto internal xref">Section 4.1</a>).<a href="#section-7.3-3.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-7.3-4">A Federation Registration Entity <span class="bcp14">MUST</span> reject the registration of an Entity whose metadata does not meet the issuer binding or the resource binding above. A peer that finds either of them unmet <span class="bcp14">MUST NOT</span> use the Resolved Metadata. An Authorization Server <span class="bcp14">MUST</span> obtain a Client's metadata by resolving its <code>client_id</code> as an Entity Identifier through a Trust Chain to the BAS Trust Anchor.<a href="#section-7.3-4" class="pilcrow">¶</a></p>
+<p id="section-7.3-5"><strong>Other requirements.</strong> These include conformance to <span>[<a href="#Ena.OAuth2" class="cite xref">Ena.OAuth2</a>]</span>, such as publishing either <code>jwks</code> or <code>jwks_uri</code> but not both, and using the HTTPS scheme for URLs. A Federation Registration Entity <span class="bcp14">SHOULD</span> reject the registration of an Entity whose metadata does not meet them. The requirements of <span>[<a href="#BAS.Security" class="cite xref">BAS.Security</a>]</span> are checked by the Federation Registration Operator at registration, see <span><a href="#" class="relref">Section 9</a> of [<a href="#BAS.Rules" class="cite xref">BAS.Rules</a>]</span>. How a peer acts on a deviation is left to the peer.<a href="#section-7.3-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<section id="section-8">
+      <h2 id="name-normative-references">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
+<dl class="references">
+<dt id="BAS.Rules">[BAS.Rules]</dt>
+      <dd>
+<span class="refAuthor">Norlander, H.</span>, <span class="refTitle">"BAS – Federation Rules and Policies 1.0 – draft 01"</span>, <time datetime="2026-10-27" class="refDate">27 October 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="BAS.Security">[BAS.Security]</dt>
+      <dd>
+<span class="refAuthor">Norlander, H.</span>, <span class="refTitle">"BAS: Federation Security Requirements 1.0 – draft 01"</span>, <time datetime="2026-10-23" class="refDate">23 October 2026</time>. </dd>
+<dd class="break"></dd>
+<dt id="Ena.OAuth2">[Ena.OAuth2]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span>, <span class="refTitle">"Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01"</span>, <time datetime="2025-10-16" class="refDate">16 October 2025</time>, <span>&lt;<a href="https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html">https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ISO.6523">[ISO.6523]</dt>
+      <dd>
+<span class="refAuthor">ISO/IEC</span>, <span class="refTitle">"ISO/IEC 6523-1:2023. Part 1: Identification of organization identification schemes"</span>, <time datetime="2023" class="refDate">2023</time>, <span>&lt;<a href="https://www.iso.org/standard/82246.html">https://www.iso.org/standard/82246.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OIDC.Sweden.Federation">[OIDC.Sweden.Federation]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span> and <span class="refAuthor">S. Santesson</span>, <span class="refTitle">"Swedish OpenID Federation Deployment and Interoperability Profile 1.0"</span>, <time datetime="2026-10-16" class="refDate">16 October 2026</time>, <span>&lt;<a href="https://www.oidc.se/specifications/swedish-openid-federation-profile-1_0.html">https://www.oidc.se/specifications/swedish-openid-federation-profile-1_0.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OIDC.Sweden.OrgId">[OIDC.Sweden.OrgId]</dt>
+      <dd>
+<span class="refAuthor">Jones, M. B.</span>, <span class="refAuthor">Lindström, M.</span>, and <span class="refAuthor">S. Santesson</span>, <span class="refTitle">"OpenID Federation Organization Identifier Metadata Parameter 1.0"</span>, <time datetime="2026-02-23" class="refDate">23 February 2026</time>, <span>&lt;<a href="https://www.oidc.se/specifications/openid-federation-organization-identifier-1_0.html">https://www.oidc.se/specifications/openid-federation-organization-identifier-1_0.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OIDC.Sweden.RegPolicy">[OIDC.Sweden.RegPolicy]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span> and <span class="refAuthor">S. Santesson</span>, <span class="refTitle">"OpenID Federation Registration Policy 1.0 – draft 01"</span>, <time datetime="2026-03-30" class="refDate">30 March 2026</time>, <span>&lt;<a href="https://www.oidc.se/specifications/openid-federation-registration-policy-1_0.html">https://www.oidc.se/specifications/openid-federation-registration-policy-1_0.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation">[OpenID.Federation]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M. B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A. Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-1_1.html">https://openid.net/specs/openid-federation-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="OpenID.Federation.Connect">[OpenID.Federation.Connect]</dt>
+      <dd>
+<span class="refAuthor">Hedberg, R.</span>, <span class="refAuthor">Jones, M. B., Ed.</span>, <span class="refAuthor">De Marco, G.</span>, <span class="refAuthor">Solberg, A. Å.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">V. Dzhuvinov</span>, <span class="refTitle">"OpenID Federation for OpenID Connect 1.1"</span>, <time datetime="2026-05-05" class="refDate">5 May 2026</time>, <span>&lt;<a href="https://openid.net/specs/openid-federation-connect-1_1.html">https://openid.net/specs/openid-federation-connect-1_1.html</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+      <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7591">[RFC7591]</dt>
+      <dd>
+<span class="refAuthor">Richer, J., Ed.</span>, <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, <span class="refAuthor">Machulak, M.</span>, and <span class="refAuthor">P. Hunt</span>, <span class="refTitle">"OAuth 2.0 Dynamic Client Registration Protocol"</span>, <span class="seriesInfo">RFC 7591</span>, <span class="seriesInfo">DOI 10.17487/RFC7591</span>, <time datetime="2015-07" class="refDate">July 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc7591">https://www.rfc-editor.org/info/rfc7591</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+      <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8174">https://www.rfc-editor.org/info/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8414">[RFC8414]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc8414">https://www.rfc-editor.org/info/rfc8414</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9728">[RFC9728]</dt>
+    <dd>
+<span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc9728">https://www.rfc-editor.org/info/rfc9728</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<section id="section-9">
+      <h2 id="name-informative-references">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+      </h2>
+<dl class="references">
+<dt id="Ena.Federation">[Ena.Federation]</dt>
+      <dd>
+<span class="refAuthor">Lindström, M.</span>, <span class="refTitle">"Ena OAuth 2.0 Federation Interoperability Profile 1.0 – draft 01"</span>, <time datetime="2025-03-31" class="refDate">31 March 2025</time>. <span class="annotation">Referred to by Section 1.4 of [Ena.OAuth2], not yet published.</span>
+      </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-spice-glue-id">[I-D.ietf-spice-glue-id]</dt>
+      <dd>
+<span class="refAuthor">Zundel, B.</span>, <span class="refAuthor">Dingle, P.</span>, and <span class="refAuthor">M. B. Jones</span>, <span class="refTitle">"GLobal Unique Enterprise (GLUE) Identifiers"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-spice-glue-id-10</span>, <time datetime="2026-07-23" class="refDate">23 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-spice-glue-id-10">https://datatracker.ietf.org/doc/html/draft-ietf-spice-glue-id-10</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SKV709">[SKV709]</dt>
+    <dd>
+<span class="refAuthor">Skatteverket</span>, <span class="refTitle">"SKV 709, Utgåva 8, Organisationsnummer"</span>, <time datetime="2006" class="refDate">2006</time>, <span>&lt;<a href="https://docs.swedenconnect.se/technical-framework/mirror/skv/skv709-8.pdf">https://docs.swedenconnect.se/technical-framework/mirror/skv/skv709-8.pdf</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+<div id="notices">
+<section id="appendix-A">
+      <h2 id="name-notices">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-notices" class="section-name selfRef">Notices</a>
+      </h2>
+<p id="appendix-A-1">Copyright (c) The Swedish Agency for Digital Government (Digg), 2026. All
+Rights Reserved.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="document-history">
+<section id="appendix-B">
+      <h2 id="name-document-history">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-document-history" class="section-name selfRef">Document History</a>
+      </h2>
+<span class="break"></span><dl class="dlCompact dlParallel" id="appendix-B-1">
+        <dt id="appendix-B-1.1">1.0 - draft 01</dt>
+        <dd style="margin-left: 1.5em" id="appendix-B-1.2">Initial version.<a href="#appendix-B-1.2" class="pilcrow">¶</a>
+</dd>
+      <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Henric Norlander</span></div>
+<div dir="auto" class="left"><span class="org">The Swedish Agency for Digital Government (Digg)</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:extern.henric.norlander@digg.se" class="email">extern.henric.norlander@digg.se</a>, <a href="mailto:henric@nodnio.se" class="email">henric@nodnio.se</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
