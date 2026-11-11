@@ -1,0 +1,9 @@
+# Mellanfiler från markdown2rfc
+/*.xml
+/bas*.html
+
+# Lokal Jekyll-build
+docs/_site/
+.DS_Store
+
+.idea/

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BAS Federation Specifications</title>
+    <style>
+        body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; max-width: 48rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; color: #222; background: #fff; }
+        header img { height: 48px; margin-right: 1rem; vertical-align: middle; }
+        h1 { font-size: 1.6rem; }
+        h2 { font-size: 1.2rem; margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: .3rem; }
+        ul { padding-left: 1.2rem; }
+        li { margin: .9rem 0; }
+        li p { margin: .2rem 0 0; color: #444; }
+        .note { font-size: .9rem; color: #555; background: #f6f8fa; border-left: 3px solid #0b5cad; padding: .6rem .9rem; }
+        a { color: #0b5cad; }
+    </style>
+</head>
+<body>
+<header>
+    <img src="img/digg_centered.png" alt="Digg"><img src="img/sib.png" alt="SIB">
+</header>
+<h1>BAS Federation Specifications</h1>
+
+<p>BAS is a federation for API access based on OAuth 2.0. It is built on
+    <a href="https://openid.net/specs/openid-federation-1_0.html">OpenID Federation</a>
+    and profiled by the Swedish OpenID Federation Deployment and Interoperability Profile.
+    The OAuth 2.0 protocol itself follows the Ena OAuth 2.0 Interoperability Profile.</p>
+
+<p>The specifications below together describe how the BAS federation is governed,
+    how it is structured, and what OAuth 2.0 Clients, Authorization Servers and
+    Protected Resources must fulfil to participate. A suggested reading order is
+    the rules first, then the structure, followed by the metadata and security
+    requirements.</p>
+
+<p class="note">These are working drafts generated from the <code>main</code> branch.
+    They may change at any time and should not be considered final.</p>
+
+<h2>Drafts</h2>
+<ul>
+    <li><a href="drafts/bas_federation_rules-main.html">BAS – Federation Rules and Policies 1.0 – draft 01</a>
+        <p>The rules and policies of the BAS federation: the roles of the Federation Operator and
+            Federation Registration Operators, collaboration contexts, federation endpoints, entity
+            statements and trust chains.</p></li>
+    <li><a href="drafts/bas-federation-structure-main.html">BAS: OpenID Federation Structure 1.0 – draft 01</a>
+        <p>The structure of the federation and the services it provides, how to join as a
+            Federation Registration Operator or Federation Member, trust marks, and connection
+            information for the production, QA and sandbox environments.</p></li>
+    <li><a href="drafts/bas_federation_metadata_requriements-main.html">BAS Federation Metadata Requirements 1.0 – draft 01</a>
+        <p>Metadata requirements for OAuth 2.0 Clients, Authorization Servers and Protected
+            Resources, as published in Entity Configurations and applied to the resolved metadata
+            of each entity.</p></li>
+    <li><a href="drafts/bas_federation_security_requirements-main.html">BAS: Federation Security Requirements 1.0 – draft 01</a>
+        <p>Security requirements for participants, covering transport protection, client
+            authentication, keys, signature algorithms and key rollover. Read together with the
+            metadata requirements.</p></li>
+</ul>
+</body>
+</html>
