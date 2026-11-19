@@ -2,7 +2,7 @@
 
 This document contains a set of test cases that are applied to Intermediate Entities in Federationskontext BAS (BAS). Within BAS, the Intermediates are the Federation Registration Entities: the connection services (Swedish: anslutningstjänster) that Federation Registration Operators provide, and through which the OAuth 2.0 Clients, Authorization Servers and Protected Resources of Federation Members are registered under \[[SIB.Registration](#sib-registration)\].
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
@@ -149,7 +149,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="oidc-sweden-federation"></a>
 **\[OIDC.Sweden.Federation\]**
-> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0 - draft 03", 2 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
+> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0", 16 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
 
 <a name="openid-federation-regpolicy"></a>
 **\[OpenID.Federation.RegPolicy\]**
@@ -161,11 +161,15 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="bas-metadata"></a>
 **\[BAS.Metadata\]**
-> The Swedish Agency for Digital Government (Digg), "Federationskontext BAS: OAuth 2.0 Metadata Requirements 1.0, draft 02", 6 October 2026.
+> The Swedish Agency for Digital Government (Digg), "BAS Federation Metadata Requirements 1.0 – draft 01", 26 October 2026.
 
 <a name="bas-rules"></a>
 **\[BAS.Rules\]**
-> The Swedish Agency for Digital Government (Digg), federation rules for Federationskontext BAS, in preparation.
+> The Swedish Agency for Digital Government (Digg), "BAS – Federation Rules and Policies 1.0 – draft 01", 27 October 2026.
+
+<a name="bas-structure"></a>
+**\[BAS.Structure\]**
+> The Swedish Agency for Digital Government (Digg), "BAS: OpenID Federation Structure 1.0 – draft 01", 26 October 2026.
 
 <a name="sib-registration"></a>
 **\[SIB.Registration\]**
@@ -181,7 +185,7 @@ Before the tests are carried out, the tester collects the following information 
 | Item | Description |
 | :--- | :--- |
 | **FRE Entity Identifier** | The Entity Identifier of the connection service under test, and the Federation Registration Operator that provides it. |
-| **Trust Anchor** | The Entity Identifier and the out-of-band distributed keys of the Trust Anchor the FRE is registered under. |
+| **Trust Anchor** | The Entity Identifier and the out-of-band distributed keys of the Trust Anchor the FRE is registered under, as published in Section 5 of \[[BAS.Structure](#bas-structure)\]. Until the keys are published there, they are provided by the Federation Operator. |
 | **Registered Entities** | A list of the Entities the FRE is expected to have registered, and their Entity Types. |
 | **Test Entities** | At least one test Entity per Entity Type the FRE registers, which the tester controls and can have registered, changed and removed during the tests (see [Section 3](#tests-requiring-a-chain-of-test-data)). |
 | **Registration documentation** | The registration policy URIs the FRE uses, and the expected time from a change, such as a newly added Entity, until it is published. The registration procedure itself is not tested, see \[[SIB.Registration](#sib-registration)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]. |
@@ -242,13 +246,12 @@ This section contains tests that assert that the FRE publishes a valid Entity Co
 <a name="fre-os-004"></a>
 #### FRE-OS-004: Verifying the validity period of the Entity Configuration
 
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that the Entity Configuration is valid at the time of testing, and that its validity period follows the federation rules.
-- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period stated in the federation rules.
+- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period of 7 days that Section 3.1 of \[[BAS.Rules](#bas-rules)\] recommends for Entity Configurations.
 - **Expected result**:
   - `iat` MUST NOT be later, and `exp` MUST be later, than the time of retrieval. A clock skew of 10 seconds is allowed.
-  - `exp` minus `iat` is expected to equal the validity period stated in the federation rules. If the federation rules state no period, this should be noted in the report, and the period used should be noted.
-- **References**: Section 3.1.1 and 3.2 of \[[OpenID.Federation](#openid-federation)\] and Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+  - It is RECOMMENDED that `exp` minus `iat` is 7 days (604 800 seconds). A shorter period MAY be used when a change to the FRE's metadata is about to happen. Another period should be noted in the report as an observation, together with the period used.
+- **References**: Section 3.1.1 and 3.2 of \[[OpenID.Federation](#openid-federation)\], Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 3.1 of \[[BAS.Rules](#bas-rules)\]
 
 <a name="fre-os-005"></a>
 #### FRE-OS-005: Verifying that the Entity Configuration is renewed before it expires
@@ -471,13 +474,12 @@ The tests in this section take the `federation_fetch_endpoint` from the FRE's En
 #### FRE-OS-022: Verifying the validity period of Subordinate Statements
 
 - **Test data**: Subordinate Statements about REG-C1, REG-AS1 and REG-PR1.
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that Subordinate Statements are valid when issued and that their validity follows the federation rules.
-- **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and note the time of retrieval. Compare `iat` and `exp` with that time and with the federation rules.
+- **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and note the time of retrieval. Compare `iat` and `exp` with that time and with the validity period of 7 days that Section 3.1 of \[[BAS.Rules](#bas-rules)\] gives for Subordinate Statements issued by the Federation Registration Entities.
 - **Expected result**:
   - `iat` MUST NOT be later, and `exp` MUST be later, than the time of retrieval. A clock skew of 10 seconds is allowed.
-  - `exp` minus `iat` is expected to follow the federation rules. Deviations should be noted in the report.
-- **References**: Section 3.1.1 and 3.2 of \[[OpenID.Federation](#openid-federation)\] and Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+  - `exp` minus `iat` is expected to be 7 days (604 800 seconds). Another period should be noted in the report as an observation.
+- **References**: Section 3.1.1 and 3.2 of \[[OpenID.Federation](#openid-federation)\], Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 3.1 of \[[BAS.Rules](#bas-rules)\]
 
 <a name="fre-os-023"></a>
 #### FRE-OS-023: Verifying the source_endpoint and ec_location claims

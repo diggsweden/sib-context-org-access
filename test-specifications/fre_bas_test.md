@@ -2,7 +2,7 @@
 
 This document contains a set of test cases that are applied to Intermediate Entities in Federationskontext BAS (BAS). Within BAS, the Intermediates are the Federation Registration Entities: the connection services (Swedish: anslutningstjänster) that Federation Registration Operators provide, and through which the OAuth 2.0 Clients, Authorization Servers and Protected Resources of Federation Members are registered under \[[SIB.Registration](#sib-registration)\].
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
@@ -33,6 +33,10 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [FRE-BAS-002](#fre-bas-002) TLS configuration
 
+    2.2. [**Federation Endpoints**](#federation-endpoints)
+
+    [FRE-BAS-013](#fre-bas-013) Federation endpoints without client authentication
+
 3. [**Tests Requiring a Chain of Test Data**](#tests-requiring-a-chain-of-test-data)
 
     3.1. [**Per-Entity Values**](#per-entity-values)
@@ -53,6 +57,12 @@ Note: Where the specifications do not state a concrete value or procedure, or wh
 
     [FRE-BAS-008](#fre-bas-008) Registering a new Entity in BAS
 
+    [FRE-BAS-009](#fre-bas-009) *Removed*
+
+    [FRE-BAS-010](#fre-bas-010) *Removed*
+
+    [FRE-BAS-011](#fre-bas-011) *Removed*
+
     3.4. [**Changes to Verified Values**](#changes-to-verified-values)
 
     [FRE-BAS-012](#fre-bas-012) Changing a verified value in the Entity Configuration
@@ -71,7 +81,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="oidc-sweden-federation"></a>
 **\[OIDC.Sweden.Federation\]**
-> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0 - draft 03", 2 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
+> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0", 16 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
 
 <a name="openid-federation-regpolicy"></a>
 **\[OpenID.Federation.RegPolicy\]**
@@ -79,15 +89,19 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="bas-security"></a>
 **\[BAS.Security\]**
-> The Swedish Agency for Digital Government (Digg), "Federationskontext BAS: Security Requirements 1.0, draft 01", October 2026.
+> The Swedish Agency for Digital Government (Digg), "BAS: Federation Security Requirements 1.0 – draft 01", 23 October 2026.
 
 <a name="bas-metadata"></a>
 **\[BAS.Metadata\]**
-> The Swedish Agency for Digital Government (Digg), "Federationskontext BAS: OAuth 2.0 Metadata Requirements 1.0, draft 02", 6 October 2026.
+> The Swedish Agency for Digital Government (Digg), "BAS Federation Metadata Requirements 1.0 – draft 01", 26 October 2026.
 
 <a name="bas-rules"></a>
 **\[BAS.Rules\]**
-> The Swedish Agency for Digital Government (Digg), federation rules for Federationskontext BAS, in preparation.
+> The Swedish Agency for Digital Government (Digg), "BAS – Federation Rules and Policies 1.0 – draft 01", 27 October 2026.
+
+<a name="bas-structure"></a>
+**\[BAS.Structure\]**
+> The Swedish Agency for Digital Government (Digg), "BAS: OpenID Federation Structure 1.0 – draft 01", 26 October 2026.
 
 <a name="sib-registration"></a>
 **\[SIB.Registration\]**
@@ -95,7 +109,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="ena-oauth2"></a>
 **\[Ena.OAuth2\]**
-> ["Ena OAuth 2.0 Interoperability Profile"](https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html).
+> [Lindström, M., "Ena OAuth 2.0 Interoperability Profile 1.0 – draft 01", 16 October 2025](https://ena-infrastructure.github.io/specifications/ena-oauth2-profile.html).
 
 <a name="test-setup"></a>
 ### 1.2. Test Setup
@@ -107,10 +121,10 @@ Before the tests are carried out, the tester collects the following information 
 | Item | Description |
 | :--- | :--- |
 | **FRE Entity Identifier** | The Entity Identifier of the connection service under test, and the Federation Registration Operator that provides it. |
-| **Trust Anchor** | The Entity Identifier and the out-of-band distributed keys of the Trust Anchor the FRE is registered under. |
+| **Trust Anchor** | The Entity Identifier and the out-of-band distributed keys of the Trust Anchor the FRE is registered under, as published in Section 5 of \[[BAS.Structure](#bas-structure)\]. Until the keys are published there, they are provided by the Federation Operator. |
 | **Registered Entities** | A list of the Entities the FRE is expected to have registered, and their Entity Types. |
 | **Test Entities** | At least one test Entity per Entity Type the FRE registers, which the tester controls and can have registered, changed and removed during the tests (see [Section 3](#tests-requiring-a-chain-of-test-data)). |
-| **Registration documentation** | The registration policy URIs the FRE uses, and the expected time from a change, such as a newly added Entity, until it is published. The registration procedure itself is not tested, see \[[SIB.Registration](#sib-registration)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]. |
+| **Registration documentation** | The registration policy URIs the FRE uses (see Section 6 of \[[BAS.Rules](#bas-rules)\]), and the expected time from a change, such as a newly added Entity, until it is published. The registration procedure itself is not tested, see \[[SIB.Registration](#sib-registration)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]. |
 
 Test cases that only apply under a condition state this under "Applies to".
 
@@ -127,13 +141,12 @@ The test cases in this section can be carried out against the FRE alone. They us
 <a name="fre-bas-001"></a>
 #### FRE-BAS-001: Verifying the federation keys against the BAS rules
 
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The key length requirements for Federation Entity Keys.
-- **Purpose**: Assert that the FRE's Federation Entity Keys have adequate lengths, although \[[BAS.Security](#bas-security)\] does not apply to Federation Entity Keys.
-- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note the type and length of each key in its `jwks` claim. Compare them with any key length requirement stated in \[[BAS.Rules](#bas-rules)\].
+- **Purpose**: Assert that the FRE's Federation Entity Keys meet the requirements that apply to them in BAS. \[[BAS.Security](#bas-security)\] does not apply to Federation Entity Keys. For them, Section 9 of \[[BAS.Rules](#bas-rules)\] makes Section 6 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] apply.
+- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note the type and length of each key in its `jwks` claim. Compare them with the requirements in Section 6 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\].
 - **Expected result**:
-  - If \[[BAS.Rules](#bas-rules)\] states key length requirements for Federation Entity Keys, the keys MUST meet them.
-  - Otherwise, the keys are compared with a baseline: RSA keys of at least 2048 bits, and EC keys on one of the curves P-256, P-384 or P-521. Any deviation should be noted in the report as an observation.
-- **References**: Section 1 of \[[BAS.Security](#bas-security)\], \[[BAS.Rules](#bas-rules)\] and Section 2.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+  - The keys MUST meet the requirements of Section 6 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\], as Section 9 of \[[BAS.Rules](#bas-rules)\] requires.
+  - Where those requirements state no key length, the keys are compared with a baseline: RSA keys of at least 2048 bits, and EC keys on one of the curves P-256, P-384 or P-521. Any deviation should be noted in the report as an observation.
+- **References**: Section 1 of \[[BAS.Security](#bas-security)\], Section 9 of \[[BAS.Rules](#bas-rules)\] and Section 2.1 and 6 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
 <a name="fre-bas-002"></a>
 #### FRE-BAS-002: TLS configuration
@@ -144,6 +157,19 @@ The test cases in this section can be carried out against the FRE alone. They us
   - The configuration MUST follow Section 8.1 of \[[Ena.OAuth2](#ena-oauth2)\], as required by Section 2 of \[[BAS.Security](#bas-security)\].
   - Weak protocol versions or cipher suites must be noted in the report.
 - **References**: Section 2 of \[[BAS.Security](#bas-security)\] and Section 8.1 of \[[Ena.OAuth2](#ena-oauth2)\]
+
+<a name="federation-endpoints"></a>
+### 2.2. Federation Endpoints
+
+<a name="fre-bas-013"></a>
+#### FRE-BAS-013: Federation endpoints without client authentication
+
+- **Purpose**: Assert that the federation endpoints of the FRE can be used without client authentication, as BAS states.
+- **Instructions**: Fetch the Entity Configuration of the FRE ([P-EC](procedures.md#p-ec)) and note every endpoint in its `federation_entity` metadata, and any `*_auth_methods` parameters. Without client authentication, list the Entities the FRE has registered ([P-LIST](procedures.md#p-list)) and fetch the Subordinate Statement about one of them ([P-FETCH](procedures.md#p-fetch)). Send an unauthenticated GET request to every other endpoint published.
+- **Expected result**:
+  - Every federation endpoint MUST accept the unauthenticated requests. A response that requires client authentication, such as HTTP status code 401 or the error code `invalid_client`, is a failure.
+  - Any `*_auth_methods` parameter must be noted in the report, together with the methods it declares.
+- **References**: Section 2.4 of \[[BAS.Rules](#bas-rules)\] and Section 8.8 of \[[OpenID.Federation](#openid-federation)\]
 
 <a name="tests-requiring-a-chain-of-test-data"></a>
 ## 3. Tests Requiring a Chain of Test Data
@@ -158,15 +184,15 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 <a name="fre-bas-003"></a>
 #### FRE-BAS-003: Verifying organization parameters
 
-- **Test data**: REG-C1, REG-AS1 and REG-PR1, and the registered legal name and organization number behind each.
+- **Test data**: REG-C1, REG-AS1 and REG-PR1, and the registered legal name and organization identifier behind each.
 - **Purpose**: Assert that the FRE assigns the verified name and identifier of the organization that owns the Entity, so that peers can see which organization an Entity is registered for.
-- **Instructions**: Before the test, note the registered legal name and organization number of the organization behind each Entity. For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `metadata` claim, under the Entity Type of the Entity.
+- **Instructions**: Before the test, note the registered legal name and organization identifier of the organization behind each Entity. For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `metadata` claim, under the Entity Type of the Entity.
 - **Expected result**:
   - `organization_name` MUST be set in the `metadata` claim. The value without a language tag MUST be the legal name of the organization. `#sv` and `#en` values are expected when the organization has supplied them.
-  - `organization_identifier` MUST be set in the `metadata` claim and MUST have the format `urn:glue:iso6523:0007:<organization number>`, where the organization number is ten digits without a hyphen.
+  - `organization_identifier` MUST be set in the `metadata` claim and MUST be a GLUE-URI in the format `urn:glue:iso6523:<icd>:<identifier>`. For ICD 0007 (Swedish organization number), the identifier MUST be ten digits without a hyphen. An ICD other than 0007, 0088 and 0203 must be noted in the report.
   - Both values MUST match the registered values.
   - The values MUST be set in the `metadata` claim and not by metadata policy, so that they replace any value the Entity declares itself.
-- **References**: Section 1, 3, 3.1 and 7.2 of \[[BAS.Metadata](#bas-metadata)\] and \[[SIB.Registration](#sib-registration)\]
+- **References**: Section 1, 3, 3.1 and 7.2 of \[[BAS.Metadata](#bas-metadata)\], Section 6.1 of \[[BAS.Rules](#bas-rules)\] and \[[SIB.Registration](#sib-registration)\]
 
 <a name="fre-bas-004"></a>
 #### FRE-BAS-004: Verifying language-tagged values
@@ -176,9 +202,8 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 - **Instructions**: For REG-C1 and REG-PR1, fetch the Entity Configuration ([P-EC](procedures.md#p-ec)) and the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)). Identify the human-readable parameters the Entity declares with language tags (for example `client_name#sv`, `resource_name#sv`, `display_name#sv`). Inspect the `metadata` claim of the Subordinate Statement.
 - **Expected result**:
   - For each such parameter, a corresponding parameter without a language tag, holding the Swedish value, MUST be assigned in the `metadata` claim.
-  - If the display name has been verified and the Entity has not declared `display_name`, `display_name` MUST be assigned from `client_name` or `resource_name`.
   - A value without a language tag that the Entity declares itself is replaced by the assigned value.
-- **References**: Section 2, 3 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
+- **References**: Section 2.1, 3 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
 
 <a name="fre-bas-005"></a>
 #### FRE-BAS-005: Verifying that the FRE sets no other values
@@ -187,23 +212,22 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 - **Purpose**: Assert that the Federation Registration Entity only sets the values that \[[BAS.Metadata](#bas-metadata)\] assigns to it, since all other assigned or constrained values are controlled by the Federation Operator through the Trust Anchor.
 - **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `metadata` and `metadata_policy` claims.
 - **Expected result**:
-  - The `metadata` claim is expected to hold only `organization_name` (with any `#sv` and `#en` values), `organization_identifier`, `display_name` where the display name has been verified, and values without a language tag for human-readable parameters.
+  - The `metadata` claim is expected to hold only `organization_name` (with any `#sv` and `#en` values), `organization_identifier`, and values without a language tag for human-readable parameters.
   - The Subordinate Statements are not expected to contain a `metadata_policy` claim. If they do, every entry must be noted in the report.
   - Every other value must be noted in the report.
-- **References**: Section 1, 2, 7 and 7.2 of \[[BAS.Metadata](#bas-metadata)\] and Section 2.5 and 3.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+- **References**: Section 1, 2, 7 and 7.2 of \[[BAS.Metadata](#bas-metadata)\], Section 7.3 of \[[BAS.Rules](#bas-rules)\] and Section 2.5 and 3.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
 
 <a name="fre-bas-006"></a>
 #### FRE-BAS-006: Verifying the BAS registration policies
 
 - **Test data**: REG-C1, REG-AS1 and REG-PR1.
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: Which registration checks are required, and their registration policy URIs.
-- **Purpose**: Assert that the FRE states, for each Entity it publishes, the registration checks of \[[SIB.Registration](#sib-registration)\] that apply to it, so that peers and the Trust Anchor can rely on them. The generic form of the claim is tested in [FRE-OS-029](fre_oidf_sweden_test.md#fre-os-029).
+- **Purpose**: Assert that the FRE states, for each Entity it publishes, the registration checks of \[[SIB.Registration](#sib-registration)\] that BAS applies to it, so that peers and the Trust Anchor can rely on them. The generic form of the claim is tested in [FRE-OS-029](fre_oidf_sweden_test.md#fre-os-029).
 - **Instructions**: For REG-C1, REG-AS1 and REG-PR1, fetch the Subordinate Statement from the FRE ([P-FETCH](procedures.md#p-fetch)) and inspect its `registration_policy` claim.
 - **Expected result**:
   - `registration_policy` MUST be present and MUST be an array of URI strings.
-  - It MUST list the registration policy URI of every check that BAS requires for the Entity, including `https://id.ena-infrastructure.se/regpolicy/v1/orgconnection` for verification of organisational affiliation, which is always performed.
-  - Any URI that is not defined in \[[SIB.Registration](#sib-registration)\] must be noted in the report.
-- **References**: Section 2 of \[[OpenID.Federation.RegPolicy](#openid-federation-regpolicy)\], Section 3.2 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 1 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
+  - It MUST contain `https://id.ena-infrastructure.se/regpolicy/v1/orgconnection`, since verification of organisational affiliation is applied to every Entity, and the Trust Anchor requires it through its `registration_policy` constraint.
+  - Verification of registration submitter is not yet defined, see Section 6.2 of \[[BAS.Rules](#bas-rules)\]. Any other URI, and any URI that is not defined in \[[SIB.Registration](#sib-registration)\], must be noted in the report.
+- **References**: Section 4.2, 6 and 6.1 of \[[BAS.Rules](#bas-rules)\], Section 2 of \[[OpenID.Federation.RegPolicy](#openid-federation-regpolicy)\], Section 3.2 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 7.2 of \[[BAS.Metadata](#bas-metadata)\]
 
 <a name="resolved-metadata"></a>
 ### 3.2. Resolved Metadata
@@ -216,11 +240,13 @@ The values in this section are set in the `metadata` claim of the Subordinate St
 - **Instructions**: List all Entities registered by the FRE ([P-LIST](procedures.md#p-list)). For each listed Entity, build the Trust Chain to FED-TA and resolve the metadata ([P-CHAIN](procedures.md#p-chain)). The check is expected to be carried out with a tool, since the number of Entities can be large. Compare the Resolved Metadata with the tables in Section 3 to 6 of \[[BAS.Metadata](#bas-metadata)\].
 - **Expected result**:
   - Every listed Entity MUST resolve without errors.
-  - `organization_name` and `organization_identifier` MUST hold the values set by the FRE, also when the Entity declares other values. `organization_identifier` MUST have the format `urn:glue:iso6523:0007:<organization number>`, and is expected to match the organization in the national register of organizations.
+  - `organization_name` and `organization_identifier` MUST hold the values set by the FRE, also when the Entity declares other values. `organization_identifier` MUST be a GLUE-URI in the format `urn:glue:iso6523:<icd>:<identifier>`. For ICD 0007 (Swedish organization number), the identifier MUST be ten digits without a hyphen, and is expected to match the organization in the national register of organizations.
   - `contacts` MUST be present and hold at least one email address.
   - Human-readable parameters MUST be present without a language tag, holding the Swedish value.
-  - The protocol parameters are expected to meet Section 4 to 6 of \[[BAS.Metadata](#bas-metadata)\]. Every Entity that deviates must be noted in the report, together with whether the deviation is caused by the Entity, the FRE or the Trust Anchor policy.
-- **References**: Section 2, 3, 4, 5, 6 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
+  - Authorization Server: `issuer` MUST equal its Entity Identifier. Protected Resource: `resource` MUST equal its Entity Identifier. The FRE MUST NOT have registered an Entity that breaks either binding.
+  - Every JWK in the Entity's `jwks`, or in the JWK Set at its `jwks_uri`, is expected to have a `kid`, unique within the set.
+  - The other protocol parameters are expected to meet Section 2.2 and 4 to 6 of \[[BAS.Metadata](#bas-metadata)\] and Section 3.1 of \[[BAS.Security](#bas-security)\], for example that `authorization_servers` of a Protected Resource contains at least one Authorization Server in BAS, and that `token_endpoint_auth_signing_alg_values_supported` of an Authorization Server contains `RS384`, `RS512`, `ES384` and `ES512`. Since the FRE SHOULD reject such deviations at registration, every Entity that deviates should be noted in the report as an observation, together with whether the deviation is caused by the Entity, the FRE or the Trust Anchor policy.
+- **References**: Section 2, 2.1, 2.2, 3, 3.1, 4, 5, 6, 7.2 and 7.3 of \[[BAS.Metadata](#bas-metadata)\], Section 3.1 and 4 of \[[BAS.Security](#bas-security)\] and Section 8 and 9 of \[[BAS.Rules](#bas-rules)\]
 
 <a name="new-entities"></a>
 ### 3.3. New Entities
@@ -237,7 +263,22 @@ The registration itself is treated as a black box: the change is made by the Fed
 - **Expected result**:
   - The Subordinate Statement MUST meet the expected results of [FRE-BAS-003](#fre-bas-003), [FRE-BAS-004](#fre-bas-004), [FRE-BAS-005](#fre-bas-005) and [FRE-BAS-006](#fre-bas-006).
   - The Resolved Metadata MUST meet the expected result of [FRE-BAS-007](#fre-bas-007).
-- **References**: Section 7.2 of \[[BAS.Metadata](#bas-metadata)\] and \[[SIB.Registration](#sib-registration)\]
+- **References**: Section 7.2 of \[[BAS.Metadata](#bas-metadata)\], Section 6.1 of \[[BAS.Rules](#bas-rules)\] and \[[SIB.Registration](#sib-registration)\]
+
+<a name="fre-bas-009"></a>
+#### FRE-BAS-009: Registering an Entity with metadata that the BAS policy rejects
+
+*Removed in version 0.1.0: the test case tested the registration procedure, which is treated as a black box. That only Entities meeting the BAS requirements are published is asserted in [FRE-BAS-007](#fre-bas-007).*
+
+<a name="fre-bas-010"></a>
+#### FRE-BAS-010: Registering an Entity with metadata that the policy cannot check
+
+*Removed in version 0.1.0: the test case tested the registration procedure, which is treated as a black box. That only Entities meeting the BAS requirements are published is asserted in [FRE-BAS-007](#fre-bas-007).*
+
+<a name="fre-bas-011"></a>
+#### FRE-BAS-011: Registering an Entity with incorrect organization details
+
+*Removed in version 0.1.0: the test case tested the registration procedure, which is treated as a black box. The verified organization values are asserted in [FRE-BAS-003](#fre-bas-003) and [FRE-BAS-007](#fre-bas-007).*
 
 <a name="changes-to-verified-values"></a>
 ### 3.4. Changes to Verified Values
@@ -249,4 +290,4 @@ The registration itself is treated as a black box: the change is made by the Fed
 - **Purpose**: Assert that an Entity cannot change a verified value by changing its own Entity Configuration.
 - **Instructions**: For a registered test Entity, change `organization_name` and `organization_identifier` in the Entity's own Entity Configuration, without a new registration. Build the Trust Chain to FED-TA and resolve the metadata ([P-CHAIN](procedures.md#p-chain)).
 - **Expected result**: The Resolved Metadata MUST still hold the values assigned or pinned by the FRE.
-- **References**: Section 2 and 7.2 of \[[BAS.Metadata](#bas-metadata)\]
+- **References**: Section 2 and 7.2 of \[[BAS.Metadata](#bas-metadata)\], Section 6.1 and 7.3 of \[[BAS.Rules](#bas-rules)\] and Section 3.3 of \[[BAS.Structure](#bas-structure)\]

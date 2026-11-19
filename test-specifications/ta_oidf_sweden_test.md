@@ -2,7 +2,7 @@
 
 This document contains a set of test cases that are applied to the Trust Anchor of Federationskontext BAS (BAS), the federation context for machine-to-machine access within, and towards, the Swedish public sector. BAS is operated by the Federation Operator, the Swedish Agency for Digital Government (Digg).
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
@@ -151,7 +151,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="oidc-sweden-federation"></a>
 **\[OIDC.Sweden.Federation\]**
-> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0 - draft 03", 2 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
+> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0", 16 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
 
 <a name="openid-federation-regpolicy"></a>
 **\[OpenID.Federation.RegPolicy\]**
@@ -163,11 +163,15 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="bas-metadata"></a>
 **\[BAS.Metadata\]**
-> The Swedish Agency for Digital Government (Digg), "Federationskontext BAS: OAuth 2.0 Metadata Requirements 1.0, draft 02", 6 October 2026.
+> The Swedish Agency for Digital Government (Digg), "BAS Federation Metadata Requirements 1.0 – draft 01", 26 October 2026.
 
 <a name="bas-rules"></a>
 **\[BAS.Rules\]**
-> The Swedish Agency for Digital Government (Digg), federation rules for Federationskontext BAS, in preparation.
+> The Swedish Agency for Digital Government (Digg), "BAS – Federation Rules and Policies 1.0 – draft 01", 27 October 2026.
+
+<a name="bas-structure"></a>
+**\[BAS.Structure\]**
+> The Swedish Agency for Digital Government (Digg), "BAS: OpenID Federation Structure 1.0 – draft 01", 26 October 2026.
 
 <a name="rfc7517"></a>
 **\[RFC7517\]**
@@ -182,15 +186,15 @@ Before the tests are carried out, the tester collects the following information 
 
 | Item | Description |
 | :--- | :--- |
-| **TA Entity Identifier** | The Entity Identifier of the BAS Trust Anchor in the environment under test (for example the Sandbox). |
-| **Out-of-band TA keys** | The Trust Anchor's Federation Entity Keys as distributed by the Federation Operator by other means than the Entity Configuration (for example on the federation web site). |
-| **Expected Immediate Subordinates** | The Entity Identifiers of the Federation Registration Entities (connection services, Swedish: anslutningstjänster) of the Federation Registration Operators connected to BAS. These are the only Immediate Subordinates of the BAS Trust Anchor. |
-| **Federation rules** | The BAS federation rules \[[BAS.Rules](#bas-rules)\]: validity periods for Entity Statements, key rollover intervals, permitted grant types, registration policies and, if Trust Marks are used, the Trust Mark Policy. The federation-wide metadata policy is published in Section 7.1 of \[[BAS.Metadata](#bas-metadata)\]. |
+| **TA Entity Identifier** | The Entity Identifier of the BAS Trust Anchor in the environment under test (for example the Sandbox), as published in Section 5 of \[[BAS.Structure](#bas-structure)\]. |
+| **Out-of-band TA keys** | The Trust Anchor's Federation Entity Keys as distributed by the Federation Operator by other means than the Entity Configuration. They are to be published in Section 5 of \[[BAS.Structure](#bas-structure)\]. Until they are, they are provided by the Federation Operator. |
+| **Expected Immediate Subordinates** | The Entity Identifiers of the Federation Registration Entities (connection services, Swedish: anslutningstjänster) of the Federation Registration Operators connected to BAS. These are the only Immediate Subordinates of the BAS Trust Anchor. They are listed in Section 5 of \[[BAS.Structure](#bas-structure)\]. Where no list is published for the environment under test, it is provided by the Federation Operator. |
+| **Federation rules** | The BAS federation rules \[[BAS.Rules](#bas-rules)\]: validity periods for Entity Statements (Section 3.1), the constraints set by the Trust Anchor (Section 4.2) and the registration policies (Section 6). The federation-wide metadata policy, including the permitted grant types, is published in Section 7.1 of \[[BAS.Metadata](#bas-metadata)\]. Trust Marks are not yet defined, see Section 5 of \[[BAS.Rules](#bas-rules)\]. |
 | **Resolver** | The Entity Identifier and resolve endpoint of the Federation Resolver that the Federation Operator provides for the TA. The resolver itself is tested according to [Testing of the BAS Federation Resolver](resolver_overview.md). |
 
 Test cases that only apply under a condition, for example if Trust Marks are used, state this under "Applies to".
 
-Note: The BAS specifications do not define any Trust Marks. The test cases for Trust Marks apply only if the BAS federation rules introduce them.
+Note: Trust Marks are not yet defined in BAS, see Section 5 of \[[BAS.Rules](#bas-rules)\] and Section 4 of \[[BAS.Structure](#bas-structure)\]. The test cases for Trust Marks apply only if a later version of the BAS federation rules introduces them.
 
 Note: The tool at https://jwt.io can be used to inspect Entity Statements and Trust Marks. For test cases that validate signatures and Trust Chains, an independent OpenID Federation implementation is used, so that the TA is not validated by its own software.
 
@@ -250,15 +254,14 @@ Note: The contents of the `metadata` claim are tested in Section [2.2](#verifica
 <a name="ta-os-004"></a>
 #### TA-OS-004: Verifying the validity period of the Entity Configuration
 
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that the Entity Configuration is valid at the time of testing, and that its validity period follows the federation rules.
-- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period stated in the federation rules.
+- **Instructions**: Fetch the Entity Configuration of the TA ([P-EC](procedures.md#p-ec)) and note the time of retrieval. Compare `iat` and `exp` with that time, with each other, and with the validity period of 7 days that Section 3.1 of \[[BAS.Rules](#bas-rules)\] gives for the Entity Configuration of the Trust Anchor.
 - **Expected result**:
   - `iat` MUST NOT be later than the time of retrieval.
   - `exp` MUST be later than the time of retrieval.
-  - `exp` minus `iat` is expected to equal the validity period stated in the federation rules. If the federation rules state no period, this should be noted in the report, and the period used by the TA should be noted.
+  - `exp` minus `iat` is expected to be 7 days (604 800 seconds). Another period should be noted in the report as an observation, together with the period used by the TA.
   - A clock skew of 10 seconds is allowed for all comparisons against the tester's clock.
-- **References**: Section 3.1.1, 3.2 and 11.2 of \[[OpenID.Federation](#openid-federation)\] and Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+- **References**: Section 3.1.1, 3.2 and 11.2 of \[[OpenID.Federation](#openid-federation)\], Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 3.1 of \[[BAS.Rules](#bas-rules)\]
 
 <a name="ta-os-005"></a>
 #### TA-OS-005: Verifying that the Entity Configuration is renewed before it expires
@@ -541,13 +544,12 @@ The tests in this section use the `federation_fetch_endpoint` of the TA's Entity
 #### TA-OS-030: Verifying the validity period of Subordinate Statements
 
 - **Test data**: Subordinate Statements about FED-FRE1 and FED-FRE2.
-- **Depends on** \[[BAS.Rules](#bas-rules)\]: The validity period for Entity Statements.
 - **Purpose**: Assert that Subordinate Statements are valid when issued and that their validity follows the federation rules.
-- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)) and note the time of retrieval. Compare `iat` and `exp` with the time of retrieval and with the validity period in the federation rules.
+- **Instructions**: For each expected Immediate Subordinate, fetch the Subordinate Statement from the TA ([P-FETCH](procedures.md#p-fetch)) and note the time of retrieval. Compare `iat` and `exp` with the time of retrieval and with the validity period of 7 days that Section 3.1 of \[[BAS.Rules](#bas-rules)\] gives for Subordinate Statements issued by the Trust Anchor.
 - **Expected result**:
   - `iat` MUST NOT be later, and `exp` MUST be later, than the time of retrieval. A clock skew of 10 seconds is allowed.
-  - `exp` minus `iat` is expected to follow the federation rules. Deviations, or the absence of a stated period, should be noted in the report.
-- **References**: Section 3.1.1, 3.2 and 10.4 of \[[OpenID.Federation](#openid-federation)\] and Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\]
+  - `exp` minus `iat` is expected to be 7 days (604 800 seconds). Another period should be noted in the report as an observation.
+- **References**: Section 3.1.1, 3.2 and 10.4 of \[[OpenID.Federation](#openid-federation)\], Section 2.1 and 2.4.1 of \[[OIDC.Sweden.Federation](#oidc-sweden-federation)\] and Section 3.1 of \[[BAS.Rules](#bas-rules)\]
 
 <a name="ta-os-031"></a>
 #### TA-OS-031: Verifying the source_endpoint and ec_location claims

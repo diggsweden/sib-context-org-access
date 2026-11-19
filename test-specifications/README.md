@@ -2,26 +2,26 @@
 
 Test cases for the Trust Anchor, the Federation Registration Entities (anslutningstjänster) and the Federation Resolver of Federationskontext BAS.
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 | Entity | Specification | Standalone | Chain | Total |
 | :--- | :--- | ---: | ---: | ---: |
 | [Trust Anchor](ta_overview.md) | [OIDF Sweden](ta_oidf_sweden_test.md) | 23 | 20 | 43 |
-| [Trust Anchor](ta_overview.md) | [BAS](ta_bas_test.md) | 2 | 6 | 8 |
+| [Trust Anchor](ta_overview.md) | [BAS](ta_bas_test.md) | 4 | 6 | 10 |
 | [Federation Registration Entity](fre_overview.md) | [OIDF Sweden](fre_oidf_sweden_test.md) | 17 | 22 | 39 |
-| [Federation Registration Entity](fre_overview.md) | [BAS](fre_bas_test.md) | 2 | 7 | 9 |
+| [Federation Registration Entity](fre_overview.md) | [BAS](fre_bas_test.md) | 3 | 7 | 10 |
 | [Federation Resolver](resolver_overview.md) | [OIDF Sweden](resolver_oidf_sweden_test.md) | 5 | 35 | 40 |
-| [Federation Resolver](resolver_overview.md) | [BAS](resolver_bas_test.md) | 1 | 7 | 8 |
-| | **Total** | **50** | **97** | **147** |
+| [Federation Resolver](resolver_overview.md) | [BAS](resolver_bas_test.md) | 2 | 8 | 10 |
+| | **Total** | **54** | **99** | **153** |
 
 ## How the Test Cases Are Divided
 
 - **OIDF Sweden**: OpenID Federation and the Swedish OpenID Federation profile. No BAS-specific requirements.
-- **BAS**: the requirements BAS adds (BAS Metadata, BAS Security, BAS.Rules, SIB Registration).
+- **BAS**: the requirements BAS adds (BAS Metadata, BAS Security, BAS.Rules, BAS.Structure, SIB Registration).
 - **Standalone**: can be run against the Entity alone, as soon as it is deployed.
 - **Chain**: needs test data from other Entities, such as the Trust Anchor, registered Entities or test Entities.
-- **Depends on BAS.Rules**: 19 test cases get expected values from BAS.Rules, which is in preparation.
-- Test cases for Trust Marks apply only if BAS introduces Trust Marks.
+- **Depends on BAS.Rules**: 10 test cases get expected values from parts of BAS.Rules that are not yet defined: Trust Marks, and the key rollover periods for Federation Entity Keys.
+- Test cases for Trust Marks apply only if BAS introduces Trust Marks, which Section 5 of BAS.Rules leaves to a later version.
 - **Registration is a black box**: the test cases verify what the infrastructure publishes, not how Entities are registered. Where a test case needs a change in the federation, such as a newly added Entity, the change is a *Precondition* made by the Federation Registration Operator, and the test case verifies the published result.
 - **Independent test cases**: every test case can be carried out on its own and in any order. It obtains the data it verifies itself, using the [common procedures](procedures.md), and depends only on the test data, never on another test case. A failed procedure makes a test case *Inconclusive*, not *Failed*.
 
@@ -44,7 +44,7 @@ The test cases do not depend on each other, so the order is a matter of planning
 
 ## Priority Test Cases
 
-The 26 test cases below, out of 147, are the most central. If time is short, run these first. The OIDF Sweden conformance tests chosen are those that decide whether the Trust Chain can be relied on: signatures, keys, chain building, and that nothing invalid or stale gets through. The BAS conformance tests chosen test what makes BAS work for its participants: that it is known which organization stands behind each Entity, and that every Client can authenticate at every Authorization Server. For each Entity, the OIDF Sweden test cases come first, since the BAS test cases build on the mechanisms they test.
+The 26 test cases below, out of 153, are the most central. If time is short, run these first. The OIDF Sweden conformance tests chosen are those that decide whether the Trust Chain can be relied on: signatures, keys, chain building, and that nothing invalid or stale gets through. The BAS conformance tests chosen test what makes BAS work for its participants: that it is known which organization stands behind each Entity, and that every Client can authenticate at every Authorization Server. For each Entity, the OIDF Sweden test cases come first, since the BAS test cases build on the mechanisms they test.
 
 ### Trust Anchor
 
@@ -63,7 +63,7 @@ The 26 test cases below, out of 147, are the most central. If time is short, run
 | Test case | Why it is a priority |
 | :--- | :--- |
 | [TA-BAS-005](ta_bas_test.md#ta-bas-005) Verifying that the metadata policy matches the published BAS policy | The policy is the foundation. If it is wrong, all Resolved Metadata in the federation is wrong, whatever the Federation Registration Entities do. |
-| [TA-BAS-006](ta_bas_test.md#ta-bas-006) Verifying client authentication and algorithm constraints in the policy | Interoperability: `private_key_jwt`, `client_credentials` and the mandatory algorithms everywhere. A gap here means that some Clients cannot authenticate at some Authorization Servers. |
+| [TA-BAS-006](ta_bas_test.md#ta-bas-006) Verifying client authentication and algorithm constraints in the policy | Interoperability: `private_key_jwt` and the mandatory algorithms everywhere. A gap here means that some Clients cannot authenticate at some Authorization Servers. |
 
 ### Federation Registration Entity
 

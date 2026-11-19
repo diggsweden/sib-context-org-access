@@ -1,16 +1,16 @@
 # Overview of Test Cases – Trust Anchor
 
-This page lists all test cases for the BAS Trust Anchor: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Trust Anchor: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from parts of the BAS federation rules that are not yet defined, such as Trust Marks, and are to be updated when a later version of the rules defines them.
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
 | [OIDF Sweden Conformance](#oidf-sweden-conformance) | 23 | 20 | 43 |
-| [BAS Conformance](#bas-conformance) | 2 | 6 | 8 |
-| **Total** | **25** | **26** | **51** |
+| [BAS Conformance](#bas-conformance) | 4 | 6 | 10 |
+| **Total** | **27** | **26** | **53** |
 
 <a name="oidf-sweden-conformance"></a>
 ## 1. OIDF Sweden Conformance
@@ -26,7 +26,7 @@ Can be carried out against the TA alone, as soon as it is deployed.
 | [TA-OS-001](ta_oidf_sweden_test.md#ta-os-001) | Retrieving the Entity Configuration |
 | [TA-OS-002](ta_oidf_sweden_test.md#ta-os-002) | Verifying the signature of the Entity Configuration |
 | [TA-OS-003](ta_oidf_sweden_test.md#ta-os-003) | Verifying the claims of the Entity Configuration |
-| [TA-OS-004](ta_oidf_sweden_test.md#ta-os-004) | Verifying the validity period of the Entity Configuration *(Depends on BAS.Rules)* |
+| [TA-OS-004](ta_oidf_sweden_test.md#ta-os-004) | Verifying the validity period of the Entity Configuration |
 | [TA-OS-005](ta_oidf_sweden_test.md#ta-os-005) | Verifying that the Entity Configuration is renewed before it expires |
 | [TA-OS-006](ta_oidf_sweden_test.md#ta-os-006) | Verifying the federation keys |
 | [TA-OS-007](ta_oidf_sweden_test.md#ta-os-007) | Comparing the keys with the keys distributed out-of-band |
@@ -56,7 +56,7 @@ Need test data from other Entities in the federation, such as registered Federat
 | [TA-OS-027](ta_oidf_sweden_test.md#ta-os-027) | Verifying that the Trust Anchor is not chained directly to another Trust Anchor |
 | [TA-OS-028](ta_oidf_sweden_test.md#ta-os-028) | Fetching a Subordinate Statement about an Immediate Subordinate |
 | [TA-OS-029](ta_oidf_sweden_test.md#ta-os-029) | Verifying the binding between the Subordinate Statement and the Subordinate |
-| [TA-OS-030](ta_oidf_sweden_test.md#ta-os-030) | Verifying the validity period of Subordinate Statements *(Depends on BAS.Rules)* |
+| [TA-OS-030](ta_oidf_sweden_test.md#ta-os-030) | Verifying the validity period of Subordinate Statements |
 | [TA-OS-031](ta_oidf_sweden_test.md#ta-os-031) | Verifying the source_endpoint and ec_location claims |
 | [TA-OS-032](ta_oidf_sweden_test.md#ta-os-032) | Fetch request for a Leaf Entity registered under an Intermediate |
 | [TA-OS-033](ta_oidf_sweden_test.md#ta-os-033) | Fetch request with an unknown parameter |
@@ -77,16 +77,18 @@ Need test data from other Entities in the federation, such as registered Federat
 <a name="bas-conformance"></a>
 ## 2. BAS Conformance
 
-Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules and SIB Registration. Test specification: [ta_bas_test.md](ta_bas_test.md).
+Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules, the BAS federation structure and SIB Registration. Test specification: [ta_bas_test.md](ta_bas_test.md).
 
-### 2.1. Standalone tests (2)
+### 2.1. Standalone tests (4)
 
 Can be carried out against the TA alone, as soon as it is deployed.
 
 | ID | Test case |
 | :--- | :--- |
-| [TA-BAS-001](ta_bas_test.md#ta-bas-001) | Verifying the federation keys against the BAS rules *(Depends on BAS.Rules)* |
+| [TA-BAS-001](ta_bas_test.md#ta-bas-001) | Verifying the federation keys against the BAS rules |
 | [TA-BAS-002](ta_bas_test.md#ta-bas-002) | TLS configuration |
+| [TA-BAS-011](ta_bas_test.md#ta-bas-011) | Verifying the Entity Identifier and resolve endpoint against the BAS structure |
+| [TA-BAS-012](ta_bas_test.md#ta-bas-012) | Federation endpoints without client authentication |
 
 ### 2.2. Tests requiring a chain of test data (6)
 
@@ -94,9 +96,9 @@ Need test data from other Entities in the federation, such as registered Federat
 
 | ID | Test case |
 | :--- | :--- |
-| [TA-BAS-005](ta_bas_test.md#ta-bas-005) | Verifying that the metadata policy matches the published BAS policy *(Depends on BAS.Rules)* |
+| [TA-BAS-005](ta_bas_test.md#ta-bas-005) | Verifying that the metadata policy matches the published BAS policy |
 | [TA-BAS-006](ta_bas_test.md#ta-bas-006) | Verifying client authentication and algorithm constraints in the policy |
 | [TA-BAS-007](ta_bas_test.md#ta-bas-007) | Verifying the values that the policy assigns |
 | [TA-BAS-008](ta_bas_test.md#ta-bas-008) | Verifying the Entity Types admitted in BAS |
-| [TA-BAS-009](ta_bas_test.md#ta-bas-009) | Verifying the registration policy constraint *(Only if the Trust Anchor sets a `registration_policy` constraint; Depends on BAS.Rules)* |
+| [TA-BAS-009](ta_bas_test.md#ta-bas-009) | Verifying the registration policy constraint |
 | [TA-BAS-010](ta_bas_test.md#ta-bas-010) | Verifying the Resolved Metadata of registered Entities |

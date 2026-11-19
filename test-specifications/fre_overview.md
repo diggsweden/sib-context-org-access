@@ -1,16 +1,16 @@
 # Overview of Test Cases – Federation Registration Entity
 
-This page lists all test cases for the BAS Federation Registration Entity: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Federation Registration Entity: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from parts of the BAS federation rules that are not yet defined, such as Trust Marks, and are to be updated when a later version of the rules defines them.
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
 | [OIDF Sweden Conformance](#oidf-sweden-conformance) | 17 | 22 | 39 |
-| [BAS Conformance](#bas-conformance) | 2 | 7 | 9 |
-| **Total** | **19** | **29** | **48** |
+| [BAS Conformance](#bas-conformance) | 3 | 7 | 10 |
+| **Total** | **20** | **29** | **49** |
 
 <a name="oidf-sweden-conformance"></a>
 ## 1. OIDF Sweden Conformance
@@ -26,7 +26,7 @@ Can be carried out against the FRE alone, as soon as it is deployed.
 | [FRE-OS-001](fre_oidf_sweden_test.md#fre-os-001) | Retrieving the Entity Configuration |
 | [FRE-OS-002](fre_oidf_sweden_test.md#fre-os-002) | Verifying the signature of the Entity Configuration |
 | [FRE-OS-003](fre_oidf_sweden_test.md#fre-os-003) | Verifying the claims of the Entity Configuration |
-| [FRE-OS-004](fre_oidf_sweden_test.md#fre-os-004) | Verifying the validity period of the Entity Configuration *(Depends on BAS.Rules)* |
+| [FRE-OS-004](fre_oidf_sweden_test.md#fre-os-004) | Verifying the validity period of the Entity Configuration |
 | [FRE-OS-005](fre_oidf_sweden_test.md#fre-os-005) | Verifying that the Entity Configuration is renewed before it expires |
 | [FRE-OS-006](fre_oidf_sweden_test.md#fre-os-006) | Verifying the federation keys |
 | [FRE-OS-007](fre_oidf_sweden_test.md#fre-os-007) | Verifying the fetch and list endpoints |
@@ -51,7 +51,7 @@ Need test data from other Entities in the federation, such as the Trust Anchor, 
 | [FRE-OS-019](fre_oidf_sweden_test.md#fre-os-019) | Verifying Trust Marks held by the Intermediate *(Only if the FRE holds Trust Marks; Depends on BAS.Rules)* |
 | [FRE-OS-020](fre_oidf_sweden_test.md#fre-os-020) | Fetching a Subordinate Statement about a registered Entity |
 | [FRE-OS-021](fre_oidf_sweden_test.md#fre-os-021) | Verifying the binding between the Subordinate Statement and the registered Entity |
-| [FRE-OS-022](fre_oidf_sweden_test.md#fre-os-022) | Verifying the validity period of Subordinate Statements *(Depends on BAS.Rules)* |
+| [FRE-OS-022](fre_oidf_sweden_test.md#fre-os-022) | Verifying the validity period of Subordinate Statements |
 | [FRE-OS-023](fre_oidf_sweden_test.md#fre-os-023) | Verifying the source_endpoint and ec_location claims |
 | [FRE-OS-024](fre_oidf_sweden_test.md#fre-os-024) | Fetch request for an Entity registered under another Intermediate |
 | [FRE-OS-025](fre_oidf_sweden_test.md#fre-os-025) | Fetch request with an unknown parameter |
@@ -73,16 +73,17 @@ Need test data from other Entities in the federation, such as the Trust Anchor, 
 <a name="bas-conformance"></a>
 ## 2. BAS Conformance
 
-Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules and SIB Registration. Test specification: [fre_bas_test.md](fre_bas_test.md).
+Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules, the BAS federation structure and SIB Registration. Test specification: [fre_bas_test.md](fre_bas_test.md).
 
-### 2.1. Standalone tests (2)
+### 2.1. Standalone tests (3)
 
 Can be carried out against the FRE alone, as soon as it is deployed.
 
 | ID | Test case |
 | :--- | :--- |
-| [FRE-BAS-001](fre_bas_test.md#fre-bas-001) | Verifying the federation keys against the BAS rules *(Depends on BAS.Rules)* |
+| [FRE-BAS-001](fre_bas_test.md#fre-bas-001) | Verifying the federation keys against the BAS rules |
 | [FRE-BAS-002](fre_bas_test.md#fre-bas-002) | TLS configuration |
+| [FRE-BAS-013](fre_bas_test.md#fre-bas-013) | Federation endpoints without client authentication |
 
 ### 2.2. Tests requiring a chain of test data (7)
 
@@ -93,7 +94,7 @@ Need test data from other Entities in the federation, such as the Trust Anchor, 
 | [FRE-BAS-003](fre_bas_test.md#fre-bas-003) | Verifying organization parameters |
 | [FRE-BAS-004](fre_bas_test.md#fre-bas-004) | Verifying language-tagged values |
 | [FRE-BAS-005](fre_bas_test.md#fre-bas-005) | Verifying that the FRE sets no other values |
-| [FRE-BAS-006](fre_bas_test.md#fre-bas-006) | Verifying the BAS registration policies *(Depends on BAS.Rules)* |
+| [FRE-BAS-006](fre_bas_test.md#fre-bas-006) | Verifying the BAS registration policies |
 | [FRE-BAS-007](fre_bas_test.md#fre-bas-007) | Verifying the Resolved Metadata of registered Entities |
 | [FRE-BAS-008](fre_bas_test.md#fre-bas-008) | Registering a new Entity in BAS |
 | [FRE-BAS-012](fre_bas_test.md#fre-bas-012) | Changing a verified value in the Entity Configuration |

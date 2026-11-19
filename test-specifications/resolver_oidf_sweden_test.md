@@ -2,7 +2,7 @@
 
 This document contains a set of test cases that are applied to the Federation Resolver of Federationskontext BAS (BAS). A Federation Resolver is a Trust Anchor or an Intermediate Entity that provides a `federation_resolve_endpoint`. The Swedish profile requires the Trust Anchor to ensure that at least one resolver is available, and recommends that the Trust Anchor provides it itself. Since peers in BAS obtain identifiers, keys, authentication methods and endpoints from Resolved Metadata, the resolver is central to how a party verifies the system identity and organization of another Entity.
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
@@ -146,7 +146,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="oidc-sweden-federation"></a>
 **\[OIDC.Sweden.Federation\]**
-> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0 - draft 03", 2 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
+> [Lindström, M. and S. Santesson, "Swedish OpenID Federation Deployment and Interoperability Profile 1.0", 16 October 2026](https://www.oidc.se/specifications/swedish-openid-federation-profile.html).
 
 <a name="openid-federation-regpolicy"></a>
 **\[OpenID.Federation.RegPolicy\]**
@@ -158,7 +158,7 @@ This section contains the specifications that this document tests compliance aga
 
 <a name="bas-rules"></a>
 **\[BAS.Rules\]**
-> The Swedish Agency for Digital Government (Digg), federation rules for Federationskontext BAS, in preparation.
+> The Swedish Agency for Digital Government (Digg), "BAS – Federation Rules and Policies 1.0 – draft 01", 27 October 2026.
 
 <a name="test-setup"></a>
 ### 1.2. Test Setup
@@ -175,7 +175,7 @@ Before the tests are carried out, the tester collects the following information 
 | **Request defaults** | Unless stated otherwise, resolve requests are sent using GET without client authentication, with `trust_anchor` set to the Trust Anchor Entity Identifier. |
 | **Reference implementation** | An independent OpenID Federation implementation, used to build Trust Chains and compute Resolved Metadata that the resolver's responses are compared with. |
 
-Test cases that only apply under a condition state this under "Applies to". The BAS specifications do not define any Trust Marks, so the test cases for Trust Marks apply only if the BAS federation rules introduce them.
+Test cases that only apply under a condition state this under "Applies to". Trust Marks are not yet defined in BAS, see Section 5 of \[[BAS.Rules](#bas-rules)\], so the test cases for Trust Marks apply only if a later version of the BAS federation rules introduces them.
 
 Note: When the resolver is provided by the Trust Anchor, its Entity Configuration is tested according to [Testing of the BAS Trust Anchor](ta_overview.md). When it is provided by an Intermediate, its Entity Configuration is tested according to [Testing of BAS Federation Registration Entities](fre_overview.md). This document covers the resolver role.
 

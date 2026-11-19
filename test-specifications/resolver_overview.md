@@ -1,16 +1,16 @@
 # Overview of Test Cases – Federation Resolver
 
-This page lists all test cases for the BAS Federation Resolver: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from the BAS federation rules, which are in preparation, and are to be updated when the rules are published.
+This page lists all test cases for the BAS Federation Resolver: first the OIDF Sweden conformance tests, then the BAS conformance tests. Within each, the test cases are divided into standalone tests and tests that require a chain of test data. The purpose, instructions, expected results and test data of each test case are found in the test specification, which each test case ID links to. Every test case can be carried out on its own and in any order, using the [common procedures](procedures.md). Test cases marked *Depends on BAS.Rules* get their expected values or conditions from parts of the BAS federation rules that are not yet defined, such as Trust Marks, and are to be updated when a later version of the rules defines them.
 
-Version: 0.1.0 (draft)
+Version: 0.2.0 (draft)
 
 Overviews: [start](overview.md) · [Trust Anchor](ta_overview.md) · [Federation Registration Entity](fre_overview.md) · [Federation Resolver](resolver_overview.md) · [test data](test_data.md) · [procedures](procedures.md)
 
 | Specification | Standalone | Chain | Total |
 | :--- | ---: | ---: | ---: |
 | [OIDF Sweden Conformance](#oidf-sweden-conformance) | 5 | 35 | 40 |
-| [BAS Conformance](#bas-conformance) | 1 | 7 | 8 |
-| **Total** | **6** | **42** | **48** |
+| [BAS Conformance](#bas-conformance) | 2 | 8 | 10 |
+| **Total** | **7** | **43** | **50** |
 
 <a name="oidf-sweden-conformance"></a>
 ## 1. OIDF Sweden Conformance
@@ -74,19 +74,20 @@ Need test data from other Entities in the federation, such as the Trust Anchor a
 <a name="bas-conformance"></a>
 ## 2. BAS Conformance
 
-Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules and SIB Registration. Test specification: [resolver_bas_test.md](resolver_bas_test.md).
+Tests of the requirements that BAS adds: BAS Metadata Requirements, BAS Security Requirements, the BAS federation rules, the BAS federation structure and SIB Registration. Test specification: [resolver_bas_test.md](resolver_bas_test.md).
 
-### 2.1. Standalone tests (1)
+### 2.1. Standalone tests (2)
 
 Can be carried out against the resolver alone, as soon as it is deployed.
 
 | ID | Test case |
 | :--- | :--- |
 | [RES-BAS-001](resolver_bas_test.md#res-bas-001) | TLS configuration |
+| [RES-BAS-009](resolver_bas_test.md#res-bas-009) | Verifying that the resolver is the Trust Anchor |
 
-### 2.2. Tests requiring a chain of test data (7)
+### 2.2. Tests requiring a chain of test data (8)
 
-Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE18. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
+Need test data from other Entities in the federation, such as the Trust Anchor and the test Entities TE1 to TE19. Each test case states the data it needs in the test specification, and the test data is described in [test_data.md](test_data.md).
 
 | ID | Test case |
 | :--- | :--- |
@@ -94,6 +95,7 @@ Need test data from other Entities in the federation, such as the Trust Anchor a
 | [RES-BAS-003](resolver_bas_test.md#res-bas-003) | Resolved Metadata of a Client |
 | [RES-BAS-004](resolver_bas_test.md#res-bas-004) | Organization parameters in Resolved Metadata |
 | [RES-BAS-005](resolver_bas_test.md#res-bas-005) | Entities that fail the BAS policy |
-| [RES-BAS-006](resolver_bas_test.md#res-bas-006) | Entity registered without verification of organisational affiliation *(Only if the Trust Anchor sets a `registration_policy` constraint)* |
+| [RES-BAS-006](resolver_bas_test.md#res-bas-006) | Entity registered without verification of organisational affiliation |
 | [RES-BAS-007](resolver_bas_test.md#res-bas-007) | Entities that break requirements the policy cannot express |
+| [RES-BAS-010](resolver_bas_test.md#res-bas-010) | Entity Type not admitted in BAS |
 | [RES-BAS-008](resolver_bas_test.md#res-bas-008) | Propagation of a new protocol key |
