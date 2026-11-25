@@ -96,7 +96,10 @@ Trust Marks are not yet defined for BAS, see [@!BAS.Rules, section 5].
 | --- | --- |
 | Entity Identifier | `https://fed.ena-infrastructure.se/trustanchor` |
 | Resolve endpoint | `https://fed.ena-infrastructure.se/trustanchor/resolve` |
-| Trust Anchor Federation Key | To be added (PEM and JWK) |
+
+#### Trust Anchor Federation Key {#sandbox_trust_anchor_key}
+
+A> The Trust Anchor Federation Key is to be added in PEM and JWK format.
 
 ### Federation Registration Entities {#production_federation_registration_entities}
 
@@ -112,7 +115,10 @@ Trust Marks are not yet defined for BAS, see [@!BAS.Rules, section 5].
 | --- | --- |
 | Entity Identifier | `https://qa.fed.ena-infrastructure.se/trustanchor` |
 | Resolve endpoint | `https://qa.fed.ena-infrastructure.se/trustanchor/resolve` |
-| Trust Anchor Federation Key | To be added (PEM and JWK) |
+
+#### Trust Anchor Federation Key {#sandbox_trust_anchor_key}
+
+A> The Trust Anchor Federation Key is to be added in PEM and JWK format.
 
 ## Sandbox {#sandbox}
 
@@ -122,8 +128,33 @@ Trust Marks are not yet defined for BAS, see [@!BAS.Rules, section 5].
 | --- | --- |
 | Entity Identifier | `https://fed.sandbox.ena-infrastructure.se/trustanchor` |
 | Resolve endpoint | `https://fed.sandbox.ena-infrastructure.se/trustanchor/resolve` |
-| Trust Anchor Federation Key | To be added (PEM and JWK) |
 
+#### Trust Anchor Federation Key {#sandbox_trust_anchor_key}
+
+As PEM-encoded key file:
+
+~~~
+-----BEGIN PUBLIC KEY-----
+MIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQBOhL9UMgAXPXnr/DwLFTGvcSNyOUT
+LiSKpVLcaqZXnzTco8TQty1p/TBFaXmGLsuj2QuMhvNYPTKK2bWgjIXQvOAB6xBc
+0yCh2NTS4BmhoXzsqjeKWKKSFsmta0Wx9RCnAwrYm7CKOBisaUMnIipq/LvXNM0p
+VykOt4mNcoGNVMxexMI=
+-----END PUBLIC KEY-----
+~~~
+
+As JWK:
+
+~~~ json
+{
+  "crv": "P-521",
+  "kty": "EC",
+  "x": "AToS_VDIAFz156_w8CxUxr3EjcjlEy4kiqVS3GqmV5803KPE0Lctaf0wRWl5hi7Lo9kLjIbzWD0yitm1oIyF0Lzg",
+  "y": "AesQXNMgodjU0uAZoaF87Ko3iliikhbJrWtFsfUQpwMK2JuwijgYrGlDJyIqavy71zTNKVcpDreJjXKBjVTMXsTC",
+  "kid": "mjavJGIFqjkU0jfIohjKik4CIl6HROb9jTVYrKFdZtw",
+  "alg": "ES512",
+  "use": "sig"
+}
+~~~
 {backmatter}
 
 <reference anchor="OpenID.Federation" target="https://openid.net/specs/openid-federation-1_0.html">
